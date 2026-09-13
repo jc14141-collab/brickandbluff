@@ -1,0 +1,1 @@
+{"name":"brick-and-bluff","private":true,"type":"module","scripts":{"build":"node scripts/build.mjs","db:generate":"drizzle-kit generate","test:rooms":"node --test --test-isolation=none tests/rooms.test.mjs"},"devDependencies":{"drizzle-kit":"0.31.10","drizzle-orm":"0.45.1","esbuild":"0.28.2"},"dependencies":{"cannon-es":"0.20.0"}}

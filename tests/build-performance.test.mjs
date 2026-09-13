@@ -1,0 +1,8 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
+import worker from '../dist/server/index.js';
+const meta=JSON.parse(fs.readFileSync('.build/client-meta.json','utf8'));
+test('lobby static import graph excludes game renderers and physics',()=>{const outputs=meta.outputs,entry=Object.keys(outputs).find(k=>outputs[k].entryPoint==='dist/app.mjs'),seen=new Set();function walk(file){if(seen.has(file))return;seen.add(file);for(const ref of outputs[file].imports)if(ref.kind!=='dynamic-import'&&!ref.external)walk(ref.path)}walk(entry);const inputs=[...seen].flatMap(k=>Object.keys(outputs[k].inputs));assert(!inputs.some(k=>/three\.|cannon|room-game|roulette-ui|guandan-ui|craps-board-ui/.test(k)),inputs.join('\n'));console.log('Lobby initial JS bytes:',[...seen].reduce((n,k)=>n+outputs[k].bytes,0))});
+test('built page has one stylesheet and every emitted chunk is served',async()=>{const request=url=>worker.fetch(new Request('https://test.example'+url),{});const page=await (await request('/')).text();assert.equal((page.match(/rel="stylesheet"/g)||[]).length,1);for(const match of page.matchAll(/(?:src|href)="(\/built\/[^\"]+)"/g)){const res=await request(match[1]);assert.equal(res.status,200);assert.match(res.headers.get('cache-control'),/immutable/)}for(const key of Object.keys(meta.outputs)){const res=await request('/built/'+path.relative('.build/client',key).replaceAll('\\','/'));assert.equal(res.status,200,key);assert.match(res.headers.get('content-type'),/javascript/);assert((await res.text()).length>0)}});

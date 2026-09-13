@@ -1,0 +1,29 @@
+/* Phone landscape: three usable panels and a permanently reachable navigation row. */
+#phoneRotate{display:none}
+@media(orientation:portrait){html.phone-device #phoneRotate{position:fixed;inset:0;z-index:2147483647;display:grid;place-items:center;background:#201b15;color:#f4dfaa;padding:28px;text-align:center}#phoneRotate b{font-size:26px}#phoneRotate p{line-height:1.8}html.phone-device body>*:not(#phoneRotate){visibility:hidden;pointer-events:none}}
+@media(orientation:landscape){
+ html.phone-device body:has(#lobbySurface){height:var(--app-height,100dvh);min-height:0;overflow:hidden}
+ html.phone-device body:has(#lobbySurface) .topbar{height:48px;min-height:48px;flex-wrap:nowrap;gap:6px;padding:2px max(8px,env(safe-area-inset-right)) 2px max(8px,env(safe-area-inset-left))}
+ html.phone-device .topbar .brand{font-size:12px;flex:none}html.phone-device .topbar .brandmark{display:none}
+ html.phone-device body:has(#lobbySurface) .topbar nav{display:flex!important;position:static;width:auto;order:0;gap:4px;flex:1;flex-wrap:nowrap;overflow-x:auto}
+ html.phone-device body:has(#lobbySurface) .topbar .navlink,html.phone-device body:has(#lobbySurface) .club-entry{display:block!important;min-height:40px;font-size:11px;white-space:nowrap;padding:4px 6px}
+ html.phone-device .topbar .topright{gap:3px;margin:0}html.phone-device .topbar .wallet{padding:4px;font-size:13px}html.phone-device .topbar .wallet small{display:none}html.phone-device .topbar .sound{padding:4px;font-size:11px}
+ html.phone-device body:has(#lobbySurface) #app{padding:6px max(8px,env(safe-area-inset-right)) 6px max(8px,env(safe-area-inset-left));overflow:hidden;min-height:0}
+ html.phone-device #lobbySurface{gap:5px}html.phone-device #lobbySurface .lobbyhead{display:none}
+ html.phone-device #lobbySurface .lobby-grid{display:grid;grid-template-columns:minmax(150px,.85fr) minmax(180px,1.1fr) minmax(220px,1.2fr);gap:8px;min-height:0}
+ html.phone-device #lobbySurface .lobby-character{display:flex;gap:5px;overflow:auto;min-height:0}
+ html.phone-device #lobbySurface .characters{gap:3px}html.phone-device #lobbySurface .art{aspect-ratio:1}html.phone-device #lobbySurface .charinfo h2{font-size:10px}
+ html.phone-device #lobbySurface .lobby-portrait.has-motion{width:100%;height:auto;aspect-ratio:1;flex:none}
+ html.phone-device #lobbySurface .selected-panel{padding:6px}html.phone-device #lobbySurface .selected-panel p{font-size:11px}
+ html.phone-device #lobbySurface .lobby-community{grid-column:auto;grid-row:auto;order:0;grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1.2fr) minmax(0,1fr);padding:0;gap:6px}
+ html.phone-device #lobbySurface #friendRooms,html.phone-device #lobbySurface #lobbyPlayers{padding:6px}
+ html.phone-device #lobbySurface .room-directory-list article{padding:5px;gap:4px}html.phone-device #lobbySurface .room-directory-list button{min-height:40px;padding:4px;font-size:11px;max-width:65px}
+ html.phone-device #lobbySurface .room-directory-list strong,html.phone-device #lobbySurface .lobby-player-list strong{font-size:12px}
+ html.phone-device #lobbySurface .lobby-settings{order:0;gap:5px}html.phone-device #lobbySurface .config{overflow:auto;padding:6px;min-height:0}
+ html.phone-device #lobbySurface .start-wrap{position:static;flex:none}html.phone-device #lobbySurface .start{min-height:42px;padding:6px;font-size:14px}
+ html.phone-device #lobbySurface .start-wrap p{display:none}html.phone-device #lobbySurface .sectionlabel{font-size:12px;min-height:18px}
+ html.phone-device .room-panel{padding:12px;max-width:100%;box-sizing:border-box}html.phone-device .room-panel h1{font-size:22px}
+ html.phone-device .room-avatars{max-width:560px;margin:auto}html.phone-device .room-avatars>button>div{height:100px!important}
+ html.phone-device .room-seats{grid-template-columns:repeat(4,minmax(0,1fr))}html.phone-device .room-seats .room-avatar{height:90px!important}
+ html.phone-device .room-lobby-actions{position:sticky;bottom:0;background:#251d16;z-index:2;padding:8px;display:flex;flex-wrap:wrap;gap:6px}
+}

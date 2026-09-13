@@ -1,0 +1,48 @@
+/* CC0 Kenney borders; OFL Fusion Pixel. See art/ licenses. Geometry stays in game styles. */
+@font-face{font-family:'Fusion Pixel';src:url('./art/fusion-pixel.woff2') format('woff2');font-weight:400;font-display:swap}
+:root{--voxel-ink:#f2e1b7;--voxel-gold:#d9b465;--voxel-wood:#332319}
+body,button,input,select,textarea{font-family:'Fusion Pixel',monospace;color:var(--voxel-ink)}
+body{background-color:#19140f}
+h1,h2,h3,.brand,.eyebrow,.wallet,.seat-name,.mp-head,.gd-seat{font-family:'Fusion Pixel',monospace}
+button,label,.mp-head,.opponent-label,.gd-seat,.wallet{text-shadow:0 1px 0 #17100b}
+:is(.topbar,.wallet,.room-panel,.room-directory,.config,.selected-panel,.fp-controls,.fp-side,.controls,.mp-controls,.mp-own,.mp-pot,.mp-result,.mp-settlement,.gd-hand-area,.gd-controls,.gd-end,.gd-review,.craps-dock,.craps-ledger,.craps-clock,.rl-betting,.rl-players,.rl-result,.round-result,dialog){
+ background:repeating-linear-gradient(0deg,#302219 0 6px,#35261b 6px 8px,#302219 8px 22px,#211910 22px 24px);
+ border:4px solid #80603b;border-image:url('./art/wood-frame.png') 4 / 4px stretch;border-radius:0;backdrop-filter:none;
+ box-shadow:inset 0 0 0 1px #1b130d,0 3px 0 #130e09;color:var(--voxel-ink)
+}
+:is(.opponent-label,.mp-head,.mp-dealer,.mp-seat-hand,.mp-one-hand,.gd-seat,.gd-score,.gd-turn-message,.turn-hud,.action-bubble,.hand-hud,.rl-status,.craps-status,.craps-readout,.gd-play-title){
+ border-radius:0;background:#29241b;border:2px solid #8e764d;box-shadow:inset 0 0 0 1px #171710,0 2px 0 #15100c;backdrop-filter:none;color:#f3e5c4
+}
+button:not(.gd-card):not(.card):not(.craps-bet):not(.rl-cell):not(.rl-combo):not(.charcard):not(.room-avatar){
+ border-radius:0;border:2px solid #827155;background:linear-gradient(#514732,#393323);color:#eee0b9;
+ box-shadow:inset 2px 2px 0 #817052,inset -2px -2px 0 #242017,0 3px 0 #15110c;transition:filter .12s,box-shadow .08s
+}
+button:not(:disabled):hover{filter:brightness(1.12)}
+button:not(:disabled):active{box-shadow:inset 2px 2px 0 #211b13,inset -1px -1px 0 #8d784f;filter:brightness(.94)}
+button:is(.primary,.action-primary,.mp-call,.mp-confirm,.raise-button,.gd-play-button,.start,.craps-roll),button.selected{
+ background:linear-gradient(#d9be72,#b89a4b)!important;color:#221c11!important;border-color:#ead08a!important;text-shadow:none;
+ box-shadow:inset 2px 2px 0 #f5dda0,inset -2px -2px 0 #796129,0 3px 0 #21190e
+}
+button:disabled{filter:saturate(.3);opacity:.6}
+button:focus-visible,input:focus-visible{outline:3px solid #f7d67e;outline-offset:3px}
+input:not([type=range]):not([type=checkbox]):not([type=radio]),select{border-radius:0;background:#211f18;border:2px solid #847451;box-shadow:inset 2px 2px 0 #110e0a;color:#f7e8c1}
+input[type=range]{appearance:none;-webkit-appearance:none;background:transparent;border:0;box-shadow:none;accent-color:#d5b15c}
+input[type=range]::-webkit-slider-runnable-track{height:10px;border:2px solid #201e19;background:repeating-linear-gradient(90deg,#77705f 0 5px,#292c28 5px 9px,#a09474 9px 11px);box-shadow:0 2px 0 #14130f}
+input[type=range]::-moz-range-track{height:6px;border:2px solid #201e19;background:repeating-linear-gradient(90deg,#77705f 0 5px,#292c28 5px 9px,#a09474 9px 11px)}
+input[type=range]::-webkit-slider-thumb{appearance:none;-webkit-appearance:none;width:24px;height:24px;margin-top:-9px;border-radius:0;border:3px solid #e3c26f;background:#8b5730;box-shadow:inset 0 0 0 3px #352d1d,0 3px 0 #17130c}
+input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:0;border:3px solid #e3c26f;background:#8b5730;box-shadow:inset 0 0 0 3px #352d1d,0 3px 0 #17130c}
+.gd-card,.card,.peek-card{border-radius:0;background-color:#f2ead5;text-shadow:none;box-shadow:1px 2px 0 #b8ad92,2px 4px 0 #746b54}
+.craps-bet,.rl-cell,.rl-combo{border-radius:0;border-color:#c2a34e;box-shadow:inset 0 1px 0 #e8ca7966,inset 1px 0 0 #e8ca7955;text-shadow:0 1px #152018}
+.craps-wood-frame{border-radius:0;border-image:url('./art/wood-frame.png') 4 / 8px stretch}
+.craps-felt,.rl-felt{border-radius:0}
+.mp-head.current,.gd-seat.active,.opponent-label.your-turn{border-color:#f3d479;box-shadow:0 0 0 1px #a17d31,0 2px 0 #17130c}
+.muted,.room-muted,.controlstatus small{color:#b8ae94}
+@media(prefers-reduced-motion:reduce){button{transition:none}}
+
+/* Only the settlement content owns a frame; its positioning wrapper stays clear. */
+body .mp-result,body .mp-result:not(:empty){border:0;border-image:none;box-shadow:none;background:none;padding:0}
+body .mp-result:empty,.mp-table .mp-controls:empty{display:none}
+
+/* Immediate physical press response also covers dynamically rendered in-game controls. */
+button,[role="button"],input[type="submit"],input[type="button"]{touch-action:manipulation}
+:is(button,[role="button"],input[type="submit"],input[type="button"]):not(:disabled):not([aria-disabled="true"]):is(:active,.button-pressed){filter:brightness(.68)!important;box-shadow:inset 2px 3px 0 #171008,inset -1px -1px 0 #94774e!important;transition:none!important}

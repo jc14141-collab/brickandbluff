@@ -1,0 +1,4 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {drawCardFace} from '../dist/card-art.mjs';
+function canvas(){const text=[];const x=new Proxy({fillText(t){text.push(t)},createLinearGradient(){return{addColorStop(){}}}},{get(o,k){return k in o?o[k]:()=>{}},set(o,k,v){o[k]=v;return true}});return{text,getContext(){return x}}}
+test('community indexes contain two large ranks without competing corner suit glyphs',()=>{for(const r of [2,6,10,11,14]){const c=canvas();drawCardFace(c,{r,s:'♠'},'board');assert.equal(c.text.length,2);assert.equal(c.text[0],c.text[1]);assert(!c.text.includes('♠'));assert.equal(c.width,512);assert.equal(c.height,768)}});
+test('held cards show only rank indexes after corner-suit removal',()=>{const c=canvas();drawCardFace(c,{r:10,s:'♥'},true);assert.deepEqual(c.text,['10','10'])});

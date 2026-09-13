@@ -1,0 +1,2 @@
+export function rollHeadline(dice,point){const total=dice[0]+dice[1];if(point)return total===7?'七出 · 交棒下一位':total===point?'命中目标 · Pass 获胜':'目标继续 · 本掷下注判定';return total===7||total===11?'开局自然胜 · Pass 获胜':[2,3,12].includes(total)?'开局 Craps · Pass 失利':'建立目标 '+total}
+export function winningCell(key,result){if(!result)return false;if(result.events?.some(e=>e.key===key&&e.profit>0))return true;return key==='p'+result.total||key==='h'+result.total&&result.dice[0]===result.dice[1]}

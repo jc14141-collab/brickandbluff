@@ -1,0 +1,24 @@
+.mp-solo-skill{display:flex;align-items:center;gap:8px;flex-wrap:wrap;flex-basis:100%;padding:7px 0;border-top:1px solid #78633d;font-size:14px}
+.mp-solo-skill small{font-size:12px;color:#bfb394;margin-left:8px}.mp-solo-skill details{font-size:12px;max-width:360px}.mp-solo-skill details p{margin:4px;line-height:1.5}.mp-solo-skill select{max-width:145px;min-height:36px}.mp-skill-log{font-size:12px;flex-basis:100%;max-height:95px;overflow:auto}.mp-skill-log p{margin:5px}.mp-skill-peek{display:inline-flex;align-items:center;gap:4px;flex-wrap:wrap;font-size:12px}.mp-skill-peek .card{width:32px!important;height:44px!important;font-size:13px!important}
+.craps-bet{touch-action:manipulation}.craps-bet.tap-pending{outline:2px solid #efd48b;outline-offset:-3px}.craps-bet:active{transform:translateY(1px);filter:brightness(1.12)}
+@media(max-height:800px){.mp-solo-skill{padding:4px 0}.mp-solo-skill>span small{display:none}}
+/* Restore the previous compact poker control row; keep blackjack unchanged. */
+.mp-poker .mp-solo-skill{display:block;flex-basis:auto;padding:0;border:0;font-size:inherit}
+.mp-poker .mp-solo-skill select{margin-right:6px}
+/* Skill controls belong to the hand panel, never the betting action bar. */
+.mp-table .mp-own:has(.mp-skill-dock){width:230px;max-width:32vw;max-height:45vh;overflow:visible;padding:10px 12px}
+.mp-table .mp-own:has(.mp-skill-dock)>.mp-hands{max-height:22vh;overflow:auto;margin-top:6px}
+.mp-skill-dock{position:relative;margin-top:9px;padding-top:8px;border-top:1px solid #b69a5a66}
+.mp-skill-dock .skill-dock-title{display:flex;align-items:center;gap:6px;margin-bottom:6px}
+.mp-skill-dock .skill-dock-title strong{font-size:14px;flex:1}
+.mp-skill-dock .skill-dock-title small{font-size:12px;color:#c8b888;white-space:nowrap}
+.mp-skill-dock .skill-dock-actions{display:flex;gap:6px;align-items:center}
+.mp-table .mp-skill-dock button,.mp-table .mp-skill-dock select{font-size:14px;min-height:38px;padding:6px 9px;min-width:0;margin:0;border:1px solid #aa9054;border-radius:3px;box-shadow:none;background:#273b2b;color:#eadbb8}
+.mp-skill-dock button{flex:1}.mp-skill-dock button:disabled{opacity:.45}.mp-skill-dock select{max-width:120px;flex:1}
+.mp-skill-dock summary{cursor:pointer;list-style:none;border:1px solid #8f7a50;border-radius:50%;width:24px;height:24px;text-align:center;font-size:14px;line-height:22px}.mp-skill-dock summary::-webkit-details-marker{display:none}
+.mp-skill-dock details>div{position:absolute;bottom:calc(100% + 8px);left:0;width:min(290px,65vw);max-height:210px;overflow:auto;background:#222b20;border:1px solid #a58c55;padding:10px;z-index:30;box-shadow:0 5px 16px #0006;font-size:13px;line-height:1.6}
+.mp-skill-dock details p{margin:0 0 6px}
+.mp-poker:has(.mp-skill-dock) .mp-own,.mp-poker:has(.mp-skill-dock) .mp-controls{bottom:max(16px,env(safe-area-inset-bottom))}
+.mp-poker:has(.mp-skill-dock) .mp-controls{left:max(270px,25%)}
+@media(max-width:600px){.mp-table.mp-poker:has(.mp-skill-dock) .mp-own{left:8px;width:150px;max-width:150px}.mp-poker:has(.mp-skill-dock) .mp-controls{left:168px;right:8px;padding:8px}.mp-poker:has(.mp-skill-dock) .mp-action-row{flex-wrap:wrap}.mp-poker:has(.mp-skill-dock) .mp-action-row strong{flex-basis:100%}.mp-poker:has(.mp-skill-dock) .mp-bet-row input[type=number]{width:65px}}
+@media(max-width:600px){.mp-table .mp-own:has(.mp-skill-dock){width:190px;max-width:48vw;padding:7px}.mp-skill-dock{margin-top:5px;padding-top:5px}.mp-skill-dock .skill-dock-title strong{font-size:13px}.mp-skill-dock .skill-dock-title small{font-size:11px}.mp-table .mp-skill-dock button,.mp-table .mp-skill-dock select{padding:5px;font-size:12px}}

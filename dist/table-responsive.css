@@ -1,0 +1,40 @@
+/* Keep navigation outside the projected avatar region on tablets and desktops. */
+.mp-table,.gd-room{--hud-height:82px;--edge:max(12px,env(safe-area-inset-left));--safe-top:env(safe-area-inset-top,0px)}
+.mp-table .mp-stage,.gd-room .gd-stage{top:calc(var(--safe-top) + var(--hud-height));bottom:0}
+.mp-table .gd-heading,.gd-room .gd-heading{top:calc(var(--safe-top) + 12px);left:var(--edge);right:280px;min-height:44px;gap:8px;z-index:14;margin:0}
+.mp-table .gd-heading h1,.gd-room .gd-heading h1{font-size:20px;margin:0 8px 0 0;white-space:nowrap}
+.mp-table .gd-heading small,.gd-room .gd-heading small{display:none}
+.mp-table .gd-heading button,.gd-room .gd-heading button{padding:8px 10px;min-height:44px;white-space:nowrap;font-size:14px}
+body.in-game:has(.mp-table) .topbar,body.in-game:has(.gd-room) .topbar{top:calc(env(safe-area-inset-top,0px) + 12px);right:max(12px,env(safe-area-inset-right));height:44px;gap:8px;background:none;border:0;box-shadow:none}
+body.in-game:has(.mp-table) .wallet,body.in-game:has(.gd-room) .wallet{padding:6px 10px;min-height:44px;font-size:18px}
+body.in-game:has(.mp-table) .sound,body.in-game:has(.gd-room) .sound{font-size:14px;padding:8px;min-height:44px}
+.mp-blackjack .mp-phase{top:auto;left:auto;right:max(14px,env(safe-area-inset-right));bottom:124px;transform:none;max-width:min(220px,29vw);width:max-content;text-align:center}
+.mp-poker .mp-phase{top:auto;left:auto;right:18px;bottom:190px;text-align:right}
+.mp-pot{min-width:90px;padding:6px 12px;margin-top:4px}.mp-pot strong{font-size:26px}
+.mp-table .mp-head,.gd-room .gd-seat{transform:translate(-50%,-100%)!important;min-width:0;max-width:132px!important;padding:4px 6px!important;line-height:1.25;gap:2px 5px}
+.mp-table .mp-head strong,.gd-room .gd-seat strong{font-size:12px!important}
+.mp-table .mp-head small,.mp-table .mp-head span,.gd-room .gd-seat small,.gd-room .gd-seat span{font-size:11px!important}
+/* handCard is shared by blackjack; its ink must not inherit the dark HUD's ivory. */
+.mp-table .gd-card{position:relative;display:flex;flex-direction:column;justify-content:space-between;align-items:flex-start;box-sizing:border-box;background:#f2ead5;color:#17281e!important;-webkit-text-fill-color:#17281e;text-shadow:none;padding:3px;border:1px solid #b9ad8c}
+.mp-table .gd-card b,.mp-table .gd-card i{color:inherit!important;-webkit-text-fill-color:inherit;font-family:Georgia,'Times New Roman',serif;font-style:normal;line-height:1;margin:0}
+.mp-table .gd-card.red{color:#ad302c!important;-webkit-text-fill-color:#ad302c}
+.mp-table .mp-back-card{background:#234435!important;color:#e0cf96!important;-webkit-text-fill-color:#e0cf96}
+.mp-table .mp-one-hand .gd-card.small{width:34px;height:48px;flex:0 0 34px}
+.mp-table .mp-dealer .gd-card.small{width:30px;height:44px;flex:0 0 30px}
+.mp-table .mp-own{max-width:35vw}.mp-blackjack .mp-own{bottom:124px;max-height:28vh;padding:8px}
+.mp-blackjack .mp-hands{grid-template-columns:1fr!important}
+/* Scores occupy their own short header row, never a full opaque overlay. */
+.gd-room{--hud-height:124px}
+.gd-room .gd-score{top:calc(var(--safe-top) + 68px);left:var(--edge);right:var(--edge);height:40px;background:none;border:0;box-shadow:none;align-items:center;z-index:13}
+.gd-room .gd-score>div{padding:4px 8px;gap:10px;border-radius:0;background:#29241b}
+.gd-room .gd-score details{padding:6px 8px;border-radius:0}
+.gd-room .gd-score details[open]>div{position:absolute;right:0;top:100%;width:260px;background:#29241b;padding:8px;max-height:180px;overflow:auto}
+.gd-room .gd-tableplay{top:auto;bottom:318px;left:14px;right:auto;max-width:27%;z-index:3}
+.gd-room .gd-play-2{top:46%}.gd-room .gd-play-1,.gd-room .gd-play-3{top:49%}
+.gd-room .gd-seat-play{padding:4px 6px;max-width:300px}
+.gd-room .gd-seat-cards .gd-card.small{height:50px}.gd-room .gd-type-fx span{font-size:18px;top:0}
+.gd-room .gd-play-0{bottom:310px}
+@media(pointer:coarse){.mp-table,.gd-room{--edge:max(70px,env(safe-area-inset-left))}.mp-table .gd-heading h1 span,.gd-room .gd-heading h1 span{display:none}}
+@media(max-width:900px){.mp-table,.gd-room{--hud-height:104px}.gd-room{--hud-height:142px}.mp-table .gd-heading,.gd-room .gd-heading{right:210px;flex-wrap:wrap;gap:4px}.mp-table .gd-heading h1,.gd-room .gd-heading h1{font-size:16px}.mp-table .gd-heading button,.gd-room .gd-heading button{font-size:12px;padding:6px}.gd-room .gd-score{top:calc(var(--safe-top) + 98px)}.gd-room .gd-score small{display:none}body.in-game:has(.mp-table) .wallet small,body.in-game:has(.gd-room) .wallet small{display:none}.mp-blackjack .mp-phase,.mp-blackjack .mp-own{bottom:145px}}
+@media(max-height:750px){.gd-room .gd-hand-area{height:166px}.gd-room .gd-tableplay{bottom:257px}.gd-room .gd-play-0{bottom:255px}.gd-room .gd-play-2{top:43%}.gd-room .gd-play-1,.gd-room .gd-play-3{top:45%}.gd-room .gd-seat-cards .gd-card.small{height:42px}}
+@media(max-width:600px){.mp-table,.gd-room{--hud-height:140px;--edge:12px}.gd-room{--hud-height:176px}.mp-table .gd-heading,.gd-room .gd-heading{top:calc(var(--safe-top) + 66px);right:12px;flex-wrap:nowrap}.gd-room .gd-score{top:calc(var(--safe-top) + 126px)}.gd-room .gd-score>div{gap:5px}.mp-blackjack .mp-phase{bottom:205px;max-width:36vw}.mp-blackjack .mp-own{bottom:205px;max-width:54vw}.mp-poker .mp-phase{bottom:250px}.gd-room .gd-tableplay{bottom:347px;left:8px;right:auto;max-width:28%}.gd-room .gd-play-0{bottom:340px}.gd-room .gd-seat{max-width:100px!important}}

@@ -1,0 +1,7 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {pack,unpack,createRoom,command} from '../server/rooms.mjs';
+import {prepareRoomView} from '../dist/room-game.mjs';
+test('versioned codec preserves Map, Set, Date and explicit undefined without reserved-key collisions',()=>{const r=createRoom('one',{mode:'poker',capacity:4,name:'One',role:0},1);r.extra={map:new Map([['x',new Set([1,2])]]),date:new Date(1000),missing:undefined,literal:{$codec:'date',value:'text'},legacy:{$set:[3]}};const restored=unpack(pack(r));assert.deepEqual(restored.extra,r.extra);assert(Object.hasOwn(restored.extra,'missing'));r.bad=()=>1;assert.throws(()=>pack(r),/Unsupported saved value/)});
+test('old saves restore and new saves keep legacy pending sets readable',()=>{for(const mode of ['poker','guandan','craps','blackjack','roulette']){const r=createRoom('one',{mode,capacity:4,name:'One',role:0},1);for(let n=1;n<4;n++)command(r,'one',{kind:'addBot'},1);command(r,'one',{kind:'start'},1);const legacy=JSON.stringify(r,(_,v)=>v instanceof Set?{$set:[...v]}:v);const restored=unpack(legacy),encoded=pack(restored);assert.equal(unpack(encoded).mode,mode);if(mode==='poker'||mode==='guandan'){const oldReader=JSON.parse(encoded,(_,v)=>v?.$set?new Set(v.$set):v);assert(oldReader.game.pending instanceof Set)}assert.throws(()=>unpack('{"storageVersion":999}'),/Unsupported room storage/);}});
+test('all game view modules load on demand',async()=>{for(const mode of ['poker','blackjack','craps','roulette','guandan'])await prepareRoomView(mode)});

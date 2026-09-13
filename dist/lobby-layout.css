@@ -1,0 +1,68 @@
+/* Lobby only: preserve the tavern palette and keep the playing scenes untouched. */
+body:has(#lobbySurface){height:100dvh;overflow:hidden;display:flex;flex-direction:column}
+body:has(#lobbySurface) .topbar{height:72px;min-height:72px;padding:0 3%;gap:22px}
+body:has(#lobbySurface)>footer{display:none}
+body:has(#lobbySurface) #app{flex:1;min-height:0;width:100%;max-width:1600px;margin:auto;padding:18px 3% 24px}
+#lobbySurface{height:100%;display:flex;flex-direction:column;gap:16px}
+#lobbySurface .lobbyhead{margin:0;flex:none}
+#lobbySurface .lobbyhead h1{font-size:26px;margin:7px 0 0}
+#lobbySurface .lobbyhead p,#lobbySurface .step-counter{display:none}
+#lobbySurface .lobbyhead .eyebrow{font-size:12px}
+#lobbySurface .lobby-grid{display:grid;grid-template-columns:minmax(240px,1fr) minmax(260px,1.2fr) minmax(290px,1fr);gap:22px;flex:1;min-height:0}
+#lobbySurface .lobby-character{display:flex;flex-direction:column;min-height:0;gap:10px}
+#lobbySurface .sectionlabel{margin:0;min-height:22px;font-size:14px}
+#lobbySurface .sectionlabel small{font-size:12px}
+#lobbySurface .characters{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;flex:none}
+#lobbySurface .charcard{min-width:0;padding:0;overflow:hidden;border:1px solid #79603d;border-radius:3px;box-shadow:none;background:#30251c}
+#lobbySurface .charcard.chosen{border-color:#ecd090;box-shadow:0 0 0 1px #ecd090}
+#lobbySurface .art{aspect-ratio:384/590;background-image:url('/characters.webp');background-size:400% auto;background-position:var(--pos) 45%;height:auto;position:relative}
+#lobbySurface .charindex{display:none}
+#lobbySurface .check{right:3px;top:3px;width:17px;height:17px;font-size:12px}
+#lobbySurface .charinfo{padding:5px 2px;text-align:center}
+#lobbySurface .charinfo h2{font-size:13px;margin:0;white-space:nowrap}
+#lobbySurface .charinfo .class-name,#lobbySurface .charinfo .ability,#lobbySurface .charinfo .tag{display:none}
+#lobbySurface .lobby-portrait{flex:1;min-height:80px;align-self:center;aspect-ratio:384/720;max-width:100%;background-image:url('/characters.webp');background-size:400% auto;background-position:var(--pos) 48%;filter:drop-shadow(0 12px 10px #0005)}
+#lobbySurface .selected-panel{flex:none;margin:0;padding:10px 12px;gap:10px;min-height:0}
+#lobbySurface .selected-panel strong{font-size:14px}
+#lobbySurface .selected-panel p{font-size:14px;line-height:1.5;margin:5px 0 0}
+#lobbySurface .selected-panel .badge,#lobbySurface .skill-symbol{display:none}
+#lobbySurface .lobby-community{display:grid;grid-template-rows:minmax(0,1.4fr) minmax(0,1fr);gap:18px;min-height:0;padding-top:32px}
+#lobbySurface #friendRooms,#lobbySurface #lobbyPlayers{margin:0;padding:14px;display:flex;flex-direction:column;min-height:0;overflow:hidden;border:1px solid #756044;background:#241c15;box-shadow:none;border-image:none}
+#lobbySurface #friendRooms h2,#lobbySurface #lobbyPlayers h2{font-size:16px;margin:0 0 12px}
+#lobbySurface #friendRooms>.room-muted{display:none}
+#lobbySurface .room-directory-list{min-height:0;overflow:auto;overscroll-behavior:contain;display:flex;flex-direction:column;gap:8px}
+#lobbySurface .room-directory-list article{padding:10px;gap:10px;background:#35291e;border:1px solid #59482f;display:flex;align-items:center;justify-content:space-between;flex:none}
+#lobbySurface .room-directory-list article>div{min-width:0}
+#lobbySurface .room-directory-list strong{font-size:14px;display:block;overflow-wrap:anywhere}
+#lobbySurface .room-directory-list span{font-size:12px;display:block;margin-top:5px;color:#bcae94}
+#lobbySurface .room-directory-list button{font-size:14px;padding:8px;min-height:44px;flex-shrink:0;max-width:112px}
+#lobbySurface .lobby-list-title{display:flex;justify-content:space-between;gap:10px;flex:none}
+#lobbySurface .lobby-list-title>span{font-size:12px;color:#bcae94}
+#lobbySurface .lobby-player-list{overflow:auto;min-height:0;overscroll-behavior:contain}
+#lobbySurface .lobby-player-list article{display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid #4d3e2c}
+#lobbySurface .lobby-player-list strong{font-size:14px;overflow-wrap:anywhere}
+#lobbySurface .lobby-player-list small{font-size:12px;color:#bcae94}
+#lobbySurface .lobby-player-avatar{width:32px;height:42px;flex:none;background:url('/characters.webp');background-size:400% auto;background-position:var(--pos) 45%}
+#lobbySurface .online-dot{margin-left:auto;white-space:nowrap;font-size:12px;color:#b6cb8a}
+#lobbySurface .online-dot:before{content:'●';margin-right:5px}
+#lobbySurface .lobby-settings{display:flex;flex-direction:column;gap:10px;min-height:0}
+#lobbySurface .config{padding:12px;margin:0;flex:1;min-height:0;overflow:auto;overscroll-behavior:contain}
+#lobbySurface .config h2{font-size:14px;margin:0 0 8px}
+#lobbySurface .modebutton{width:100%;padding:7px 10px;min-height:45px;display:flex;gap:10px;margin:0 0 5px}
+#lobbySurface .modebutton .mode-icon{font-size:23px;width:30px}
+#lobbySurface .modebutton strong{font-size:14px}
+#lobbySurface .modebutton small{font-size:12px}
+#lobbySurface .mode-desc{font-size:14px;line-height:1.4;margin:10px 0}
+#lobbySurface .setting-row{padding:8px 0;font-size:14px;gap:8px}
+#lobbySurface .setting-row b{font-size:13px;text-align:right}
+#lobbySurface .setting-row select{min-width:0;max-width:75%;font-size:14px}
+#lobbySurface .mini-stakes{display:flex;gap:8px}
+#lobbySurface .mini-stakes button{padding:5px 12px;min-height:36px}
+#lobbySurface .start-wrap{flex:none;margin:0}
+#lobbySurface .start{padding:13px 16px;min-height:48px;font-size:16px;width:100%}
+#lobbySurface .start small{font-size:12px}
+#lobbySurface .start-wrap p{font-size:12px;margin:7px 0 0;text-align:center}
+@media(max-width:1100px){#lobbySurface .lobby-grid{grid-template-columns:minmax(210px,.9fr) minmax(230px,1fr) minmax(270px,1fr);gap:14px}body:has(#lobbySurface) .topbar{gap:12px;padding:0 2%}body:has(#lobbySurface) #app{padding:12px 2% 16px}.topbar:has(~#app #lobbySurface) nav{gap:12px}}
+@media(max-height:800px) and (min-width:800px){#lobbySurface{gap:10px}#lobbySurface .lobbyhead h1{font-size:22px}#lobbySurface .lobbyhead .eyebrow{display:none}#lobbySurface .modebutton{padding:5px 8px;min-height:40px}#lobbySurface .modebutton small{display:none}#lobbySurface .setting-row{padding:6px 0}#lobbySurface .mode-desc{margin:7px 0;font-size:13px}#lobbySurface .art{aspect-ratio:384/500}#lobbySurface .start-wrap p{display:none}#lobbySurface .lobby-community{padding-top:30px}#lobbySurface .config{padding:10px}body:has(#lobbySurface) .topbar{height:62px;min-height:62px}}
+@media(max-width:799px){body:has(#lobbySurface){height:auto;min-height:100dvh;overflow:auto}#lobbySurface .lobby-grid{grid-template-columns:1fr 1fr}#lobbySurface .lobby-community{grid-column:1/-1;grid-row:2;grid-template-columns:1fr 1fr;grid-template-rows:260px;padding:0}#lobbySurface .lobby-portrait{height:230px;flex:none}#lobbySurface .config{overflow:visible}body:has(#lobbySurface) .topbar{flex-wrap:wrap;height:auto;padding:12px;min-height:70px}body:has(#lobbySurface) .topbar nav{position:static}#lobbySurface .lobby-grid{gap:12px}#lobbySurface .lobby-settings{min-width:0}}
+@media(max-width:480px){#lobbySurface .lobby-grid{grid-template-columns:1fr}#lobbySurface .lobby-community{grid-column:auto;grid-row:auto;grid-template-columns:1fr;grid-template-rows:240px 200px}#lobbySurface .art{aspect-ratio:384/550}#lobbySurface .lobby-portrait{height:260px}}

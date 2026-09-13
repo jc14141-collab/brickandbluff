@@ -1,0 +1,5 @@
+import test from 'node:test';import assert from 'node:assert/strict';
+import {Poker} from '../dist/poker.mjs';
+import {createRoom,command} from '../server/rooms.mjs';
+test('heads-up dealer posts small blind, acts first preflop and last postflop',()=>{for(const dealer of [0,1]){const g=new Poker([2000,2000],{dealer});assert.equal(g.turn,dealer);assert.equal(g.players[dealer].bet,10);assert.equal(g.players[1-dealer].bet,20);g.act(dealer,'call');g.act(1-dealer,'check');g.advance();assert.equal(g.street,1);assert.equal(g.turn,1-dealer)}});
+test('minimum start rejects one player and guandan still requires four seats',()=>{for(const mode of ['poker','blackjack','roulette','craps','guandan']){const r=createRoom('host',{mode,capacity:4,name:'host',role:0},0);assert.throws(()=>command(r,'host',{kind:'start'},0),/人数不足/);command(r,'host',{kind:'addBot'},0);if(mode==='guandan')assert.throws(()=>command(r,'host',{kind:'start'},0),/人数不足/);else{command(r,'host',{kind:'start'},0);assert.equal(r.seats.length,2);assert.equal(r.status,'playing')}}});

@@ -1,0 +1,21 @@
+/* The toolbar wrapper has no frame: only its sound button and wallet own surfaces. */
+body.in-game .topbar{border:0!important;border-image:none!important;box-shadow:none!important;background:none!important;outline:0;backdrop-filter:none;padding:0;}
+body.in-game .topbar::before,body.in-game .topbar::after{content:none!important}
+body.in-game .topbar nav,body.in-game .topbar .brand,body.in-game .topbar .club-entry{display:none!important}
+body.in-game:has(:is(.craps-room,.roulette-room)) .topbar{top:calc(env(safe-area-inset-top) + 10px);right:max(12px,env(safe-area-inset-right));height:48px;min-height:0;max-width:calc(100vw - 24px);z-index:24;flex-wrap:nowrap;gap:0}
+body.in-game:has(:is(.craps-room,.roulette-room)) .topright{margin:0;gap:10px;min-width:0}
+body.in-game:has(:is(.craps-room,.roulette-room)) .topright .sound{height:44px;min-height:44px!important;padding:6px 10px;white-space:nowrap;box-shadow:inset 1px 1px 0 #817052,inset -1px -1px 0 #242017}
+body.in-game:has(:is(.craps-room,.roulette-room)) .topright .wallet{min-height:44px!important;padding:6px 12px!important;box-shadow:inset 0 0 0 1px #1b130d;font-size:20px!important;white-space:nowrap}
+/* Reserve an independent toolbar row, including during the wheel close-up. */
+body .roulette-room .rl-heading,body .roulette-room.rl-focus .rl-heading{margin-top:calc(env(safe-area-inset-top) + 62px);padding-right:0;gap:8px;flex-wrap:wrap}
+body .roulette-room.rl-focus .rl-status{top:calc(env(safe-area-inset-top) + 148px);left:12px;right:12px;transform:none;width:auto;max-width:none;white-space:normal;overflow-wrap:anywhere;padding:8px 12px;font-size:16px;line-height:1.5}
+@media(max-width:900px){
+ body.in-game:has(:is(.craps-room,.roulette-room)) .topright .wallet{font-size:16px!important}
+ body.in-game:has(:is(.craps-room,.roulette-room)) .wallet small{display:none}
+ body .roulette-room .rl-heading h1{width:auto;flex:1;min-width:150px}
+ body .roulette-room .rl-heading button{flex:0 0 auto;min-height:40px}
+}
+@media(max-height:500px) and (orientation:landscape){
+ body .roulette-room .rl-heading,body .roulette-room.rl-focus .rl-heading{margin-top:calc(env(safe-area-inset-top) + 48px);min-height:40px}
+ body .roulette-room.rl-focus .rl-status{top:calc(env(safe-area-inset-top) + 112px);padding:5px 10px;font-size:13px}
+}

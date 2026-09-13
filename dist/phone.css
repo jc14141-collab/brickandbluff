@@ -1,0 +1,130 @@
+/* Phone portrait: separate the scene, hand summary and actions into real rows. */
+@media(max-width:600px){
+ html{overflow-x:clip}body{min-width:0}
+ .topbar{box-sizing:border-box}.topbar nav{flex-wrap:wrap}
+ button,input,select{touch-action:manipulation}
+ input,select{font-size:16px!important}
+ body:has(#lobbySurface),.installed-app body:has(#lobbySurface){height:auto;min-height:var(--app-height,100dvh);overflow:auto}
+ body:has(#lobbySurface) .topbar{display:flex;flex-wrap:wrap;gap:10px;padding:12px max(12px,env(safe-area-inset-right)) 10px max(12px,env(safe-area-inset-left));height:auto;min-height:0}
+ body:has(#lobbySurface) .brand{font-size:18px}.topbar:has(~#app #lobbySurface) .brandmark{width:32px;height:32px;font-size:28px}
+ body:has(#lobbySurface) .topright{margin-left:auto;gap:6px}
+ body:has(#lobbySurface) .wallet{padding:7px;font-size:16px}body:has(#lobbySurface) .wallet small{display:none}
+ body:has(#lobbySurface) .topbar nav{order:3;width:100%;justify-content:space-between;gap:5px}
+ body:has(#lobbySurface) .navlink{font-size:13px;min-height:44px;padding:6px}
+ body:has(#lobbySurface) #app{padding:12px;overflow:visible}
+ #lobbySurface .lobby-grid{display:flex;flex-direction:column;gap:18px}
+ #lobbySurface .lobbyhead h1{font-size:22px}
+ #lobbySurface .lobby-character{display:grid;grid-template-columns:112px minmax(0,1fr);gap:10px}
+ #lobbySurface .lobby-character>.sectionlabel,#lobbySurface .characters{grid-column:1/-1}
+ #lobbySurface .characters{gap:6px}#lobbySurface .charinfo h2{font-size:12px}
+ #lobbySurface .art{aspect-ratio:384/480}
+ #lobbySurface .lobby-portrait{width:112px;height:180px;min-height:0;grid-column:1;align-self:center}
+ #lobbySurface .selected-panel{grid-column:2;align-self:center;padding:10px;min-width:0}
+ #lobbySurface .selected-panel p{font-size:13px}
+ #lobbySurface .lobby-settings{order:2}#lobbySurface .lobby-community{order:3;display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:240px 220px;padding:0}
+ #lobbySurface .start-wrap{position:static}#lobbySurface .start{min-height:48px}
+ #lobbySurface .lobby-player-list article{gap:7px}#lobbySurface .lobby-player-list strong{min-width:0;flex:1}
+ #lobbySurface .lobby-player-chips{font-size:12px}#lobbySurface .online-dot{font-size:11px}
+ .room-panel{padding:12px}.room-panel h1{font-size:23px}.room-name{flex-wrap:wrap;gap:8px}
+ .room-seats{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.room-seats .room-avatar{height:auto;aspect-ratio:384/480}
+ .room-seats .empty{min-height:160px}.room-lobby-actions>*{max-width:100%}
+ #clubPanel{max-width:calc(100vw - 16px);max-height:calc(var(--app-height,100dvh) - 16px)}
+ #clubPanel .club-content{padding:14px}.club-player-actions{flex-wrap:wrap}.club-profile-footer{flex-wrap:wrap}
+ .app-install-help{box-sizing:border-box;max-width:calc(100vw - 24px);max-height:calc(var(--app-height,100dvh) - 24px);overflow:auto;padding:18px}
+ body.in-game:has(.mp-table) .topbar,body.in-game:has(.gd-room) .topbar{top:calc(env(safe-area-inset-top) + 6px);right:max(8px,env(safe-area-inset-right));height:40px}
+ body.in-game .wallet{font-size:15px!important;padding:5px 8px!important;min-height:40px!important}
+ body.in-game .wallet small{display:none}body.in-game .sound{font-size:13px!important;min-height:40px!important}
+ .mp-table{display:grid;grid-template-columns:minmax(0,3fr) minmax(0,2fr);grid-template-rows:calc(env(safe-area-inset-top) + 104px) minmax(110px,1fr) auto auto;gap:0;height:var(--app-height,100dvh);max-height:100dvh;padding:0 0 max(6px,env(safe-area-inset-bottom));box-sizing:border-box;overflow:hidden}
+ .mp-table .gd-heading{top:calc(env(safe-area-inset-top) + 52px);left:8px;right:8px;min-height:44px;gap:6px}
+ .mp-table .gd-heading h1{font-size:18px;margin-right:auto}.mp-table .gd-heading button{min-height:44px;padding:7px 10px;font-size:13px}
+ .mp-table .mp-stage{grid-column:1/-1;grid-row:2;position:relative;inset:auto;width:100%;height:100%;min-height:0;overflow:hidden}
+ .mp-table .mp-head{max-width:94px!important;padding:3px 4px!important;gap:1px}
+ .mp-table .mp-head strong{font-size:11px!important}.mp-table .mp-head small,.mp-table .mp-head span{font-size:10px!important}
+ .mp-table .mp-own,.mp-table.mp-poker:has(.mp-skill-dock) .mp-own{grid-row:3;grid-column:1;position:relative;inset:auto;transform:none;width:auto;max-width:none;min-width:0;max-height:none;margin:4px;padding:6px;overflow:visible;box-sizing:border-box}
+ .mp-table .mp-own>strong{font-size:12px;display:block;line-height:1.4}.mp-table .mp-own>small{font-size:11px}
+ .mp-table .mp-own>div{margin-top:4px;gap:3px}
+ .mp-table .mp-own .mp-hands,.mp-table .mp-own:has(.mp-skill-dock)>.mp-hands{max-height:100px;overflow:auto}
+ .mp-table .mp-one-hand{padding:3px}.mp-table .mp-one-hand .gd-card.small{width:27px;height:38px;flex-basis:27px}
+ .mp-table .mp-phase{grid-row:3;grid-column:2;position:relative;inset:auto;transform:none;max-width:none;width:auto;margin:4px;padding:4px;text-align:center;align-self:center;font-size:11px;min-width:0}
+ .mp-table .mp-pot{min-width:0;padding:5px;margin:3px 0}.mp-table .mp-pot strong{font-size:23px}
+ .mp-table .mp-dealer{max-height:110px;overflow:auto}.mp-table .mp-dealer .gd-card.small{width:25px;height:36px;flex-basis:25px}
+ .mp-table .mp-controls,.mp-poker:has(.mp-skill-dock) .mp-controls{grid-row:4;grid-column:1/-1;position:relative;inset:auto;min-height:0;margin:4px;padding:6px;max-height:34vh;overflow:auto;box-sizing:border-box}
+ .mp-table .mp-controls:empty{display:none}
+ .mp-table .mp-action-row{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:5px}.mp-table .mp-action-row>strong{flex-basis:100%;font-size:12px}
+ .mp-table .mp-action-row>button{flex:1;min-width:0}
+ .mp-table .mp-controls button{min-height:44px;font-size:13px;padding:7px 6px;white-space:normal}
+ .mp-table .mp-bet-row{display:flex;flex-wrap:wrap;gap:5px}.mp-table .mp-bet-row label{flex:1 1 55%;min-width:90px}
+ .mp-table .mp-bet-row input[type=number]{width:70px;padding:6px;min-height:40px;box-sizing:border-box}
+ .mp-table .mp-bet-row [data-size]{flex:1}.mp-table .mp-bet-row .mp-confirm{flex:1.5}
+ .mp-table .mp-skill-dock{margin-top:5px;padding-top:5px}.mp-table .mp-skill-dock button,.mp-table .mp-skill-dock select{min-height:40px;font-size:12px;padding:5px}
+ .mp-skill-dock .skill-dock-title strong{font-size:12px}.mp-skill-dock .skill-dock-title small{font-size:11px}
+ .mp-table .mp-connection{top:calc(env(safe-area-inset-top) + 12px);left:10px;right:auto;bottom:auto;margin:0}
+ .mp-table .mp-result:not(:empty){inset:auto 6px max(6px,env(safe-area-inset-bottom));max-height:36vh;overflow:auto}
+ .mp-table .mp-settlement{max-height:none;padding:8px}.mp-settlement button{min-height:44px}
+ /* The betting map scrolls inside its area; controls never cover the last row. */
+ .craps-room:not(.is-immersive){height:var(--app-height,100dvh);display:flex;flex-direction:column;box-sizing:border-box;padding:calc(env(safe-area-inset-top) + 176px) 6px max(6px,env(safe-area-inset-bottom));gap:5px}
+ .craps-room .craps-heading{top:calc(env(safe-area-inset-top) + 52px);left:8px;right:8px;gap:5px}.craps-heading button{min-height:42px}
+ .craps-room .craps-status{top:calc(env(safe-area-inset-top) + 102px);left:8px;right:8px}
+ .craps-room .craps-clock{top:calc(env(safe-area-inset-top) + 142px);left:8px;right:8px;min-width:0;display:flex;justify-content:space-between;padding:4px 8px}
+ .craps-room .craps-clock>b{font-size:16px}.craps-room .craps-clock small{font-size:11px}
+ .craps-room:not(.is-immersive) .craps-board{position:relative;inset:auto;flex:1;min-height:90px;overflow:auto;width:100%;margin:0}
+ .craps-room:not(.is-immersive) .craps-ledger{position:relative;inset:auto;min-height:0;max-height:100px;overflow:auto;padding:5px;flex:none}
+ .craps-room:not(.is-immersive) .craps-dock{position:relative;inset:auto;flex:none;height:auto;min-height:0;display:flex;flex-wrap:wrap;padding:5px;gap:5px;box-sizing:border-box}
+ .craps-room .craps-chip-picker{width:100%;justify-content:space-between}.craps-room .craps-chip-picker button{width:42px;height:42px;flex:none}
+ .craps-room .craps-dock>button{min-height:42px;flex:1}.craps-room .craps-roll{min-width:95px;font-size:16px}
+ .craps-room .single-felt .craps-bet strong{font-size:16px}.craps-room .single-felt .point strong{font-size:23px}
+ .craps-room .single-felt .felt-wagers b{font-size:12px}.craps-room .single-felt .craps-bet small{font-size:11px}
+ .craps-room .mp-craps-info{position:relative;inset:auto;padding:0;margin:0;align-self:flex-end}.mp-craps-info:empty{display:none}
+ .craps-room.is-immersive .craps-readout{left:8px;right:8px;top:auto;bottom:max(24px,env(safe-area-inset-bottom));max-height:25vh;overflow:auto}
+ .roulette-room{position:fixed;inset:0;height:var(--app-height,100dvh);overflow-y:auto;overflow-x:hidden;padding:calc(env(safe-area-inset-top) + 58px) 8px max(16px,env(safe-area-inset-bottom));box-sizing:border-box;min-width:0}
+ .roulette-room .rl-heading{margin:0 0 10px;gap:6px;flex-wrap:wrap}.rl-heading h1{font-size:21px}.rl-heading h1 small{font-size:11px}
+ .roulette-room .rl-heading button{min-height:44px;flex:1;padding:6px;font-size:13px}
+ .roulette-room .rl-status{font-size:15px;line-height:1.5;overflow-wrap:anywhere}
+ .roulette-room .rl-canvas,.roulette-room .rl-wheel{height:200px;min-height:200px}
+ .roulette-room .rl-main{grid-template-columns:minmax(0,1fr);gap:10px}
+ .roulette-room .rl-betting{min-width:0}.roulette-room .rl-felt-scroll{overflow:auto;max-width:100%;box-sizing:border-box;-webkit-overflow-scrolling:touch}
+ .roulette-room .rl-felt{min-width:620px}.roulette-room .rl-cell{min-width:40px;min-height:44px}
+ .roulette-room .rl-chips{flex-wrap:wrap;gap:5px}.roulette-room .rl-chips button{min-height:44px;padding:6px 10px}
+ .roulette-room .rl-combo{gap:8px}.roulette-room .rl-combo label{min-width:0;flex:1 1 45%}.rl-combo select{width:100%;min-height:44px;min-width:0}.rl-combo>button{width:100%;min-height:44px}
+ .roulette-room .rl-selected{font-size:13px}.roulette-room .rl-players{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+ .roulette-room .rl-players article{padding:8px}.roulette-room .rl-players strong{font-size:13px}
+ .roulette-room.rl-focus .rl-heading{margin-top:0}.roulette-room.rl-focus .rl-status{top:calc(env(safe-area-inset-top) + 166px);left:8px;right:8px;transform:none;white-space:normal;padding:7px;text-align:center}
+ .roulette-room.rl-focus .rl-wheel{height:auto;min-height:0}.roulette-room.rl-focus .rl-canvas{height:var(--app-height,100dvh)!important}
+ .roulette-room.rl-finished{padding-bottom:290px}
+ /* Guandan: readable card rows can be swiped without moving the action buttons. */
+ .gd-room{--hud-height:156px}
+ .gd-room .gd-stage{bottom:calc(286px + env(safe-area-inset-bottom))}
+ .gd-room .gd-heading{top:calc(env(safe-area-inset-top) + 52px);left:8px;right:8px}.gd-room .gd-heading h1{font-size:18px;margin-right:auto}
+ .gd-room .gd-score{top:calc(env(safe-area-inset-top) + 102px);left:8px;right:8px;height:44px}.gd-score details{max-width:40vw}
+ .gd-room .gd-hand-area{height:170px;bottom:calc(108px + env(safe-area-inset-bottom));left:6px;right:6px;padding:6px}
+ .gd-room .gd-hand-row{min-width:560px}.gd-room .gd-hand-row:only-child{min-width:max-content;display:flex;justify-content:flex-start}.gd-room .gd-hand-row:only-child .gd-card{width:42px;flex:0 0 42px}
+ .gd-room .gd-controls{bottom:max(6px,env(safe-area-inset-bottom));left:6px;right:6px;height:98px;box-sizing:border-box;padding:5px}
+ .gd-room .gd-actions button{min-height:44px;padding:6px;font-size:13px}
+ .gd-room .gd-tableplay{bottom:calc(286px + env(safe-area-inset-bottom));max-width:35%;left:6px}.gd-room .gd-play-0{bottom:calc(286px + env(safe-area-inset-bottom))}
+ .gd-room .gd-seat-play{max-width:38vw}.gd-room .gd-seat-cards{max-width:100%;overflow:auto}.gd-room .gd-play-2{top:40%}
+ .gd-room .gd-end:not(:empty){inset:calc(env(safe-area-inset-top) + 108px) 6px max(6px,env(safe-area-inset-bottom))}
+}
+/* Short landscape screens: single navigation row and a compact lower dock. */
+@media(max-height:500px) and (min-width:601px) and (pointer:coarse){
+ .mp-table,.gd-room{--hud-height:58px;--edge:max(8px,env(safe-area-inset-left))}
+ .mp-table .gd-heading,.gd-room .gd-heading{top:calc(env(safe-area-inset-top) + 5px);left:var(--edge);right:220px;min-height:40px}
+ .mp-table .gd-heading h1,.gd-room .gd-heading h1{font-size:16px}.mp-table .gd-heading button,.gd-room .gd-heading button{min-height:40px;padding:5px 7px}
+ .mp-table .mp-own,.mp-table.mp-poker:has(.mp-skill-dock) .mp-own{left:var(--edge);bottom:max(6px,env(safe-area-inset-bottom));width:165px;max-width:25%;padding:5px;max-height:44vh}
+ .mp-table .mp-own>strong{font-size:11px}.mp-table .mp-own>div{margin-top:3px}.mp-table .mp-own>.mp-hands{max-height:70px;overflow:auto}
+ .mp-table .mp-controls,.mp-table.mp-poker:has(.mp-skill-dock) .mp-controls{left:max(185px,27%);right:max(8px,env(safe-area-inset-right));bottom:max(6px,env(safe-area-inset-bottom));padding:5px;min-height:0;max-height:42vh;overflow:auto}
+ .mp-table .mp-action-row{margin-bottom:4px;gap:4px}.mp-table .mp-action-row strong{font-size:11px}.mp-table .mp-controls button{min-height:38px;font-size:12px;padding:5px 7px}
+ .mp-table .mp-bet-row{gap:4px}.mp-table .mp-bet-row input[type=number]{width:64px;padding:4px}
+ .mp-table .mp-phase{top:65px;bottom:auto;left:auto;right:10px;max-width:135px;font-size:10px}.mp-table .mp-pot{min-width:0;padding:4px}.mp-table .mp-pot strong{font-size:20px}
+ .mp-table .mp-head{max-width:104px!important;padding:3px!important}.mp-table .mp-head span,.mp-table .mp-head small{font-size:10px!important}
+ .gd-room{--hud-height:92px}.gd-room .gd-score{top:50px;height:32px}
+ .gd-room .gd-hand-area{height:112px;bottom:60px}.gd-room .gd-hand-heading{margin-bottom:2px}.gd-room .gd-hand-scroll{gap:5px;padding-top:4px}.gd-room .gd-controls{height:48px;padding:5px;bottom:6px}
+ .gd-room .gd-actions button{padding:5px 8px;min-height:36px}.gd-room .gd-tableplay,.gd-room .gd-play-0{bottom:177px}
+ .gd-room .gd-card b{font-size:16px}.gd-room .gd-card i{font-size:17px}
+ .craps-room .craps-heading{top:8px;left:max(8px,env(safe-area-inset-left))}.craps-room .craps-status{top:56px}
+ .craps-room .craps-clock{top:55px;left:auto;right:12px;padding:3px 8px;display:flex;gap:6px}.craps-room .craps-clock>b{font-size:16px}
+ .craps-room .craps-board{top:92px;bottom:112px}.craps-room .craps-ledger{bottom:58px;max-height:48px;overflow:auto;padding:4px}
+ .craps-room .craps-dock{bottom:max(4px,env(safe-area-inset-bottom));height:48px;padding:4px;box-sizing:border-box}.craps-room .craps-chip-picker button{height:36px;width:36px}
+ .craps-room.is-immersive .craps-readout{top:auto;bottom:12px;left:20%;right:20%}
+ .roulette-room{position:fixed;inset:0;height:var(--app-height,100dvh);overflow-y:auto;overflow-x:hidden}
+ .roulette-room .rl-heading{margin-top:48px}.roulette-room.rl-focus .rl-heading{margin-top:44px}.roulette-room.rl-focus .rl-status{top:110px;padding:4px 10px;font-size:13px}
+}

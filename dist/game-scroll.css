@@ -1,0 +1,19 @@
+/* The game shell intentionally locks body scrolling. Roulette owns its scrollport
+   at every viewport size, including iPad Safari and installed web apps. */
+body.in-game .roulette-room{position:fixed;inset:0;height:var(--app-height,100dvh);min-height:0;box-sizing:border-box;overflow-x:hidden;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior-y:contain;touch-action:pan-x pan-y pinch-zoom;padding-bottom:max(24px,env(safe-area-inset-bottom))}
+body.in-game .roulette-room.rl-focus{overflow:hidden}
+body.in-game .roulette-room .rl-betting{min-width:0}
+body.in-game .roulette-room .rl-felt-scroll{max-width:100%;box-sizing:border-box;-webkit-overflow-scrolling:touch;touch-action:pan-x pan-y pinch-zoom}
+body.in-game .roulette-room .rl-players{min-width:0}
+body.in-game .roulette-room .rl-players article{min-width:0;overflow-wrap:anywhere}
+/* Settlement follows the roster instead of covering the last players. */
+body.in-game .roulette-room .rl-result:not(:empty){position:relative;inset:auto;margin-top:20px;max-width:100%;box-sizing:border-box;flex-wrap:wrap}
+body.in-game .roulette-room .rl-result-actions{flex-wrap:wrap}
+body.in-game :is(.rl-players article>div,.craps-board,.craps-seat-legend,.craps-wager-list,.mp-hands,.mp-controls,.mp-result,.gd-end,.gd-controls){-webkit-overflow-scrolling:touch;touch-action:pan-x pan-y pinch-zoom}
+/* Keep an eight-player ledger within its reserved band; the detailed wager
+   popover remains outside the band so it is not clipped by an overflow parent. */
+body.in-game .craps-room .craps-seat-legend{max-height:28px;overflow:auto;min-width:0;align-content:flex-start}
+body.in-game .craps-room .craps-selected{max-height:18px;overflow:auto}
+body.in-game .mp-table .mp-controls{max-height:38dvh;overflow:auto}
+body.in-game .mp-table .mp-result:not(:empty){max-height:38dvh;overflow:auto}
+body.in-game .gd-room .gd-end:not(:empty){max-height:60dvh;overflow:auto}
