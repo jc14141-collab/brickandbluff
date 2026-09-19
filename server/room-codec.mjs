@@ -1,3 +1,4 @@
+import {BigTwo,BigTwoMatch} from '../dist/bigtwo.mjs';
 // Versioned persistence codec. Functions are runtime dependencies, not saved state.
 import {Poker} from '../dist/poker.mjs';
 import {Guandan,GuandanMatch} from '../dist/guandan.mjs';
@@ -14,7 +15,7 @@ function encode(value,path,ancestors=new Set()){
  else if(value instanceof Map)result={$codec:'map',value:[...value].map(([k,v],i)=>[child(k,i+'key'),child(v,i)])};
  else if(value instanceof Date){if(!Number.isFinite(value.getTime()))throw Error('Invalid saved date at '+path);result={$codec:'date',value:value.toISOString()}}
  else if(Array.isArray(value))result=value.map(child);
- else {const proto=Object.getPrototypeOf(value);if(![Object.prototype,null,Poker.prototype,Guandan.prototype,GuandanMatch.prototype,Craps.prototype].includes(proto))throw Error('Unsupported saved object at '+path);const fields={};for(const [k,v]of Object.entries(value)){if(path==='room.match'&&(k==='random'||k==='game'))continue;fields[k]=child(v,k)}result=(Object.hasOwn(fields,'$codec')||Object.hasOwn(fields,'$set'))?{$codec:'object',value:fields}:fields}
+ else {const proto=Object.getPrototypeOf(value);if(![Object.prototype,null,BigTwo.prototype,BigTwoMatch.prototype,Poker.prototype,Guandan.prototype,GuandanMatch.prototype,Craps.prototype].includes(proto))throw Error('Unsupported saved object at '+path);const fields={};for(const [k,v]of Object.entries(value)){if(path==='room.match'&&(k==='random'||k==='game'))continue;fields[k]=child(v,k)}result=(Object.hasOwn(fields,'$codec')||Object.hasOwn(fields,'$set'))?{$codec:'object',value:fields}:fields}
  ancestors.delete(value);return result;
 }
 function decode(value){
@@ -40,6 +41,7 @@ export function restoreRoom(text,random){
   if(r.mode==='blackjack'){r.game.nextAt??=r.nextAt;r.game.deadline??=r.deadline}
   if(r.mode==='poker'){if(!Array.isArray(r.game.players)||!(r.game.pending instanceof Set))throw Error('Invalid poker save');r.game=Object.assign(Object.create(Poker.prototype),r.game)}
   if(r.mode==='guandan'){if(!Array.isArray(r.game.hands)||!r.match)throw Error('Invalid guandan save');r.game=Object.assign(Object.create(Guandan.prototype),r.game);r.match=Object.assign(Object.create(GuandanMatch.prototype),r.match,{random,game:r.game})}
+  if(r.mode==='bigtwo'){if(!Array.isArray(r.game.hands)||!r.match)throw Error('Invalid bigtwo save');r.game=Object.assign(Object.create(BigTwo.prototype),r.game);r.match=Object.assign(Object.create(BigTwoMatch.prototype),r.match,{random,game:r.game})}
   if(r.mode==='craps')r.game.tables=r.game.tables.map(restoreCraps);
  }
  return r;

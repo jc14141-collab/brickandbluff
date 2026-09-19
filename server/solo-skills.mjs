@@ -1,5 +1,5 @@
 import {BIG_BLIND} from '../dist/poker.mjs';
-import {blackjackAct,handPoints} from '../dist/blackjack.mjs';
+import {blackjackAct,handPoints,hasBlackjackActed} from '../dist/blackjack.mjs';
 import {SKILLS,cents} from '../dist/skill-rules.mjs';
 const check=(v,m)=>{if(!v)throw Error(m)};
 const random=()=>{const a=new Uint32Array(1);crypto.getRandomValues(a);return a[0]/4294967296};
@@ -25,7 +25,8 @@ export function skillAction(r,i,data,now){
   if(role===3){check(g.phase==='bets','悬赏只能在初始发牌前开启');check(!p.bounty,'悬赏已开启');check(p.bet?p.bank>=p.bet:p.bank>=2,'悬赏需额外预留一倍下注以覆盖最高损失');p.bank-=p.bet;p.riskReserve=p.bet;p.bounty=true;detail='悬赏赔率已启用'}
   else{
    check(p.bet>0&&g.phase!=='bets','请先下注并等待发牌');
-   if(role!==2)check(g.phase==='players'&&g.turn===i&&!p.done,'请在自己的行动回合使用');
+   check(!hasBlackjackActed(p),'已行动，本局不能再发动技能');
+   check(g.phase==='players'&&g.turn===i&&!p.done,'请在自己的首次行动前使用技能');
    cost=cents(h.bet*(role===2?.2:.5));check(p.bank>=cost,'可用筹码不足');
    if(role===0){s.peek={card:g.deck.at(-1),deckCount:g.deck.length};detail='私密查看下一张牌'}
    if(role===1){check(Number.isInteger(data.index)&&cards[data.index]&&g.dealer[0],'请选择要交换的手牌');[cards[data.index],g.dealer[0]]=[g.dealer[0],cards[data.index]];h.modified=true;g.dealerModified=true;detail='与庄家明牌交换'}

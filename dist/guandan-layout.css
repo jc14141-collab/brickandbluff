@@ -24,3 +24,66 @@ body .gd-room .gd-hand-row .gd-card.joker b{font-size:16px;white-space:nowrap}
 body .gd-room .gd-seat strong,body .gd-room .gd-seat span{white-space:nowrap}
 
 @media(max-height:500px) and (orientation:landscape){body .gd-room .gd-score{top:calc(env(safe-area-inset-top) + 48px);height:30px}body .gd-room .gd-score>div{padding:2px 6px}body .gd-room .gd-score small{display:none}}
+
+/* The shared gold-edged poker artwork, with a tactile paper edge. */
+body .gd-room .gd-hand-row:only-child .gd-card.gilded-card{
+ padding:0;border:0;border-radius:2px;background:#d8b569;overflow:visible;
+ box-shadow:1px 2px 0 #ba9449,2px 4px 0 #745421,3px 5px 5px #0006;
+}
+.gd-card.gilded-card .gilded-face{position:absolute;inset:0;width:100%;height:100%;border-radius:2px;pointer-events:none}
+body .gd-room .gd-card.gilded-card>b,body .gd-room .gd-card.gilded-card>i{visibility:hidden}
+body .gd-room .gd-card.gilded-card:disabled{opacity:1;filter:none}
+body .gd-room .gd-card.gilded-card>em{top:auto;bottom:6px;left:5px;right:auto;z-index:1;font-size:10px;background:#375638;color:#f8edba;border:1px solid #d9b668}
+body .gd-room .gd-hand-row .gd-card.gilded-card.picked{transform:translateY(-9px);box-shadow:0 0 0 2px #d8ed9a,2px 4px 0 #745421,3px 5px 5px #0006}
+body .gd-room .gd-play-feed{flex-direction:row;gap:0;padding:5px 8px;overflow:auto}
+body .gd-room .gd-feed-entry{display:grid;grid-template-columns:auto 1fr;grid-template-rows:18px 38px;gap:2px 8px;align-items:center;flex:1 0 210px;min-width:0;padding:0 10px;border-right:1px solid #77674470;line-height:1.2}
+body .gd-room .gd-feed-entry>strong{font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+body .gd-room .gd-feed-entry>span{font-size:11px;text-align:right;white-space:nowrap}
+body .gd-room .gd-feed-entry.latest{background:#55613725}
+body .gd-room .gd-feed-entry>b{display:none}
+body .gd-room .gd-feed-cards{grid-column:1/-1;display:flex;align-items:center;overflow-x:auto;min-width:0;padding:1px 2px 3px;gap:3px}
+body .gd-room .gd-feed-card{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:0 0 24px;height:32px;border:1px solid #c4a358;background:linear-gradient(135deg,#fff1cc,#dfc58c);box-shadow:1px 2px 0 #6a512c;color:#14241e;text-shadow:none;border-radius:1px}
+body .gd-room .gd-feed-card b{font:bold 15px/1 Georgia,serif}
+body .gd-room .gd-feed-card i{font:14px/1 Georgia,serif;font-style:normal}
+body .gd-room .gd-feed-card.red{color:#8c1424}
+@media(max-height:500px) and (orientation:landscape){
+ body .gd-room .gd-feed-entry{grid-template-rows:14px 27px;flex-basis:180px;padding:0 6px;gap:1px 5px}
+ body .gd-room .gd-feed-card{height:23px;flex-basis:28px;flex-direction:row;gap:2px}
+ body .gd-room .gd-feed-card b{font-size:13px}
+ body .gd-room .gd-feed-card i{font-size:12px}
+}
+
+/* Only the current winning play occupies the shared top readout. */
+body .gd-room .gd-play-feed{justify-content:center}
+body .gd-room .gd-feed-entry:only-child{flex:0 1 540px;border:0;background:none}
+body .gd-room .gd-feed-entry:only-child .gd-feed-cards{justify-content:safe center}
+body .gd-room .gd-feed-empty{align-self:center}
+
+/* Equal halves: scrollable history and a larger current winning hand. */
+body .gd-room{--hud-height:234px}
+body .gd-room .gd-play-feed{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);height:110px;padding:7px 12px;gap:14px;overflow:hidden}
+body .gd-room .gd-log-half{display:flex;flex-direction:column;min-width:0;min-height:0;border-right:1px solid #8c754b;padding-right:12px}
+body .gd-room .gd-panel-title{font-size:13px;color:#eddb9b;margin-bottom:4px}
+body .gd-room .gd-round-log{overflow-y:auto;min-height:0;flex:1;touch-action:pan-y;overscroll-behavior:contain;scrollbar-width:thin}
+body .gd-room .gd-round-log p{margin:0 0 4px;font-size:12px;line-height:1.5;color:#dfd2b4}
+body .gd-room .gd-round-log p span{color:#bdb499}
+body .gd-room .gd-current-half{min-width:0;display:flex;align-items:center;justify-content:center}
+body .gd-room .gd-current-half .gd-feed-entry{width:100%;grid-template-rows:22px 63px;padding:0 4px;gap:3px 10px}
+body .gd-room .gd-current-half .gd-feed-entry>strong,body .gd-room .gd-current-half .gd-feed-entry>span{font-size:15px}
+body .gd-room .gd-current-half .gd-feed-entry>span{white-space:normal}
+body .gd-room .gd-current-half .gd-feed-card{height:54px;flex-basis:38px}
+body .gd-room .gd-current-half .gd-feed-card b{font-size:23px}
+body .gd-room .gd-current-half .gd-feed-card i{font-size:21px}
+@media(max-width:900px){body .gd-room{--hud-height:262px}}
+@media(max-width:600px){body .gd-room{--hud-height:276px}}
+@media(max-height:500px) and (orientation:landscape){
+ body .gd-room{--hud-height:168px}
+ body .gd-room .gd-play-feed{height:80px;padding:4px 7px;gap:8px}
+ body .gd-room .gd-panel-title{font-size:11px;margin-bottom:2px}
+ body .gd-room .gd-round-log p{font-size:11px;margin-bottom:2px}
+ body .gd-room .gd-current-half .gd-feed-entry{grid-template-rows:18px 44px;gap:1px 5px}
+ body .gd-room .gd-current-half .gd-feed-entry>strong,body .gd-room .gd-current-half .gd-feed-entry>span{font-size:12px}
+ body .gd-room .gd-current-half .gd-feed-card{height:35px;flex-basis:29px;flex-direction:column;gap:0}
+ body .gd-room .gd-current-half .gd-feed-card b{font-size:17px}
+ body .gd-room .gd-current-half .gd-feed-card i{font-size:15px}
+}

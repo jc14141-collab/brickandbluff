@@ -6,6 +6,7 @@ export function arrangeLobby(root,roles,role,data){
  const head=root.querySelector('.lobbyhead'),setup=root.querySelector('.setup'),left=setup.firstElementChild,settings=setup.lastElementChild,rooms=root.querySelector('#friendRooms');
  surface.append(head);const grid=document.createElement('div');grid.className='lobby-grid';surface.append(grid);
  left.className='lobby-character';settings.className='lobby-settings';
+ const modes=document.createElement('div');modes.className='lobby-modes';const buttons=[...settings.querySelectorAll('.modebutton')];buttons[0]?.before(modes);modes.append(...buttons);
  left.querySelector('.sectionlabel small').textContent='CHARACTERS';
  left.querySelector('.lobby-note')?.remove();
  const preview=document.createElement('div');preview.className='lobby-portrait';preview.style.setProperty('--pos',role*100/3+'%');preview.setAttribute('role','img');preview.setAttribute('aria-label',roles[role].name+'角色全身像');

@@ -1,0 +1,351 @@
+/* 大老二补充样式。牌桌骨架、手牌、出牌记录都复用 guandan.css / guandan-layout.css 的 gd-* 规则，
+   这里只处理大老二特有的部分：首手方块 3 的提示、以及牌桌上的“当前牌型”标签。 */
+
+.bt-room .gd-tableplay .gd-turn-message {
+  letter-spacing: .02em;
+}
+
+/* 开局首手提示：强调方块 3 的约束 */
+.bt-room.bt-opening .gd-turn-message {
+  color: #f0d98a;
+  border-color: rgba(240, 217, 138, .45);
+}
+
+/* 牌桌上的当前牌型标签，用于显示领出者打出的牌型 */
+.bt-room .bt-current {
+  display: flex;
+  align-items: center;
+  gap: .4rem;
+  font-size: .78rem;
+  color: var(--muted, #9aa79f);
+}
+
+.bt-room .bt-current b {
+  color: #f0d98a;
+  font-weight: 600;
+}
+
+/* 结算面板里的累计分数 */
+.bt-room .gd-result strong {
+  display: block;
+  margin-top: .5rem;
+  letter-spacing: .03em;
+}
+
+/* 窄屏：手牌区仍保持可滑动，避免 13 张牌挤压 */
+@media (max-width: 720px) {
+  .bt-room .gd-hand-heading .gd-team-note {
+    display: none;
+  }
+}
+
+/* ── 开局设置：每张牌的价值 ─────────────────────────────────────────── */
+
+/* .gd-result strong 在掼蛋里是块级标题（累计分数）。大老二的设置面板与结算说明
+   也带 gd-result 类，如果直接继承，段落里的行内强调会被拆成块级大标题。 */
+.bt-room .gd-result p strong,
+.bt-room .gd-result p b,
+.bt-room .bt-note strong {
+  display: inline;
+  margin: 0;
+  font-size: inherit;
+  font-weight: 600;
+  letter-spacing: normal;
+  color: #f0d98a;
+}
+
+.bt-room .bt-setup {
+  text-align: left;
+  max-width: min(760px, 92vw);
+}
+
+.bt-room .bt-setup h2 {
+  margin: 0 0 .6rem;
+  font-size: 1.1rem;
+  letter-spacing: .04em;
+}
+
+.bt-room .bt-setup p {
+  margin: .5rem 0;
+  font-size: .84rem;
+  line-height: 1.7;
+  color: #cfdcc8;
+}
+
+.bt-room .bt-setup strong {
+  color: #f0d98a;
+}
+
+.bt-room .bt-hint {
+  color: var(--muted, #9aa79f) !important;
+  font-size: .78rem !important;
+}
+
+.bt-values {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  margin: .7rem 0;
+}
+
+.bt-values button {
+  min-width: 3.1rem;
+  padding: .38rem .2rem;
+  border-radius: 8px;
+  border: 1px solid rgba(168, 188, 119, .45);
+  background: rgba(16, 37, 27, .85);
+  color: #d7e3cf;
+  font: inherit;
+  font-size: .82rem;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  transition: background .15s, border-color .15s, color .15s;
+}
+
+.bt-values button:hover {
+  border-color: #d2d88a;
+}
+
+.bt-values button.selected {
+  background: #d2d88a;
+  border-color: #f0d98a;
+  color: #10251b;
+  font-weight: 700;
+}
+
+.bt-values.compact button {
+  min-width: 2.5rem;
+  padding: .24rem .1rem;
+  font-size: .74rem;
+}
+
+/* ── 结算面板：筹码输赢 ─────────────────────────────────────────────── */
+
+.bt-room .bt-settle {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: .4rem;
+  margin: .8rem 0 .4rem;
+}
+
+.bt-room .bt-settle-row {
+  display: flex;
+  flex-direction: column;
+  gap: .1rem;
+  padding: .5rem .6rem;
+  border-radius: 10px;
+  background: rgba(16, 37, 27, .7);
+  border: 1px solid rgba(168, 188, 119, .3);
+  text-align: center;
+}
+
+.bt-room .bt-settle-row.winner {
+  border-color: #f0d98a;
+  background: rgba(60, 62, 30, .6);
+}
+
+.bt-room .bt-settle-row b {
+  margin: 0;
+  font-size: .8rem;
+  color: #cfdcc8;
+}
+
+.bt-room .bt-delta {
+  font-size: 1.15rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: .01em;
+}
+
+.bt-room .bt-delta.up {
+  color: #8fe3a5;
+}
+
+.bt-room .bt-delta.down {
+  color: #f0938a;
+}
+
+.bt-room .bt-settle-row small {
+  color: var(--muted, #9aa79f);
+  font-size: .72rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.bt-room .bt-note {
+  margin: .4rem 0;
+  padding: .45rem .6rem;
+  border-radius: 8px;
+  background: rgba(240, 217, 138, .12);
+  border: 1px solid rgba(240, 217, 138, .3);
+  color: #f0d98a;
+  font-size: .78rem;
+  line-height: 1.6;
+}
+
+.bt-room .bt-next {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin: .5rem 0 .2rem;
+  font-size: .78rem;
+  color: var(--muted, #9aa79f);
+}
+
+.bt-room .bt-next .bt-values {
+  margin: 0;
+}
+
+/* 非房主看到的只读牌值 */
+.bt-room .bt-next b {
+  color: #f0d98a;
+  font-weight: 600;
+}
+
+/* ── 支付明细：逐笔列出「谁付给谁」 ─────────────────────────────────── */
+
+.bt-room .bt-pairs {
+  margin: .5rem 0;
+  border-radius: 10px;
+  border: 1px solid rgba(168, 188, 119, .28);
+  background: rgba(16, 37, 27, .55);
+  overflow: hidden;
+}
+
+.bt-room .bt-pairs summary {
+  padding: .5rem .7rem;
+  cursor: pointer;
+  font-size: .78rem;
+  color: #cfdcc8;
+  list-style: none;
+}
+
+.bt-room .bt-pairs summary::-webkit-details-marker {
+  display: none;
+}
+
+.bt-room .bt-pairs summary::before {
+  content: '▸ ';
+  color: #f0d98a;
+}
+
+.bt-room .bt-pairs[open] summary::before {
+  content: '▾ ';
+}
+
+.bt-room .bt-pairs > div {
+  padding: 0 .7rem .5rem;
+}
+
+.bt-room .bt-pairs p {
+  display: grid;
+  grid-template-columns: minmax(3.5rem, auto) 1rem minmax(3.5rem, auto) 1fr auto;
+  align-items: center;
+  gap: .35rem;
+  margin: .18rem 0;
+  padding: .28rem .1rem;
+  border-top: 1px solid rgba(168, 188, 119, .14);
+  font-size: .76rem;
+  color: var(--muted, #9aa79f);
+}
+
+.bt-room .bt-pairs p:first-child {
+  border-top: 0;
+}
+
+.bt-room .bt-pairs p b {
+  margin: 0;
+  color: #cfdcc8;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.bt-room .bt-pairs p i {
+  color: #f0d98a;
+  font-style: normal;
+  text-align: center;
+}
+
+.bt-room .bt-pairs p span {
+  font-size: .72rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.bt-room .bt-pairs p em {
+  font-style: normal;
+  font-weight: 700;
+  color: #f0938a;
+  font-variant-numeric: tabular-nums;
+}
+
+.bt-room .bt-pairs p.reduced em {
+  color: #e6b877;
+}
+
+.bt-room .bt-pairs p.reduced span::after {
+  content: '';
+}
+
+/* 大厅里的牌值说明：复用 .bt-room 之外的上下文 */
+.stakes-block .bt-hint {
+  margin: .35rem 0 0;
+  font-size: .72rem;
+  line-height: 1.55;
+  color: var(--muted, #9aa79f);
+}
+
+@media (max-width: 520px) {
+  .bt-room .bt-pairs p {
+    grid-template-columns: auto 1rem auto;
+    row-gap: .1rem;
+  }
+
+  .bt-room .bt-pairs p span {
+    grid-column: 1 / -1;
+  }
+
+  .bt-room .bt-pairs p em {
+    grid-column: 3;
+    text-align: right;
+  }
+}
+
+/* Match the carved wood and brass finish of the club. */
+.bt-values button,.bt-room .bt-settle-row,.bt-room .bt-note,.bt-room .bt-pairs{border-radius:2px}
+.bt-values button{background:#302619;border:2px solid #8b7950;box-shadow:inset 0 0 0 1px #51432b,0 3px #17140f}
+.bt-values button:active{transform:translateY(2px);filter:brightness(.75);box-shadow:inset 0 1px 3px #17140f}
+.bt-room .bt-settle-row{background:#242619}
+.bt-room .gd-seat small{font-size:11px;color:#e6d79d}
+.bt-room .gd-score details{display:none}
+
+@media(max-height:500px) and (orientation:landscape){
+ body .bt-room{--feed-top:49px;--hud-height:108px}
+ body .bt-room .gd-score{display:none}
+ body .bt-room .gd-play-feed{height:54px}
+ body .bt-room .gd-current-half .gd-feed-entry{grid-template-rows:16px 29px}
+ body .bt-room .gd-current-half .gd-feed-card{height:27px;flex-direction:row;flex-basis:42px;gap:3px}
+ body .bt-room .gd-hand-area{height:105px;bottom:60px}
+ body .bt-room .gd-hand-scroll{padding-top:10px}
+ body .bt-room .gd-hand-row:only-child .gd-card{height:70px;width:50px;flex-basis:50px;margin-right:-19px}
+ body .bt-room .gd-hand-row .gd-card:last-child{margin-right:0}
+ body .bt-room .gd-hand-row:only-child{height:76px}
+ body .bt-room .gd-tableplay{bottom:168px}
+ body .bt-room .gd-seat small{display:inline;font-size:9px}
+}
+
+#lobbySurface .lobby-modes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+#lobbySurface .lobby-modes .modebutton{min-width:0;margin:0;gap:6px;padding:7px;min-height:50px}
+#lobbySurface .lobby-modes .modebutton>span:nth-child(2){min-width:0}
+#lobbySurface .lobby-modes .modebutton strong{white-space:nowrap;font-size:13px}
+#lobbySurface .lobby-modes .modebutton small{font-size:9px}
+#lobbySurface .lobby-modes .modebutton .mode-icon{width:22px;flex:none;font-size:20px}
+#lobbySurface .lobby-modes .modebutton .radio{display:none}
+@media(max-height:500px) and (orientation:landscape){
+ #lobbySurface .lobby-modes{gap:4px}
+ #lobbySurface .lobby-modes .modebutton{min-height:40px;padding:3px;gap:4px}
+ #lobbySurface .lobby-modes .modebutton strong{font-size:12px}
+ #lobbySurface .lobby-modes .modebutton small{display:none}
+}

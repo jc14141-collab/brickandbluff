@@ -46,3 +46,33 @@ body .mp-result:empty,.mp-table .mp-controls:empty{display:none}
 /* Immediate physical press response also covers dynamically rendered in-game controls. */
 button,[role="button"],input[type="submit"],input[type="button"]{touch-action:manipulation}
 :is(button,[role="button"],input[type="submit"],input[type="button"]):not(:disabled):not([aria-disabled="true"]):is(:active,.button-pressed){filter:brightness(.68)!important;box-shadow:inset 2px 3px 0 #171008,inset -1px -1px 0 #94774e!important;transition:none!important}
+
+/* Poker status stays legible without increasing the nameplate footprint. */
+:is(.mp-head,.opponent-label).poker-live{border:2px solid #68c78a;box-shadow:inset 0 0 0 1px #203c29,0 2px 0 #10170f;background:#202b20}
+:is(.mp-head,.opponent-label).poker-folded{border:2px solid #e36d66;box-shadow:inset 0 0 0 1px #522b26,0 2px 0 #21110e;background:#34221e;opacity:1;filter:none}
+:is(.mp-head,.opponent-label) .poker-seat-state{display:block;font-size:11px;line-height:1.3;color:#97e8ae;letter-spacing:.05em}
+:is(.mp-head,.opponent-label).poker-folded .poker-seat-state{color:#ffaaa1}
+:is(.mp-head,.opponent-label).poker-acting{border-color:#acf3bc;outline:2px solid #f5ce73;outline-offset:3px;background:#304329;box-shadow:inset 0 0 0 1px #557340,0 0 18px #eaca6345,0 3px 0 #161a10;z-index:3}
+:is(.mp-head,.opponent-label).poker-acting .poker-seat-state{color:#ffe49a;background:#504323;padding:2px 5px}
+
+/* Compact poker plates: name + balance, state + wager, then last action. */
+.mp-poker .mp-labels .mp-head:is(.poker-live,.poker-folded){
+ display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;
+ width:max-content;min-width:118px;max-width:168px!important;
+ padding:5px 7px!important;gap:2px 8px;line-height:1.2;text-align:left;
+}
+.mp-poker .mp-head:is(.poker-live,.poker-folded)>strong{grid-column:1;grid-row:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:88px;font-size:12px}
+.mp-poker .mp-head:is(.poker-live,.poker-folded)>.player-chip-total{grid-column:2;grid-row:1;white-space:nowrap;font-size:11px}
+.mp-poker .mp-head:is(.poker-live,.poker-folded)>.poker-seat-state{grid-column:1;grid-row:2;white-space:nowrap;letter-spacing:0;padding:0;background:none;font-size:11px}
+.mp-poker .mp-head:is(.poker-live,.poker-folded)>span:last-child{grid-column:2;grid-row:2;text-align:right;font-size:11px}
+.mp-poker .mp-head:is(.poker-live,.poker-folded)>small{grid-column:1/-1;grid-row:3;margin:0;text-align:left;font-size:10px;line-height:1.2}
+.mp-poker .mp-head.poker-folded>small{display:none}
+:is(.mp-head,.opponent-label).poker-acting{outline-width:2px;outline-offset:1px;box-shadow:inset 0 0 0 1px #557340,0 0 9px #eaca6330}
+.opponent-label:is(.poker-live,.poker-folded){padding:4px 7px;max-width:185px}
+.opponent-label:is(.poker-live,.poker-folded) .poker-seat-state{display:inline-block;padding:0;background:none;letter-spacing:0}
+.opponent-label:is(.poker-live,.poker-folded) .action-bubble{display:inline;border:0;background:none;box-shadow:none;margin-left:6px}
+.opponent-label.poker-folded .action-bubble{display:none}
+@media(max-height:600px),(max-width:700px){
+ .mp-poker .mp-labels .mp-head:is(.poker-live,.poker-folded){min-width:104px;max-width:142px!important;padding:3px 5px!important;gap:1px 5px}
+ .mp-poker .mp-head:is(.poker-live,.poker-folded)>strong{max-width:72px}
+}
