@@ -349,3 +349,7 @@
  #lobbySurface .lobby-modes .modebutton strong{font-size:12px}
  #lobbySurface .lobby-modes .modebutton small{display:none}
 }
+
+.bt-value-picker{display:flex;align-items:center;gap:12px;margin:12px 0}
+[data-btvalue]{max-width:100%;min-height:42px;padding:6px 12px;background:#302619;color:#f0d98a;border:2px solid #8b7950;font:inherit}
+.bt-room [data-btauto][aria-pressed="true"]{background:#705126;color:#fff2bc}

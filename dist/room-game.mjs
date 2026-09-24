@@ -16,7 +16,7 @@ export async function prepareRoomView(mode){
 }
 import {renderRoomSkills} from './room-skills.mjs';
 import {Guandan} from './guandan.mjs';
-import {BigTwo,normalizeValue} from './bigtwo.mjs';
+import {BigTwo,normalizeValue,storedValue} from './bigtwo.mjs';
 import {restoreCraps} from './craps.mjs';
 import {evaluate,compare,rankName} from './engine.mjs';
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -45,7 +45,7 @@ export function bigtwoView(r){
     mults:order.map(i=>d.result.mults[i]),
     pairs:(d.result.pairs??[]).map(p=>({...p,from:rel(p.from),to:rel(p.to)})),
   }:null;
-  return{g,match:{round:d.round,total:order.map(i=>d.total[i]),value:normalizeValue(d.value),settle:()=>result},order};
+  return{g,match:{round:d.round,total:order.map(i=>d.total[i]),value:storedValue(d.value),settle:()=>result},order};
 }
 export function guandanView(r){const order=seatOrder(r.seats.length,r.you),rel=i=>i<0?-1:order.indexOf(i),d=r.game,g=Object.assign(Object.create(Guandan.prototype),{level:d.level,hands:order.map(i=>d.done&&d.remaining?d.remaining[i]:i===r.you?d.hand:Array(d.counts[i]).fill(null)),turn:rel(d.turn),target:d.target,owner:rel(d.owner),last:order.map(i=>d.last[i]),status:order.map(i=>d.status[i]),finish:d.finish.map(rel),done:d.done,trick:d.trick,actions:d.actions.map(a=>({...a,seat:rel(a.seat)})),tributeLog:d.tributeLog,returns:d.returning?[{from:rel(d.returning.from),to:rel(d.returning.to)}]:[]});const result=d.result?{...d.result,team:d.result.team^(r.you%2),champion:d.result.champion===null?null:d.result.champion^(r.you%2)}:null;return{g,match:{levels:r.you%2?[...d.levels].reverse():d.levels,round:r.round,champion:d.champion===null?null:d.champion^(r.you%2),settle:()=>result,returnOptions:()=>d.hand.filter(c=>d.returnIds.includes(c.id))},order}}
 function bestFive(cards){if(cards.length<5)return[];let best=[],score=[-1];for(let a=0;a<cards.length-4;a++)for(let b=a+1;b<cards.length-3;b++)for(let c=b+1;c<cards.length-2;c++)for(let d=c+1;d<cards.length-1;d++)for(let e=d+1;e<cards.length;e++){const selected=[cards[a],cards[b],cards[c],cards[d],cards[e]],rank=evaluate(selected);if(compare(rank,score)>0){score=rank;best=selected}}return best.sort((a,b)=>b.r-a.r)}
@@ -102,7 +102,7 @@ export class RoomGame{
  apply(r){this.offset=r.serverNow-Date.now();const avatarKey=roomAvatarKey(r),fresh=this.round!==r.round,changed=['poker','blackjack','guandan','bigtwo'].includes(r.mode)&&this.avatarKey!==avatarKey;this.r=r;if(fresh||changed){this.avatarKey=avatarKey;this.controller?.destroy();this.scene?.destroy();this.controller=null;this.scene=null;this.round=r.round;this.lastRoll=null;this.eventCursor=null;this.stage=-1;this.mount(r)}const wallet=document.querySelector('#wallet');if(wallet)wallet.textContent=r.mode==='guandan'?'—':r.seats[r.you].bank.toLocaleString();
  if(r.mode==='roulette'){this.controller.apply(r);return}
  if(r.mode==='guandan'){const v=guandanView(r),ui=this.controller;ui.game=v.g;ui.match=v.match;ui.names=v.order.map(i=>esc(r.seats[i].name)+(i===r.you?' · 你':i%2===r.you%2?' · 队友':' · 对手'));ui.busy=false;ui.message='经典规则 · 各自选择是否继续';ui.render();if(r.status==='roundEnd'){const b=this.q('[data-gnext]');if(b){b.textContent=r.seats[r.you].ready?'已准备，等待其他玩家':'继续下一副';b.disabled=r.seats[r.you].ready||this.now()<r.reviewUntil}}return}
- if(r.mode==='bigtwo'){const v=bigtwoView(r),ui=this.controller;ui.game=v.g;ui.match=v.match;ui.syncValue(v.match.value);ui.stacks=v.order.map(i=>r.seats[i].bank);ui.names=v.order.map(i=>esc(r.seats[i].name)+(i===r.you?' · 你':''));ui.busy=false;ui.message=r.closeAfterRound?'有玩家离桌托管 · 本副结算后自动关闭房间':'经典规则 · 各自选择是否继续';ui.render();if(r.status==='roundEnd'){const b=this.q('[data-gnext]');if(b){b.textContent=r.seats[r.you].ready?'已准备，等待其他玩家':'继续下一副';b.disabled=r.seats[r.you].ready||this.now()<r.reviewUntil}}return}
+ if(r.mode==='bigtwo'){const v=bigtwoView(r),ui=this.controller;ui.game=v.g;ui.match=v.match;ui.syncValue(v.match.value);ui.autoplay=!!r.seats[r.you].autoplay;ui.autoplaySeats=v.order.map(i=>!!r.seats[i].autoplay);ui.stacks=v.order.map(i=>r.seats[i].bank);ui.names=v.order.map(i=>esc(r.seats[i].name)+(i===r.you?' · 你':''));ui.busy=false;ui.message=r.closeAfterRound?'有玩家离桌托管 · 本副结算后自动关闭房间':'经典规则 · 各自选择是否继续';ui.render();if(r.status==='roundEnd'){const b=this.q('[data-gnext]');if(b){b.textContent=r.seats[r.you].ready?'已准备，等待其他玩家':'继续下一副';b.disabled=r.seats[r.you].ready||this.now()<r.reviewUntil}}return}
  if(r.mode==='craps'){
  const ui=this.controller,g=r.game;ui.authoritative=g.table;ui.engine=restoreCraps(g.table);
  Object.assign(ui.network,{canRoll:g.roller===r.you&&['bets','ready'].includes(g.phase),phase:g.phase==='ready'?'bets':g.phase,deadline:r.deadline,clockOffset:this.offset,others:g.others,you:r.you,roll:g.roll});

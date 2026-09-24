@@ -188,20 +188,20 @@ ok('筹码很少时确实触发过全下',cappedCount>0,cappedCount+'/200');
 
 console.log('— 牌值归一化 —');
 ok('合法值原样返回',CARD_VALUES.every(v=>normalizeValue(v)===v));
-ok('非整十吸附',normalizeValue(53)===50&&normalizeValue(55)===60&&normalizeValue(97)===100);
-ok('越界夹紧',normalizeValue(0)===10&&normalizeValue(999)===100&&normalizeValue(-50)===10);
+ok('按50吸附',normalizeValue(53)===50&&normalizeValue(75)===100&&normalizeValue(479)===500);
+ok('越界夹紧',normalizeValue(0)===50&&normalizeValue(999)===500&&normalizeValue(-50)===50);
 ok('非法回落默认值',normalizeValue('abc')===DEFAULT_CARD_VALUE&&normalizeValue(undefined)===DEFAULT_CARD_VALUE);
-ok('共 10 档牌值',CARD_VALUES.length===10&&CARD_VALUES[0]===10&&CARD_VALUES.at(-1)===100);
+ok('共 10 档牌值',CARD_VALUES.length===10&&CARD_VALUES[0]===50&&CARD_VALUES.at(-1)===500);
 
 console.log('— BigTwoMatch 牌值与累计 —');
 const match=new BigTwoMatch(Math.random,50);
 ok('构造时接受牌值',match.value===50,match.value);
-ok('setValue 生效',match.setValue(80)===80&&match.value===80);
+ok('setValue 生效',match.setValue(250)===250&&match.value===250);
 const mg=match.start();
 let mGuard=0;
 while(!mg.done&&mGuard++<4000){const i=mg.turn,legal=mg.legal(i);if(!legal.length){mg.act(i,[]);continue}mg.act(i,legal[Math.floor(Math.random()*legal.length)].cards.map(c=>c.id))}
 const mr=match.settle();
-ok('结算沿用 match 的牌值',mr.value===80,mr.value);
+ok('结算沿用 match 的牌值',mr.value===250,mr.value);
 ok('累计 = 首副结算',JSON.stringify(mr.total)===JSON.stringify(mr.scores));
 ok('一副进行中不能改牌值',(()=>{match.start();try{match.setValue(10);return false}catch{return true}})());
 

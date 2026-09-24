@@ -15,3 +15,14 @@
 .craps-room:not(.is-immersive) .craps-readout .craps-event{display:inline-block;margin:0 12px;font-size:16px}
 .craps-room:not(.is-immersive) .craps-readout p{display:inline;margin:0}
 .craps-room:not(.is-immersive) .craps-readout small{display:inline-block}
+
+.custom-wager{display:flex;align-items:center;gap:7px;color:#e6d49c;font-size:12px;flex-shrink:0}
+.custom-wager input{width:100px;min-width:0;min-height:38px;box-sizing:border-box;padding:5px 8px;background:#251f15;color:#f7e7bc;border:2px solid #927a4e;border-radius:2px;font:inherit}
+.craps-dock{flex-wrap:wrap}
+@media(max-height:500px) and (orientation:landscape){.custom-wager{font-size:10px;gap:4px}.custom-wager input{width:76px;min-height:32px}}
+
+.rl-sync{font-size:11px;color:#e6d49c}.rl-removing [data-remove-mode]{background:#70482d;color:#fff0bd}.rl-removing .rl-cell{cursor:crosshair}.rl-chips{flex-wrap:wrap}
+
+.gd-hand-area [data-gcard]{touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}.hand-swiping .gd-hand-area{cursor:grabbing}
+#lobbySurface .setting-row:has([data-poker-blind]){grid-column:1/-1;min-width:0}#lobbySurface [data-poker-blind]{width:130px;flex-shrink:0}#lobbySurface .setting-row:has([data-poker-blind]) b:empty{display:none}
+@media(max-height:520px) and (orientation:landscape){#lobbySurface .config .setting-row{grid-column:1/-1;min-width:0;gap:4px;padding:3px 0}#lobbySurface .setting-row select{padding:3px 5px;font-size:11px}#lobbySurface .config .mode-desc{display:none}}

@@ -13,7 +13,7 @@ export function skillAction(r,i,data,now){
  if(poker){
   check(!p.fold&&!g.runout&&g.turn===i,'请在自己的下注回合使用技能');
   check(role===2||g.street===0,'此技能仅限翻牌前');
-  cost=role===0?5*BIG_BLIND:role===1?10*BIG_BLIND:0;
+  cost=role===0?5*(g.bigBlind??BIG_BLIND):role===1?10*(g.bigBlind??BIG_BLIND):0;
   check(p.chips>=cost,'筹码不足');
   if(role===0){const candidates=g.players.map((q,n)=>n).filter(n=>n!==i&&!g.players[n].fold);check(candidates.length,'没有可查看的对手');const target=candidates[Math.floor(random()*candidates.length)],index=Math.floor(random()*2);s.peek={seat:target,card:g.players[target].cards[index]};targets=[target];detail='私密查看一张底牌'}
   if(role===1){check(Number.isInteger(data.index)&&cards[data.index],'请选择要替换的手牌');cards[data.index]=g.deck.pop();detail='替换一张底牌'}
@@ -37,5 +37,5 @@ export function skillAction(r,i,data,now){
  }
  s.used=true;r.skill.events.push({id:r.skill.events.length,seat:i,role,name:SKILLS[r.mode][role].name,cost,targets,detail,at:now});r.seq++;
 }
-export function settleSkills(r){if(!r.skill?.enabled)return;const g=r.game;for(let i=0;i<r.seats.length;i++){const s=r.skill.players?.[i];if(!s||s.rewarded)continue;s.rewarded=true;let reward=0;if(r.mode==='poker'&&s.used){if(s.role===2)reward=cents(g.pot*.1);if(s.role===3)reward=s.marks.filter(n=>g.players[n].fold||!(g.paid[n]>0)).length*5*BIG_BLIND;g.players[i].chips=cents(g.players[i].chips+reward);r.seats[i].bank=g.players[i].chips}s.reward=reward;if(reward)r.skill.events.push({id:r.skill.events.length,seat:i,role:s.role,name:SKILLS[r.mode][s.role].name,cost:0,targets:[],detail:'技能奖励 +'+reward,at:r.endedAt})}}
+export function settleSkills(r){if(!r.skill?.enabled)return;const g=r.game;for(let i=0;i<r.seats.length;i++){const s=r.skill.players?.[i];if(!s||s.rewarded)continue;s.rewarded=true;let reward=0;if(r.mode==='poker'&&s.used){if(s.role===2)reward=cents(g.pot*.1);if(s.role===3)reward=s.marks.filter(n=>g.players[n].fold||!(g.paid[n]>0)).length*5*(g.bigBlind??BIG_BLIND);g.players[i].chips=cents(g.players[i].chips+reward);r.seats[i].bank=g.players[i].chips}s.reward=reward;if(reward)r.skill.events.push({id:r.skill.events.length,seat:i,role:s.role,name:SKILLS[r.mode][s.role].name,cost:0,targets:[],detail:'技能奖励 +'+reward,at:r.endedAt})}}
 export function botSkill(r,now){if(!r.skill?.enabled||!r.skill.players||r.game.done)return false;const g=r.game;for(let i=0;i<r.seats.length;i++){const s=r.skill.players[i];if(!r.seats[i].bot||!s||s.used)continue;const ownTurn=g.turn===i;const timing=r.mode==='poker'?ownTurn&&!g.runout:(s.role===3?g.phase==='bets':ownTurn&&g.phase==='players');if(!timing)continue;try{skillAction(r,i,{index:0,choice:'dealer'},now);return true}catch{}}return false}

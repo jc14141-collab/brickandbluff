@@ -1,3 +1,4 @@
+import {roundChips} from './chips.mjs';
 export const SKILLS={poker:[
  {name:'星海预言',text:'翻牌前支付 5 BB 入底池，随机私看一名在局对手的随机一张底牌。'},
  {name:'部件拆拼',text:'翻牌前支付 10 BB 入底池，选择一张底牌替换为牌堆顶牌。'},
@@ -9,4 +10,4 @@ export const SKILLS={poker:[
  {name:'微能过载',text:'自己的首次行动前支付当前手下注额的 20%，本手点数 +2 或庄家点数 −1；要牌、停牌、加倍或分牌后不可使用。'},
  {name:'生死悬赏',text:'发牌前开启；净赢普通 1.5 倍、起手 Blackjack 2.5 倍（补牌 21 点仍为 1.5 倍），净输普通 1.5 倍、爆牌 2 倍。预留双倍下注。'}
 ]};
-export const cents=n=>Math.round(n*100)/100;
+export const cents=roundChips;

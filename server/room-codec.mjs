@@ -39,7 +39,7 @@ export function restoreRoom(text,random){
  delete r.storageVersion;
  if(r.game){
   if(r.mode==='blackjack'){r.game.nextAt??=r.nextAt;r.game.deadline??=r.deadline}
-  if(r.mode==='poker'){if(!Array.isArray(r.game.players)||!(r.game.pending instanceof Set))throw Error('Invalid poker save');r.game=Object.assign(Object.create(Poker.prototype),r.game)}
+  if(r.mode==='poker'){if(!Array.isArray(r.game.players)||!(r.game.pending instanceof Set))throw Error('Invalid poker save');r.game=Object.assign(Object.create(Poker.prototype),{smallBlind:10,bigBlind:20},r.game)}
   if(r.mode==='guandan'){if(!Array.isArray(r.game.hands)||!r.match)throw Error('Invalid guandan save');r.game=Object.assign(Object.create(Guandan.prototype),r.game);r.match=Object.assign(Object.create(GuandanMatch.prototype),r.match,{random,game:r.game})}
   if(r.mode==='bigtwo'){if(!Array.isArray(r.game.hands)||!r.match)throw Error('Invalid bigtwo save');r.game=Object.assign(Object.create(BigTwo.prototype),r.game);r.match=Object.assign(Object.create(BigTwoMatch.prototype),r.match,{random,game:r.game})}
   if(r.mode==='craps')r.game.tables=r.game.tables.map(restoreCraps);

@@ -50,23 +50,23 @@ export function equity(snapshot,samples=1200,rng=Math.random){
  return win/samples;
 }
 export function decide(snapshot,profile=0,{samples=1200,rng=Math.random}={}){
- const model=PROFILES[profile%PROFILES.length],l=snapshot.legal,p=snapshot.players[snapshot.seat],active=snapshot.players.filter(p=>!p.fold).length,eq=equity(snapshot,samples,rng),pot=Math.max(20,snapshot.players.reduce((sum,q)=>sum+Math.min(q.total,p.total+l.call),0)),owe=l.call,odds=owe/(pot+owe),position=(snapshot.seat-snapshot.dealer+snapshot.players.length)%snapshot.players.length,onButton=position===0,last=snapshot.lastAggressor===snapshot.seat,ownPF=preflop(snapshot.hole),cat=snapshot.board.length>=3?fastRank([...snapshot.hole,...snapshot.board])[0]:0;
+ const model=PROFILES[profile%PROFILES.length],l=snapshot.legal,p=snapshot.players[snapshot.seat],active=snapshot.players.filter(p=>!p.fold).length,eq=equity(snapshot,samples,rng),pot=Math.max(snapshot.bigBlind??20,snapshot.players.reduce((sum,q)=>sum+Math.min(q.total,p.total+l.call),0)),owe=l.call,odds=owe/(pot+owe),position=(snapshot.seat-snapshot.dealer+snapshot.players.length)%snapshot.players.length,onButton=position===0,last=snapshot.lastAggressor===snapshot.seat,ownPF=preflop(snapshot.hole),cat=snapshot.board.length>=3?fastRank([...snapshot.hole,...snapshot.board])[0]:0;
  const aggressiveOpponents=snapshot.actions.filter(a=>a.street===snapshot.street&&a.kind==='raise').length;
  const realization=snapshot.street===3||owe===p.chips?1:Math.max(.66,Math.min(1,(onButton?1:.90)-.035*(active-2)+model.range));
  const effectiveEq=eq*realization,blocker=snapshot.hole.some(c=>c.r===14)||snapshot.hole.some(c=>c.r>=12&&snapshot.board.filter(b=>b.s===c.s).length>=3);
  const late=onButton||position===snapshot.players.length-1,threshold=.46+model.tightness+(late?0:.09)+.018*Math.max(0,snapshot.players.length-6)+Math.min(.15,aggressiveOpponents*.05);
  // Unopened pots use a style-led entry policy, rather than forcing every bot
  // through the same EV ranking. Premium hands remain playable in all styles.
- if(snapshot.street===0&&snapshot.current<=20){
+ if(snapshot.street===0&&snapshot.current<=(snapshot.bigBlind??20)){
   const enter=ownPF>=threshold||(model.tightness<0&&ownPF>=threshold-.12&&rng()<.22);
-  if(enter){const raiseChance=model.aggression<0?(ownPF>.8?.55:.12):Math.min(.94,.7+model.aggression*1.5);if(l.canRaise&&rng()<raiseChance){const limpers=snapshot.actions.filter(a=>a.street===0&&a.kind==='call').length,target=Math.min(l.max,Math.max(l.min,Math.round(20*(2.5+limpers*.75+Math.max(0,model.aggression)*3))));return{action:'raise',target,equity:eq,profile:model.name,samples}}return{action:owe?'call':'check',equity:eq,profile:model.name,samples}}
+  if(enter){const raiseChance=model.aggression<0?(ownPF>.8?.55:.12):Math.min(.94,.7+model.aggression*1.5);if(l.canRaise&&rng()<raiseChance){const limpers=snapshot.actions.filter(a=>a.street===0&&a.kind==='call').length,target=Math.min(l.max,Math.max(l.min,Math.round((snapshot.bigBlind??20)*(2.5+limpers*.75+Math.max(0,model.aggression)*3))));return{action:'raise',target,equity:eq,profile:model.name,samples}}return{action:owe?'call':'check',equity:eq,profile:model.name,samples}}
   return{action:owe?'fold':'check',equity:eq,profile:model.name,samples};
  }
  const candidates=[];
  if(owe)candidates.push({action:'fold',ev:0});
- candidates.push({action:owe?'call':'check',ev:effectiveEq*(pot+owe)-owe+model.callBias*pot*(owe?Math.min(1,owe/Math.max(20,pot*.25)):0)-(snapshot.street===0&&owe&&ownPF<threshold?(threshold-ownPF)*(pot+owe)*.9:0)});
+ candidates.push({action:owe?'call':'check',ev:effectiveEq*(pot+owe)-owe+model.callBias*pot*(owe?Math.min(1,owe/Math.max(snapshot.bigBlind??20,pot*.25)):0)-(snapshot.street===0&&owe&&ownPF<threshold?(threshold-ownPF)*(pot+owe)*.9:0)});
  if(l.canRaise){let targets;
-  if(snapshot.street===0){let open=snapshot.current<=20;targets=open?[Math.round(20*(onButton?2.4:2.8)),60,80]:[Math.round(snapshot.current*(onButton?2.7:3.2)),Math.round(snapshot.current*4)]}
+  if(snapshot.street===0){let open=snapshot.current<=(snapshot.bigBlind??20);targets=open?[Math.round((snapshot.bigBlind??20)*(onButton?2.4:2.8)),3*(snapshot.bigBlind??20),4*(snapshot.bigBlind??20)]:[Math.round(snapshot.current*(onButton?2.7:3.2)),Math.round(snapshot.current*4)]}
   else targets=model.sizes.map(f=>Math.round(snapshot.current+f*(pot+owe)));
   if(eq>.72||p.chips/(pot+owe)<1.2)targets.push(l.max);
   targets=[...new Set(targets.map(t=>Math.min(l.max,Math.max(l.min,t))))];
@@ -78,7 +78,7 @@ export function decide(snapshot,profile=0,{samples=1200,rng=Math.random}={}){
    if(snapshot.street===0&&ownPF<threshold)bluffChance*=.08;
    if(!valueHand&&rng()>bluffChance)continue;
    if(snapshot.street===0&&ownPF<threshold)value-=(threshold-ownPF)*(pot+cost);
-   value+=model.aggression*pot*Math.min(1,raiseBy/Math.max(20,pot))-(model.aggression>0?Math.max(0,ratio-1.5)*pot*.045:0);
+   value+=model.aggression*pot*Math.min(1,raiseBy/Math.max(snapshot.bigBlind??20,pot))-(model.aggression>0?Math.max(0,ratio-1.5)*pot*.045:0);
    value+=(profile===1&&ratio>=.75&&valueHand?.035:0)*pot;
    if(profile===2&&!onButton)value-=.045*pot;
    candidates.push({action:'raise',target:to,ev:value});

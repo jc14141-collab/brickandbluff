@@ -1,7 +1,8 @@
+import {bindHandSwipe} from './hand-swipe.mjs';
 const escapeHtml=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 import {handCard} from './hand-card.mjs';
 // 大老二界面。沿用掼蛋牌桌的 gd-* 样式类与布局，避免重复一整套 CSS。
-import {BigTwoMatch,classify,beats,sortHand,rankText,moveLabel,TYPE_NAMES,BIGTWO_RULES,isLeadCard,CARD_VALUES,DEFAULT_CARD_VALUE,normalizeValue,bracketMultiplier,twoCount,finishBonus} from './bigtwo.mjs';
+import {BigTwoMatch,classify,beats,sortHand,rankText,moveLabel,TYPE_NAMES,BIGTWO_RULES,isLeadCard,CARD_VALUES,DEFAULT_CARD_VALUE,normalizeValue,bracketMultiplier,twoCount,finishBonus,storedValue} from './bigtwo.mjs';
 import {chooseMove} from './bigtwo-strategy.mjs';
 import {BigTwo3D} from './bigtwo3d.mjs';
 
@@ -72,7 +73,7 @@ export class BigTwoUI{
   }
 
   // 联机时牌值由服务端权威下发，每收到一次快照就同步一次显示。
-  syncValue(v){const n=normalizeValue(v);if(n!==this.value)this.value=n;return this.value}
+  syncValue(v){const n=storedValue(v);if(n!==this.value)this.value=n;return this.value}
 
   // 只有「开局前」且是单人模式或房主，才可以改牌值；开局后一律只读。
   canPickValue(){return this.match.round===0&&(!this.network||!!this.network.host)}
@@ -110,7 +111,7 @@ export class BigTwoUI{
   }
 
   valuePicker(compact=false){
-    return`<div class="bt-values ${compact?'compact':''}" role="group" aria-label="每张牌的价值">${CARD_VALUES.map(v=>`<button data-btvalue="${v}" class="${v===this.value?'selected':''}" aria-pressed="${v===this.value}">${v}</button>`).join('')}</div>`;
+    return`<label class="bt-value-picker">每张牌价值 <select data-btvalue aria-label="每张牌价值">${CARD_VALUES.map(v=>`<option value="${v}" ${v===this.value?'selected':''}>${v} 筹码 / 张</option>`).join('')}</select></label>`;
   }
 
   // 单人开局设置：选牌值 → 发牌。结算规则在这里先说清楚。
@@ -125,30 +126,31 @@ export class BigTwoUI{
   render(){
     if(!this.alive)return;
     if(!this.game){this.network?this.renderWaiting():this.renderSetup();return}
-    const g=this.game,canSelect=!g.done&&!this.busy&&g.turn===0;
+    const g=this.game,canSelect=!g.done&&!this.busy&&!this.autoplay&&g.turn===0;
     const opts=this.options(),chosen=opts[0]??null;
     this.choice=chosen?.key??null;
     if(this.dealRound!==this.match.round){this.dealRound=this.match.round;if(!g.actions.length)this.beep?.('deal')}
 
     this.q('.gd-score').innerHTML=`<div><span class="gd-level">大老二</span><b>第 ${this.match.round} 副 · 各自为战</b><small>♠&gt;♥&gt;♣&gt;♦ · 2 最大 · 同花压顺子 · 禁三条 · 每张 ${this.value} 筹码</small></div><details><summary>本副记录</summary><div>${g.actions.slice(-18).map(a=>`<p>${(this.names??NAMES)[a.seat]}：${a.pass?'不出':a.move+' '+a.cards.map(c=>c.s+rankText(c.r)).join(' ')}</p>`).join('')||'<p>等待首家出牌</p>'}</div></details>`;
 
-    this.q('.gd-seat-labels').innerHTML=[1,2,3].map(i=>`<div data-seat-label="${i}" data-at-head="true" class="gd-seat ${!g.done&&g.turn===i?'active':''}"><strong>${(this.names??NAMES)[i]}</strong><span>${g.hands[i].length?'余 '+g.hands[i].length+' 张':'已出完'}</span><small>◉ ${chips(this.stacks?.[i]??0)}</small></div>`).join('');
+    this.q('.gd-seat-labels').innerHTML=[1,2,3].map(i=>`<div data-seat-label="${i}" data-at-head="true" class="gd-seat ${!g.done&&g.turn===i?'active':''}"><strong>${(this.names??NAMES)[i]}</strong><span>${this.autoplaySeats?.[i]?'托管 · ':''}${g.hands[i].length?'余 '+g.hands[i].length+' 张':'已出完'}</span><small>◉ ${chips(this.stacks?.[i]??0)}</small></div>`).join('');
 
     const target=g.target;
     this.scene?.showPlays(g.last,g.trick);
     this.scene?.showTurn(g.turn,g.done);
     const hint=g.opening&&g.turn===0?'首手必须包含方块 3':target?'轮到你接牌':'轮到你领出新一轮';
-    this.q('.gd-tableplay').innerHTML=`<div class="gd-turn-message" role="status" aria-live="polite">${g.done?'本副结束':this.busy?(this.names??NAMES)[g.turn]+'正在思考…':g.turn===0?hint:(this.names??NAMES)[g.turn]+'出牌'}</div>`;
+    this.q('.gd-tableplay').innerHTML=`<div class="gd-turn-message" role="status" aria-live="polite">${g.done?'本副结束':this.busy?(this.names??NAMES)[g.turn]+'正在思考…':g.turn===0?(this.autoplay?'托管中 · 电脑代为出牌':hint):(this.names??NAMES)[g.turn]+'出牌'}</div>`;
 
     this.renderPlays();
 
     const hand=sortHand(g.hands[0]);
     const scroll=this.q('.gd-hand-scroll')?.scrollLeft??0;
-    this.q('.gd-hand-area').innerHTML=`<div class="gd-hand-heading"><b>你的手牌 <span>${hand.length} 张</span></b><span>${canSelect?'点击选牌 · 再点取消':'等待行动'}</span><span class="gd-team-note">◉ ${chips(this.stacks?.[0]??this.bank)} · 各自为战</span></div><div class="gd-hand-scroll"><div class="gd-hand-row" style="--count:${Math.max(1,hand.length)}">${hand.map(c=>bigtwoCard(c,{selected:this.selected.has(c.id),disabled:!canSelect})).join('')}</div></div>`;
+    this.q('.gd-hand-area').innerHTML=`<div class="gd-hand-heading"><b>你的手牌 <span>${hand.length} 张</span></b><span>${canSelect?'点击选牌 · 长按滑动多选':'等待行动'}</span><span class="gd-team-note">◉ ${chips(this.stacks?.[0]??this.bank)} · 各自为战</span></div><div class="gd-hand-scroll"><div class="gd-hand-row" style="--count:${Math.max(1,hand.length)}">${hand.map(c=>bigtwoCard(c,{selected:this.selected.has(c.id),disabled:!canSelect})).join('')}</div></div>`;
     this.q('.gd-hand-scroll').scrollLeft=scroll;
 
-    this.q('.gd-controls').innerHTML=`<div class="gd-selection"><strong>${chosen?moveLabel(chosen):this.selected.size?this.badPickText(g.hands[0].filter(c=>this.selected.has(c.id))):'已选 0 张'}</strong><small>${this.message}</small></div><div class="gd-actions"><button data-gclear ${!canSelect?'disabled':''}>取消</button><button data-ghint ${!canSelect?'disabled':''}>提示</button><button data-gpass ${!canSelect||!target?'disabled':''}>不出</button><button class="gd-play-button" data-gplay ${!canSelect||!chosen?'disabled':''}>出牌 ↗</button></div>`;
-    this.host.querySelectorAll('[data-gcard]').forEach(b=>b.onclick=()=>{const id=+b.dataset.gcard;this.selected.has(id)?this.selected.delete(id):this.selected.add(id);this.render()});
+    this.q('.gd-controls').innerHTML=`<div class="gd-selection"><strong>${chosen?moveLabel(chosen):this.selected.size?this.badPickText(g.hands[0].filter(c=>this.selected.has(c.id))):'已选 0 张'}</strong><small>${this.message}</small></div><div class="gd-actions"><button data-btauto aria-pressed="${!!this.autoplay}" ${g.done||this.autoPending?'disabled':''}>${this.autoplay?'取消托管':'托管'}</button><button data-gclear ${!canSelect?'disabled':''}>取消</button><button data-ghint ${!canSelect?'disabled':''}>提示</button><button data-gpass ${!canSelect||!target?'disabled':''}>不出</button><button class="gd-play-button" data-gplay ${!canSelect||!chosen?'disabled':''}>出牌 ↗</button></div>`;
+    this.swipeCleanup??=bindHandSwipe(this);this.host.querySelectorAll('[data-gcard]').forEach(b=>b.onclick=()=>{const id=+b.dataset.gcard;this.selected.has(id)?this.selected.delete(id):this.selected.add(id);this.render()});
+    this.q('[data-btauto]').onclick=()=>this.toggleAutoplay();
     this.q('[data-gclear]').onclick=()=>{this.selected.clear();this.render()};
     this.q('[data-ghint]').onclick=()=>this.hint();
     this.q('[data-gpass]').onclick=()=>this.play(true);
@@ -183,7 +185,7 @@ export class BigTwoUI{
     this.q('.gd-controls').innerHTML='';
     this.q('.gd-end').innerHTML=this.setupMarkup();
     this.q('[data-btstart]').onclick=()=>this.start();
-    this.host.querySelectorAll('[data-btvalue]').forEach(b=>b.onclick=()=>{this.setValue(+b.dataset.btvalue);this.render()});
+    this.host.querySelectorAll('[data-btvalue]').forEach(b=>b.onchange=()=>{this.setValue(+b.value);this.render()});
   }
 
  renderPlays(){const g=this.game,m=g.target,signature=JSON.stringify([g.owner,m,g.trick,g.actions.length,g.tributeLog]);if(signature===this.playSignature)return;this.playSignature=signature;
@@ -222,6 +224,14 @@ export class BigTwoUI{
     // 每张牌的价值在开局前定好，本桌中途结算不再提供修改入口。
     const next=`<div class="bt-next"><span>每张牌价值</span><b>${r.value} 筹码 · 开局已定${this.network?' · 由房主设定':''}</b></div>`;
     return`<div class="gd-result gd-review"><div class="gd-review-hands">${g.hands.map((hand,i)=>`<section><b>${names[i]} · 剩余 ${hand.length} 张${twoCount(hand)?` · 手上 ${twoCount(hand)} 张 2（×${2**twoCount(hand)}）`:''}</b><div>${sortHand(hand).map(c=>bigtwoCard(c,{small:true})).join('')||'<span>已出完</span>'}</div></section>`).join('')}</div><small>本副结束 · 剩余手牌公开 · 每张牌 ${r.value} 筹码</small><h2>${won?'你赢了这一副':names[r.winner]+' 先出完'}</h2><div class="bt-settle">${rows}</div>${breakdown}${notes.length?`<p class="bt-note">${notes.join('<br>')}</p>`:''}${next}<div><button data-gback>返回大厅</button><button class="gd-play-button" data-gnext>下一副 ↗</button></div></div>`;
+  }
+
+  async toggleAutoplay(){
+    if(this.autoPending||this.game?.done)return;
+    const enabled=!this.autoplay;this.autoPending=true;this.render();
+    try{if(this.network)await this.network.send({kind:'autoplay',enabled});else this.autoplay=enabled;this.selected.clear()}
+    catch{}finally{this.autoPending=false;if(this.alive)this.render()}
+    if(!this.network&&this.autoplay&&!this.busy)this.run();
   }
 
   async hint(){
@@ -268,11 +278,12 @@ export class BigTwoUI{
     if(this.network||this.busy||!this.game)return;
     const g=this.game;
     while(this.alive&&this.game===g&&!g.done){
-      if(g.turn===0){this.busy=false;this.render();return}
+      if(g.turn===0&&!this.autoplay){this.busy=false;this.render();return}
       this.busy=true;this.render();
       const i=g.turn,snapshot=g.snapshot(i);
       const [m]=await Promise.all([Promise.resolve().then(()=>chooseMove(snapshot)).catch(()=>null),this.pause(950)]);
       if(!this.alive||this.game!==g)return;
+      if(i===0&&!this.autoplay){this.busy=false;this.render();return}
       g.act(i,m?m.cards.map(c=>c.id):[]);
       this.scene?.react(i);
       this.beep(m&&m.tier?'win':'tap');
@@ -290,7 +301,7 @@ export class BigTwoUI{
     this.onExit();
   }
 
-  destroy(){
+  destroy(){this.swipeCleanup?.();
     this.alive=false;
     clearTimeout(this.timer);this.waitResolve?.();
     this.scene?.destroy();
