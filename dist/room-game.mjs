@@ -1,4 +1,3 @@
-import {voiceButton} from './room-voice.mjs';
 import {handCard} from './hand-card.mjs';
 import {fitWitchSeat} from './witch-model.mjs';
 import {PokerTavern} from './poker-tavern.mjs';
@@ -98,7 +97,7 @@ export class RoomGame{
  pokerEvents(r){const events=r.game.events??[];if(this.eventCursor===null||this.eventCursor===undefined){this.eventCursor=events.at(-1)?.id??-1;return}const fresh=events.filter(e=>e.id>this.eventCursor);this.eventCursor=events.at(-1)?.id??this.eventCursor;for(const e of fresh){const seat=this.order.indexOf(e.seat);if(e.kind==='bet'||e.kind==='return'){this.scene?.moveChips(seat,e.amount,e.kind==='return');this.scene?.react(seat);if(!this.scene?.onSound)this.beep('chips')}else if(e.kind==='check'||e.kind==='fold'){this.scene?.react(seat);const rig=this.scene?.rigs.find(x=>x.seat===seat);if(rig)rig.gesture=.8;this.beep(e.kind)}else if(e.kind==='community'&&!this.scene)this.beep('deal');else if(e.kind==='win')this.beep('win')}}
  now(){return Date.now()+(this.offset??0)}
  send(data){return this.rooms.send({kind:'act',...data})}
- updateControls(html){const node=this.q('.mp-controls');if(node&&node._controlsHTML!==html){const button=node.querySelector('[data-room-mic]');node.innerHTML=html;node._controlsHTML=html;if(this.rooms.voice){const actions=node.querySelector('.mp-action-row')??node;const holder=document.createElement('span');holder.innerHTML=voiceButton();const mic=button??holder.firstElementChild;actions.insertBefore(mic,actions.querySelector('[data-action=fold]'));this.rooms.voice.attach(mic)}}}
+ updateControls(html){const node=this.q('.mp-controls');if(node&&node._controlsHTML!==html){node.innerHTML=html;node._controlsHTML=html;this.rooms.voice?.labels(this.host,this.r)}}
  clock(){if(document.hidden||!this.r)return;const r=this.r;if(r.mode==='poker'&&r.status==='roundEnd'){const stage=this.now()<(r.endedAt??0)+2200?0:this.now()<(r.reviewUntil??0)?1:2;if(stage!==this.stage){this.stage=stage;this.renderTable(r)}}if(r.status==='roundEnd'){const b=this.q('[data-next-room]')??this.q('[data-gnext]');if(b)b.disabled=r.seats[r.you].ready||this.now()<(r.reviewUntil??0)}}
  apply(r){this.offset=r.serverNow-Date.now();const avatarKey=roomAvatarKey(r),fresh=this.round!==r.round,changed=['poker','blackjack','guandan','bigtwo'].includes(r.mode)&&this.avatarKey!==avatarKey;this.r=r;if(fresh||changed){this.avatarKey=avatarKey;this.controller?.destroy();this.scene?.destroy();this.controller=null;this.scene=null;this.round=r.round;this.lastRoll=null;this.eventCursor=null;this.stage=-1;this.mount(r)}const wallet=document.querySelector('#wallet');if(wallet)wallet.textContent=r.mode==='guandan'?'—':r.seats[r.you].bank.toLocaleString();
  if(r.mode==='roulette'){this.controller.apply(r);return}
@@ -118,7 +117,7 @@ export class RoomGame{
  }
  this.renderTable(r);if(r.mode==='poker')this.pokerEvents(r)
  }
- mount(r){document.body.classList.add('in-game');const order=seatOrder(r.seats.length,r.you),roster=order.slice(1).map(i=>r.seats[i]),network={canSend:()=>!this.rooms.sending,send:data=>this.send(data),next:()=>this.rooms.send({kind:'next'}).catch(()=>{}),exit:()=>this.rooms.exit(),host:r.host,canRoll:false,phase:'bets'};
+ mount(r){document.body.classList.add('in-game');const order=seatOrder(r.seats.length,r.you),roster=order.slice(1).map(i=>r.seats[i]),network={afterRender:()=>this.rooms.voice?.labels(this.host,this.r),canSend:()=>!this.rooms.sending,send:data=>this.send(data),next:()=>this.rooms.send({kind:'next'}).catch(()=>{}),exit:()=>this.rooms.exit(),host:r.host,canRoll:false,phase:'bets'};
  if(r.mode==='roulette'){this.controller=new RouletteUI(this.host,{network:{...network,next:()=>this.rooms.send({kind:'next'})},beep:this.beep,toast:this.toast});return}
  if(r.mode==='guandan'){this.controller=new GuandanUI(this.host,{onExit:network.exit,onRules:()=>this.rules(),toast:this.toast,beep:this.beep,role:r.seats[r.you].role,reduced:this.reduced,network,roster});return}
  if(r.mode==='bigtwo'){this.controller=new BigTwoUI(this.host,{onExit:network.exit,onRules:()=>this.rules(),toast:this.toast,beep:this.beep,role:r.seats[r.you].role,reduced:this.reduced,network,roster});return}

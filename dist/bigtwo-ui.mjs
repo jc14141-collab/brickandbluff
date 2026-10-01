@@ -162,6 +162,7 @@ export class BigTwoUI{
       this.q('[data-gback]').onclick=()=>this.onExit();
       // 结算面板不再提供牌值选择器：每张牌的价值只在开局前设定一次。
     }
+    this.network?.afterRender?.();
   }
 
   // 联机模式还没收到开局数据时的占位：牌值由房主在房间里设定，这里不给本地选择器。
