@@ -1,3 +1,4 @@
+import {renderLifecycle,disposeScene,releaseRenderer} from './render-lifecycle.mjs';
 import {renderPixelRatio} from './voxel-art.mjs';
 import {DICE_SIZE,DICE_CORE,DICE_EDGE,visualRotation,throwSimulation} from './craps-physics.mjs';
 import * as T from './vendor/three.module.min.js';
@@ -26,7 +27,7 @@ export class Craps3D{
   for(const z of [-3,3]){const lamp=new T.PointLight(0xffb550,18,16,2);lamp.position.set(-4,5,z);this.scene.add(lamp)}f.reflections();
   this.table=new T.Group();this.scene.add(this.table);this.buildTable();this.buildDice();this.buildHand();this.wagerGroup=new T.Group();this.scene.add(this.wagerGroup);this.guests=new T.Group();this.scene.add(this.guests);this.setGuests([],{name:'你',role:0});
   this.dust=new T.Points(new T.BufferGeometry(),new T.PointsMaterial({color:0xffd28b,size:.022,transparent:true,opacity:.32,depthWrite:false}));const positions=new Float32Array(120*3);for(let i=0;i<120;i++){positions[i*3]=-10+Math.sin(i*173.1)*4;positions[i*3+1]=2+(i%17)/5;positions[i*3+2]=Math.sin(i*91.7)*6}this.dust.geometry.setAttribute('position',new T.BufferAttribute(positions,3));this.scene.add(this.dust);
-  this.focus=this.reduced?null:createRouletteFocus(this.renderer);this.resize=()=>{const w=host.clientWidth,h=Math.max(1,host.clientHeight);this.camera.aspect=w/h;this.camera.updateProjectionMatrix();this.renderer.setSize(w,h);if(!this.animation)this.pose(this.phase==='landed'?1:0);this.render()};this.observer=new ResizeObserver(this.resize);this.observer.observe(host);this.resize();this.loop=now=>{if(!this.alive)return;this.animate(now);this.frame=requestAnimationFrame(this.loop)};this.frame=requestAnimationFrame(this.loop);
+  this.focus=this.reduced?null:createRouletteFocus(this.renderer);this.resize=()=>{const w=host.clientWidth,h=Math.max(1,host.clientHeight);this.camera.aspect=w/h;this.camera.updateProjectionMatrix();this.renderer.setSize(w,h);if(!this.animation)this.pose(this.phase==='landed'?1:0);this.render()};this.observer=new ResizeObserver(this.resize);this.observer.observe(host);this.resize();this.renderLife=renderLifecycle(this.renderer,{restore:()=>this.factory.reflections()});this.loop=now=>{if(!this.alive)return;if(this.renderLife.ready(now))this.animate(now);this.frame=requestAnimationFrame(this.loop)};this.frame=requestAnimationFrame(this.loop);
  }
  block(parent,w,h,d,x,y,z,color,kind='wood'){const m=this.factory.box(parent,w,h,d,x,y,z,color);m.material=this.factory.surface(kind,color);return m}
  clearOverhead(){const room=this.factory.roomArchitecture;for(const o of [...room.children])if(o.isMesh&&o.position.y>5.5&&o.scale.z>10&&o.scale.y<.5)o.removeFromParent()}
@@ -75,15 +76,15 @@ export class Craps3D{
  }
  setGuests(roster,shooter={}){
   const signature=JSON.stringify([roster.map(s=>[s.name,s.seed,s.role]),shooter.name,shooter.role]);if(signature===this.guestSignature)return;this.guestSignature=signature;
-  // Avatar geometry/materials are shared with the factory; dispose only unique labels on replacement.
-  this.guests.traverse(o=>{if(o.isSprite){for(const [k,t]of this.factory.textures)if(t===o.material.map)this.factory.textures.delete(k);o.material.map?.dispose();o.material.dispose()}});this.guests.clear();this.rigs=[];const f=this.factory;f.castIndex=1;
+  // Only factory materials and box geometry are shared; release unique old avatar resources.
+  const cached=new Set(this.factory.materials.values()),keepTextures=new Set([...cached].flatMap(m=>Object.values(m).filter(v=>v?.isTexture)));this.guests.traverse(o=>{if(o.isInstancedMesh)o.dispose();if(o.geometry&&o.geometry!==this.factory.boxGeo)o.geometry.dispose();for(const m of o.material?(Array.isArray(o.material)?o.material:[o.material]):[])if(!cached.has(m)){for(const t of Object.values(m))if(t?.isTexture&&!keepTextures.has(t)){for(const [k,v]of this.factory.textures)if(v===t)this.factory.textures.delete(k);t.dispose()}m.dispose()}});this.guests.clear();this.rigs=[];const f=this.factory;f.castIndex=1;
   const dealer=this.standRig(f.avatar(7789));dealer.group.position.set(-7.48,1.5,0);dealer.group.rotation.y=Math.PI/2;this.guests.add(dealer.group);this.rigs.push(dealer);
   const spots=[[-3.8,-4.13],[-3.8,4.13],[-.7,-4.13],[-.7,4.13],[2.4,-4.13],[2.4,4.13],[4.9,-4.13]];
   roster.slice(0,7).forEach((s,i)=>{const rig=this.standRig(f.avatar(s.seed??417+i*331,s.role));const [x,z]=spots[i];rig.group.position.set(x,1.5,z);rig.group.rotation.y=z>0?Math.PI:0;this.guests.add(rig.group);this.rigs.push(rig);const map=f.textTexture(s.name??'玩家','#f3dfac','#253223',512,96);const label=new T.Sprite(new T.SpriteMaterial({map,transparent:true,depthWrite:false}));label.position.set(x,3.35,z);label.scale.set(1.5,.28,1);this.guests.add(label)});
   const skin=[0xe2bd7e,0x805340,0xcce2dc,0xe2bd7e][shooter.role??0];this.hand?.traverse(o=>{if(o.material?.map===f.texture('skin'))o.material=f.surface('skin',skin)});
  }
  setWagers(players){
-  const signature=JSON.stringify(players.map(p=>[p.bets,p.travel]));if(signature===this.wagerSignature)return;this.wagerSignature=signature;this.wagerGroup.clear();
+  const signature=JSON.stringify(players.map(p=>[p.bets,p.travel]));if(signature===this.wagerSignature)return;this.wagerSignature=signature;this.wagerGroup.traverse(o=>{if(o.isInstancedMesh)o.dispose()});this.wagerGroup.clear();
   for(const c of BET_CELLS){if(c.kind==='vertical')continue;players.forEach((p,i)=>{const n=wagerTotal(p,c.key);if(!n)return;const pos=feltToWorld(c.x+c.w*(.15+(i%4)*.23),c.y+c.h*(i<4?.72:.91));for(let k=0;k<Math.min(4,Math.max(1,Math.ceil(n/25)));k++)this.makeChip(this.wagerGroup,pos.x,FELT_Y+.027+k*.053,pos.z,i)})}
  }
  setPhase(phase){if(this.phase===phase)return;this.phase=phase;if(phase==='ready'){this.cancelThrow();this.pose(0)}else if(phase==='landed'){if(this.animation)this.completeThrow()}else if(['bets','result'].includes(phase)){this.cancelThrow();this.hand.visible=false}this.render()}
@@ -104,10 +105,10 @@ export class Craps3D{
   if(!this.reduced){for(const [i,r]of this.rigs.entries()){r.head.rotation.y=Math.sin(now/3000+i)*.055;r.head.rotation.x=.045+Math.sin(now/1900+i)*.012}for(const [i,r]of this.factory.backgroundRigs.entries())r.head.rotation.y=Math.sin(now/3200+i)*.08;this.dust.position.y=Math.sin(now/7000)*.1}
   this.render();
  }
- render(){if(!this.renderer)return;if(this.focus)this.focus.render(this.scene,this.camera,this.focusDistance??8);else this.renderer.render(this.scene,this.camera)}
+ render(){if(!this.renderer||this.renderer.getContext().isContextLost()||document.hidden)return;if(this.focus)this.focus.render(this.scene,this.camera,this.focusDistance??8);else this.renderer.render(this.scene,this.camera)}
  throw(values,{durationMs=CRAPS_TIMING.throw,elapsedMs=0,seed=crypto.getRandomValues(new Uint32Array(1))[0]}={}){this.cancelThrow();this.motionSeed=seed;this.values=values;this.phase='rolling';const duration=Math.max(1,durationMs);return new Promise(resolve=>{this.animation={start:performance.now()-Math.max(0,elapsedMs),duration,resolve,previous:Math.max(0,elapsedMs)/duration};this.pose(clamp(elapsedMs/duration));if(elapsedMs>=duration)this.completeThrow()})}
  showResult(values,{seed=this.motionSeed??0}={}){this.motionSeed=seed;this.values=values;this.cancelThrow();this.phase='landed';this.pose(1,values);this.render()}
  completeThrow(){const a=this.animation;this.animation=null;this.pose(1);a?.resolve()}
  cancelThrow(){const a=this.animation;this.animation=null;a?.resolve()}
- destroy(){this.alive=false;cancelAnimationFrame(this.frame);this.cancelThrow();this.observer.disconnect();this.focus?.dispose();this.factory.tavernEnv?.dispose();const geometries=new Set(),materials=new Set(),textures=new Set(this.factory.textures.values());this.scene.traverse(o=>{if(o.geometry)geometries.add(o.geometry);if(o.material)for(const m of Array.isArray(o.material)?o.material:[o.material])materials.add(m)});for(const m of materials){for(const k of ['map','bumpMap','normalMap'])if(m[k])textures.add(m[k]);m.dispose()}geometries.forEach(g=>g.dispose());textures.forEach(t=>t.dispose());this.renderer.dispose();this.renderer.domElement.remove()}
+ destroy(){if(!this.alive)return;this.alive=false;cancelAnimationFrame(this.frame);this.cancelThrow();this.observer.disconnect();this.renderLife.dispose();this.focus?.dispose();this.factory.tavernEnv?.dispose();disposeScene(this.scene,{materials:this.factory.materials.values(),textures:this.factory.textures.values(),geometries:[this.factory.boxGeo,this.chipGeo,this.chipStripeGeo]});this.factory.materials.clear();this.factory.textures.clear();releaseRenderer(this.renderer)}
 }

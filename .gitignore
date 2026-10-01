@@ -1,9 +1,3 @@
 node_modules/
 dist/server/
 .build/
-.env
-.env.*
-!.env.example
-.dev.vars
-*.pem
-*.key

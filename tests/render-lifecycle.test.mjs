@@ -1,0 +1,11 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import * as T from '../dist/vendor/three.module.min.js';
+import {renderLifecycle,disposeScene,releaseRenderer} from '../dist/render-lifecycle.mjs';
+test('hidden or lost renderers stop drawing and resume only after rebuilding targets',()=>{
+ const before=globalThis.document;const doc=new EventTarget();doc.hidden=false;globalThis.document=doc;
+ try{const canvas=new EventTarget();let restores=0,resumes=0;const life=renderLifecycle({domElement:canvas},{restore:()=>restores++,resume:()=>resumes++});assert(life.ready(0));assert(!life.ready(1));doc.hidden=true;assert(!life.ready(40));doc.hidden=false;doc.dispatchEvent(new Event('visibilitychange'));assert(life.ready(41));const lost=new Event('webglcontextlost',{cancelable:true});canvas.dispatchEvent(lost);assert(lost.defaultPrevented);assert(!life.ready(100));canvas.dispatchEvent(new Event('webglcontextrestored'));assert.equal(restores,1);assert(life.ready(101));life.dispose();canvas.dispatchEvent(new Event('webglcontextrestored'));assert.equal(restores,1);assert(!life.ready(200));assert.equal(resumes,2)}finally{globalThis.document=before}
+});
+test('table cleanup releases shared maps once, instancing buffers and shadow targets',()=>{
+ const scene=new T.Scene(),texture=new T.Texture(),geo=new T.BoxGeometry(),mat=new T.MeshStandardMaterial({map:texture,bumpMap:texture});let textures=0,geometries=0,materials=0,instances=0,shadows=0;texture.addEventListener('dispose',()=>textures++);geo.addEventListener('dispose',()=>geometries++);mat.addEventListener('dispose',()=>materials++);scene.add(new T.Mesh(geo,[mat,mat]));const mesh=new T.InstancedMesh(geo,mat,2);mesh.addEventListener('dispose',()=>instances++);scene.add(mesh);const light=new T.DirectionalLight();light.shadow.dispose=()=>shadows++;scene.add(light);disposeScene(scene,{materials:[mat],textures:[texture],geometries:[geo]});assert.deepEqual([textures,geometries,materials,instances,shadows],[1,1,1,1,1]);const calls=[];releaseRenderer({dispose:()=>calls.push('dispose'),forceContextLoss:()=>calls.push('lose'),domElement:{remove:()=>calls.push('remove')}});assert.deepEqual(calls,['dispose','lose','remove'])
+});

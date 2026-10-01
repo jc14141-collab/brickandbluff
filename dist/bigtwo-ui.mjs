@@ -2,7 +2,7 @@ import {bindHandSwipe} from './hand-swipe.mjs';
 const escapeHtml=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 import {handCard} from './hand-card.mjs';
 // 大老二界面。沿用掼蛋牌桌的 gd-* 样式类与布局，避免重复一整套 CSS。
-import {BigTwoMatch,classify,beats,sortHand,rankText,moveLabel,TYPE_NAMES,BIGTWO_RULES,isLeadCard,CARD_VALUES,DEFAULT_CARD_VALUE,normalizeValue,bracketMultiplier,twoCount,finishBonus,storedValue} from './bigtwo.mjs';
+import {endBigTwoEarly,BigTwoMatch,classify,beats,sortHand,rankText,moveLabel,TYPE_NAMES,BIGTWO_RULES,isLeadCard,CARD_VALUES,DEFAULT_CARD_VALUE,normalizeValue,bracketMultiplier,twoCount,finishBonus,storedValue} from './bigtwo.mjs';
 import {chooseMove} from './bigtwo-strategy.mjs';
 import {BigTwo3D} from './bigtwo3d.mjs';
 
@@ -297,7 +297,7 @@ export class BigTwoUI{
 
   exit(){
     if(this.network){this.network.exit();return}
-    if(this.game&&!this.game.done&&!confirm('本副尚未结算，离开将直接作废这一副，钱包金额不变。确定离开？'))return;
+    if(this.game&&!this.game.done){if(!confirm('离开将立即按当前剩余手牌结算并退回余额，不进入托管。确定离开？'))return;endBigTwoEarly(this.game);this.settleRound();}
     this.onExit();
   }
 

@@ -15,6 +15,7 @@ if(req.method==='POST'&&url.pathname==='/api/admin/logout'){headers['Set-Cookie'
 if(url.pathname==='/api/admin'){if(!admin)return json({error:'Administrator login required'},403,headers);return json(await store.admin(who.auth,body,now),200,headers)}
 if(req.method==='GET'&&url.pathname==='/api/rooms')return json(await store.list(who.auth,now),200,headers);
 if(req.method==='POST'&&url.pathname==='/api/rooms')return json(await store.create(who.auth,body,now),200,headers);
+const voiceMatch=url.pathname.match(/^\/api\/rooms\/([a-f0-9]{32})\/voice$/);if(voiceMatch&&req.method==='POST')return json(await store.voice(voiceMatch[1],who.auth,body,now),200,headers);
 const match=url.pathname.match(/^\/api\/rooms\/([a-f0-9]{32})$/);if(match)return json(await store.room(match[1],who.auth,body,now,url.searchParams.get('since')),200,headers);return json({error:'接口不存在'},404)}catch(e){return json({error:e instanceof SyntaxError?'请求格式错误':e.message},400)}}
  if(!['GET','HEAD'].includes(req.method))return new Response('Method not allowed',{status:405});return staticResponse(req,assets)
 }};

@@ -254,7 +254,7 @@ export class BigTwo{
 export function settle(game,value=DEFAULT_CARD_VALUE){
   if(!game.done)throw Error('本局尚未结束');
   const v=storedValue(value);
-  const winner=game.finish[0];
+  const winner=game.finish[0]??null;
   const counts=game.hands.map(h=>h.length);
   const mults=game.hands.map(h=>bracketMultiplier(h.length)*twoMultiplier(h));
   const bonus=finishBonus(game.finishType);
@@ -337,3 +337,6 @@ export class BigTwoMatch{
 
 // 供 UI 复用的规则文本。
 export const BIGTWO_RULES=`<p>四人对局，各自为战，一副牌 52 张，每人 13 张。开局前先选定<strong>每张牌的价值</strong>（50–500 筹码，步进 50），本桌不启用角色技能。</p><ol><li>点数由小到大为 3 4 5 6 7 8 9 10 J Q K A 2 —— 2 最大，3 最小；同点数时比花色，由小到大为 ♦ &lt; ♣ &lt; ♥ &lt; ♠，所以 ♠2 是全场最大的单张。</li><li>牌型只有三种张数：单张、对子、五张 —— <strong>三条（三张同点数）不可出</strong>，任何三张牌的出法都不合法。五张牌型由弱到强为 顺子 &lt; 同花 &lt; 葫芦（三带二）&lt; 四条 + 1 &lt; 同花顺；高一层级永远压过低一层级，最小的同花也压得过最大的顺子。</li><li>接牌必须张数相同，且只能同张数互比 —— 对子压不过顺子，单张与对子也压不过任何五张牌型。</li><li>顺子必须连续五级且不能绕环，2 不参与顺子：A-2-3-4-5 与 2-3-4-5-6 都不合法。最小顺子是 3-4-5-6-7，最大顺子是 10-J-Q-K-A。</li><li>比较规则：单张比点数再比花色；对子比点数，同点则由含较大花色的一组胜出；顺子与同花顺由最大的那张定强弱，同点再比该张花色；葫芦只看其中三张的点数；四条只看四张的点数；同花默认先比花色再比最大牌。</li><li>持方块 3 的玩家先出，且首手必须包含方块 3。轮到你时，只能打出比桌面更大且张数相同的牌，也可以选择不出。</li><li>当其他玩家都不出时，最后出牌者以任意牌型领出新一轮。第一个出完 13 张牌的玩家赢得本局。</li></ol><p><strong>结算 · 两两差额支付</strong>：每一对玩家之间，牌多的那一方向牌少的支付「张数差 × 每张牌价值」。支付方还要乘上自己的倍数 —— 剩 1–9 张 ×1、10–12 张 ×2、13 张（一张没出）×4；手上每保留一张 2 再翻一倍（两张 2 即 ×4，四张 ×16）。若赢家最后一手是用<strong>四条</strong>或<strong>同花顺</strong>走完的，所有输家的本局结算额整体再翻一倍。四家输赢之和恒为 0，筹码从输家手中直接进入赢家手中。</p><p>桌面筹码不足时按<strong>全下</strong>结算：支出方最多赔光自己在桌面上的筹码，收款方只收实际流入的部分，因此没人会被打成负筹码。</p><p>可选规则“炸弹压 2”默认关闭：开启后，四条 + 1 与同花顺可以强压单张的 2，这是港式玩法中唯一允许五张牌型回应单张的情况。规则参考 <a href="https://bigtwo.online/zh-HK/game-guide/hand-rankings" target="_blank" rel="noopener">鋤大D 牌型大細</a>。</p>`;
+
+// Voluntary departure closes the current hand without inventing a finishing-hand bonus.
+export function endBigTwoEarly(game){if(game.done)return;game.done=true;game.finish=[];game.finishType=null;game.turn=-1;game.earlyEnd=true}

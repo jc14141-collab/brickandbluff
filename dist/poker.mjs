@@ -40,6 +40,7 @@ export class Poker {
   const record={seat:i,street:this.street,kind,amount,to:p.bet,pot:this.pot};this.actions.push(record);p.history.push(record);this.events.push({...record,kind:p.fold?'fold':kind==='check'?'check':'bet'});
   this.turn=(i+1)%this.count;this.normalize();return record;
  }
+ depart(i){if(this.done)return;const p=this.players[i];p.departed=true;p.fold=true;p.status='已离桌 · 放弃底池';this.pending.delete(i);this.events.push({kind:'fold',seat:i,departed:true});this.normalize()}
  normalize(){if(this.done)return;const live=this.players.map((p,i)=>i).filter(i=>!this.players[i].fold);if(live.length===1){this.finish();return}
   for(const i of this.pending)if(this.players[i].fold||this.players[i].chips===0)this.pending.delete(i);
   const able=live.filter(i=>this.players[i].chips>0);if(able.length===1&&this.players[able[0]].bet>=this.current)this.pending.clear();
@@ -51,9 +52,9 @@ export class Poker {
   this.current=0;this.lastRaise=this.bigBlind;this.players.forEach(p=>{p.bet=0;p.actedAt=null;p.actedRaise=this.bigBlind;if(!p.fold)p.status=p.chips?'':'全下'});
   this.pending=new Set(this.players.map((p,i)=>i).filter(i=>!this.players[i].fold&&this.players[i].chips>0));this.turn=(this.dealer+1)%this.count;this.normalize();return true;
  }
- returnUncalled(){const order=this.players.map((p,i)=>({i,total:p.total})).sort((a,b)=>b.total-a.total);let diff=order[0].total-order[1].total;if(diff>0){let p=this.players[order[0].i];p.chips+=diff;p.total-=diff;p.bet=Math.max(0,p.bet-diff);this.events.push({kind:'return',seat:order[0].i,amount:diff})}}
+ returnUncalled(){const order=this.players.map((p,i)=>({i,total:p.total})).sort((a,b)=>b.total-a.total);let diff=order[0].total-order[1].total;if(diff>0&&!this.players[order[0].i].departed){let p=this.players[order[0].i];p.chips+=diff;p.total-=diff;p.bet=Math.max(0,p.bet-diff);this.events.push({kind:'return',seat:order[0].i,amount:diff})}}
  finish(){this.returnUncalled();const paid=this.players.map(()=>0),pots=[],levels=[...new Set(this.players.map(p=>p.total).filter(Boolean))].sort((a,b)=>a-b);let prev=0;const live=this.players.map((p,i)=>i).filter(i=>!this.players[i].fold);
-  for(const level of levels){const contributors=this.players.map((p,i)=>i).filter(i=>this.players[i].total>=level);const eligible=contributors.filter(i=>!this.players[i].fold);const amount=(level-prev)*contributors.length;prev=level;let winners;
+  for(const level of levels){const contributors=this.players.map((p,i)=>i).filter(i=>this.players[i].total>=level);let eligible=contributors.filter(i=>!this.players[i].fold);if(!eligible.length)eligible=live;const amount=(level-prev)*contributors.length;prev=level;let winners;
    if(live.length===1)winners=live;
    else if(eligible.length===1)winners=eligible;
    else {const scores=eligible.map(i=>({i,v:evaluate([...this.players[i].cards,...this.board])})).sort((a,b)=>compare(b.v,a.v));winners=scores.filter(s=>compare(s.v,scores[0].v)===0).map(s=>s.i)}

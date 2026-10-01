@@ -10,7 +10,7 @@ import {deck,points} from '../dist/engine.mjs';
 import {decide,PROFILES,randomProfile} from '../dist/strategy.mjs';
 import {Guandan,GuandanMatch} from '../dist/guandan.mjs';
 import {chooseCompetitive} from '../dist/guandan-strategy.mjs';
-import {BigTwo,BigTwoMatch,storedValue,DEFAULT_CARD_VALUE,normalizeValue} from '../dist/bigtwo.mjs';
+import {endBigTwoEarly,BigTwo,BigTwoMatch,storedValue,DEFAULT_CARD_VALUE,normalizeValue} from '../dist/bigtwo.mjs';
 import {chooseMove as chooseBigTwoMove} from '../dist/bigtwo-strategy.mjs';
 import {Craps,restoreCraps,die,LABELS} from '../dist/craps.mjs';
 import {CRAPS_TIMING} from '../dist/craps-layout.mjs';
@@ -53,7 +53,7 @@ export function command(r,auth,data,now=Date.now()){const kind=data.kind;let i=s
  if(kind==='start'){assert(isHost&&r.status==='lobby','请在准备区由房主开始');readyRound(r,now);return}
  if(kind==='lobby'){assert(!r.closeAfterRound,'本副结算后房间将自动关闭');assert(isHost&&r.status==='roundEnd','本局结束后房主可返回准备区');r.status='lobby';r.game=null;r.match=null;r.seats.forEach(s=>{delete s.waiting;s.ready=s.bot||s.auth===r.host});r.seq++;return}
  if(kind==='endCraps'){assert(isHost&&r.mode==='craps'&&r.status==='playing'&&['bets','ready'].includes(r.game.phase)&&!r.game.point&&!r.game.tables.some(t=>Object.entries(t.travel??{}).some(([k,v])=>k[0]==='c'&&v)),'请在无目标点数、无锁定 COME 合约且未掷骰时结束本桌');r.game.tables.forEach((t,n)=>{t.clear();r.seats[n].bank=t.bank});r.game.done=true;finishRoom(r,now);return}
- if(kind==='leave'){if(r.status==='lobby'||seat.waiting){r.seats.splice(i,1)}else{seat.bot=true;if(r.mode==='poker')seat.aiProfile??=randomProfile(secureRandom);seat.auth=null;seat.name='电脑补位';seat.ready=true}if(isHost)r.host=r.seats.find(s=>!s.bot)?.auth??null;r.seq++;if(r.status==='roundEnd'&&r.seats.some(s=>!s.bot)&&r.seats.every(s=>s.bot||s.ready)&&now>=(r.reviewUntil??0))readyRound(r,now);return}
+ if(kind==='leave'){if(r.status==='playing'&&!seat.waiting){if(r.mode==='bigtwo'){endBigTwoEarly(r.game);r.closeAfterRound=true;finishRoom(r,now);r.message='玩家离桌 · 已按当前剩余牌结算';return}if(r.mode==='poker'){r.game.depart(i);if(r.game.done)finishRoom(r,now)}}if(r.status==='lobby'||seat.waiting){r.seats.splice(i,1)}else{seat.bot=true;if(r.mode==='poker')seat.aiProfile??=randomProfile(secureRandom);seat.auth=null;seat.name='电脑补位';seat.ready=true}if(isHost)r.host=r.seats.find(s=>!s.bot)?.auth??null;r.seq++;if(r.status==='roundEnd'&&r.seats.some(s=>!s.bot)&&r.seats.every(s=>s.bot||s.ready)&&now>=(r.reviewUntil??0))readyRound(r,now);return}
  assert(!seat.waiting,'已入房，请等待下一局或下一轮下注');assert(r.status==='playing','当前没有进行中的对局');assert(['craps','roulette'].includes(r.mode)||data.seq===r.seq,'牌桌已更新，请根据最新画面操作');
  if(r.mode==='roulette'&&data.action==='betBatch'){r.game=replayRouletteWagers(r.game,i,data.bets,now);r.seats[i].bank=r.game.players[i].bank;r.seq++;return}
  if(r.mode==='craps'&&data.action==='betBatch'){assert(Array.isArray(data.bets)&&data.bets.length>0&&data.bets.length<=32,'下注队列无效');for(const a of data.bets){assert(['bet','remove','removeTravel','clear'].includes(a.action),'下注操作无效');command(r,auth,{kind:'act',action:a.action,key:a.key,amount:a.amount,exact:a.exact===true},now)}return}
