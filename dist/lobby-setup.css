@@ -1,0 +1,25 @@
+/* Table setup: readable settings, an independently scrollable game list and two entry points. */
+#lobbySurface .lobby-settings>.sectionlabel{font-size:20px;min-height:28px;color:#ead5a6}
+#lobbySurface .lobby-settings .config h2{font-size:18px;margin-bottom:12px}
+#lobbySurface .lobby-settings .config h2>span{font-size:13px}
+#lobbySurface .lobby-modes{display:flex;flex-direction:column;gap:0;position:relative;height:176px;overflow-y:scroll;overflow-x:hidden;overscroll-behavior:contain;touch-action:pan-y;scrollbar-width:thin;scrollbar-color:#b59b60 #241d16;scrollbar-gutter:stable;padding-right:8px;border-bottom:1px solid #76603e}
+#lobbySurface .lobby-modes::-webkit-scrollbar{width:8px}
+#lobbySurface .lobby-modes::-webkit-scrollbar-track{background:#241d16}
+#lobbySurface .lobby-modes::-webkit-scrollbar-thumb{background:#b59b60;border:2px solid #241d16}
+#lobbySurface .lobby-modes:focus-visible{outline:2px solid #d6ba77;outline-offset:3px}
+#lobbySurface .lobby-settings .modebutton{min-height:54px;padding:9px 10px;gap:10px;margin-bottom:6px;flex-shrink:0}
+#lobbySurface .lobby-settings .modebutton strong{font-size:18px;line-height:1.25}
+#lobbySurface .lobby-settings .modebutton small{font-size:11px;margin-top:4px}
+#lobbySurface .lobby-settings .mode-desc{font-size:15px;line-height:1.5;margin:12px 0}
+#lobbySurface .lobby-settings .setting-row{font-size:16px;min-height:46px;padding:9px 0;gap:12px;flex-wrap:wrap}
+#lobbySurface .lobby-settings .setting-row>span{white-space:nowrap;color:#d9c8a9}
+#lobbySurface .lobby-settings .setting-row b,#lobbySurface .lobby-settings .setting-row select,#lobbySurface .lobby-settings .rules-toggle{font-size:15px}
+#lobbySurface .lobby-settings .setting-row select{max-width:100%;min-height:38px}
+#lobbySurface .lobby-settings .mini-stakes button,#lobbySurface .lobby-settings [data-btvalue]{font-size:16px;min-height:40px}
+#lobbySurface .lobby-entry-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+#lobbySurface .lobby-entry-actions .start{display:flex;align-items:center;justify-content:space-between;gap:4px;padding:13px 10px;min-height:76px;min-width:0;width:100%;font-size:16px;line-height:1.35;text-align:left}
+#lobbySurface .lobby-entry-actions .start>span:first-child{min-width:0}
+#lobbySurface .lobby-entry-actions .start small{display:block;font-size:11px;line-height:1.5;margin-top:5px;letter-spacing:0;opacity:.8;white-space:normal}
+#lobbySurface .friend-start{background:#403621!important;color:#f0dfb7!important;border-color:#a99058!important;box-shadow:inset 2px 2px 0 #78643c,inset -2px -2px 0 #241c11,0 3px 0 #21190e}
+@media(max-height:800px) and (min-width:800px){#lobbySurface .lobby-modes{height:152px}#lobbySurface .lobby-settings .setting-row{min-height:40px;padding:6px 0}#lobbySurface .lobby-settings .mode-desc{font-size:14px;margin:8px 0}#lobbySurface .lobby-entry-actions .start{min-height:64px;padding:10px 8px}}
+@media(max-height:520px) and (orientation:landscape){html.phone-device #lobbySurface .lobby-settings>.sectionlabel{font-size:16px;min-height:22px}html.phone-device #lobbySurface .lobby-settings .config{display:block}html.phone-device #lobbySurface .lobby-settings .config h2{font-size:15px;margin-bottom:7px}html.phone-device #lobbySurface .lobby-modes{height:100px}html.phone-device #lobbySurface .lobby-settings .modebutton{min-height:44px;padding:7px 8px}html.phone-device #lobbySurface .lobby-settings .modebutton strong{font-size:16px}html.phone-device #lobbySurface .lobby-settings .setting-row{font-size:13px;min-height:36px;padding:5px 0;gap:6px}html.phone-device #lobbySurface .lobby-settings .setting-row b,html.phone-device #lobbySurface .lobby-settings .setting-row select,html.phone-device #lobbySurface .lobby-settings .rules-toggle{font-size:13px}html.phone-device #lobbySurface .lobby-entry-actions{gap:6px}html.phone-device #lobbySurface .lobby-entry-actions .start{min-height:44px;font-size:12px;padding:7px 5px}html.phone-device #lobbySurface .lobby-entry-actions .start small{display:none}}
