@@ -1,3 +1,4 @@
+import {rankingName} from '../dist/ranking-name.mjs';
 export const STAT_MODES=['poker','blackjack','roulette','craps','guandan','bigtwo'];
 // Baselines precede blinds, wagers and skill fees. Transfers and grants are not profit.
 export function beginStats(r){r.statBasis=Object.fromEntries(r.seats.filter(s=>s.auth&&!s.bot&&!s.waiting).map(s=>[s.id,{auth:s.auth,bank:s.bank}]))}
@@ -14,5 +15,5 @@ export function statsView(state,player,tableTotal,now){
  for(const mode of STAT_MODES)best[mode]=rank(named.filter(p=>(p.gameStats?.[mode]?.best??0)>0).map(p=>({...publicPlayer(p),value:p.gameStats[mode].best,at:p.gameStats[mode].bestAt})));
  return {since:state.statsSince??null,
   games:STAT_MODES.map(mode=>({mode,...(player.gameStats?.[mode]??{net:0,rounds:0,best:0})})),
-  chips:rank(named.map(p=>({...publicPlayer(p),value:Math.round(p.bank+tableTotal(p))}))),best};
+  chips:rank(named.map(p=>({...publicPlayer(p),value:Math.round(p.bank+tableTotal(p))}))).map(p=>({...p,name:rankingName(p.name,p.id===player.id)})),best};
 }
