@@ -1,16 +1,12 @@
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const roles=['星语法师','齿轮工匠','星际守护','森林游侠'];
-const tones=['#ba9adc','#d7aa77','#8ac6cd','#aec487'];
 const status=p=>p.status==='allowed'?'已允许':p.status==='blocked'?'已停用':'待允许';
 const number=n=>Number(n??0).toLocaleString();
 const date=n=>new Date(n).toLocaleString();
 function device(a=''){return /iPad|Macintosh.*Mobile/i.test(a)?'iPad':/iPhone/i.test(a)?'iPhone':/Android/i.test(a)?'Android':/Windows/i.test(a)?'Windows':/Macintosh|Mac OS/i.test(a)?'Mac':'浏览器设备'}
-export function profileView(data){const p=data.player,first=!p.name;if(first||p.status!=='allowed')return entryView(data);return `
- <p class="club-intro">${first?'选一个喜欢的形象，取个名字，即可申请入座。':'管理你的形象与筹码。'}</p>
- ${first?'<div class="club-welcome-credit"><span>首次入座</span><strong>2,000 <small>筹码</small></strong></div>':`<div class="club-account-summary"><div><span class="club-kicker">可用筹码</span><strong>${number(p.bank)}</strong></div><span class="club-status ${p.status}">${status(p)}</span>${p.activeRoom||p.settling?`<span class="club-muted">${p.settling?'托管结算中':'牌桌中'} · ${number(p.tableBank)} 筹码</span>`:''}</div>`}
- <form data-profile><label class="club-name-field"><span>你的昵称</span><input name="name" maxlength="16" required placeholder="朋友们怎么称呼你？" value="${esc(p.name)}" autocomplete="nickname" ${p.activeRoom?'disabled':''}></label>
- <fieldset class="club-role-field"><legend>选择形象</legend><div class="club-avatars">${roles.map((name,i)=>`<label class="club-role-card" style="--role-tone:${tones[i]}"><input type="radio" name="role" value="${i}" ${p.role===i?'checked':''} ${p.activeRoom?'disabled':''}><span class="club-avatar" style="--pos:${i*100/3}%" aria-hidden="true"></span><span class="club-role-caption"><b>${name}</b><span class="club-role-check" aria-hidden="true">✓</span></span></label>`).join('')}</div></fieldset>
- <div class="club-form-actions"><span class="club-muted">${p.activeRoom?'离桌后可以修改形象与昵称。':first?'由管理员允许后进入游戏。':'形象会同步显示给同桌玩家。'}</span><button class="club-primary" type="submit" ${p.activeRoom?'disabled':''}>${first?'确认入座 →':'保存修改'}</button></div></form>
+export function profileView(data){const p=data.player;if(!p.name||p.status!=='allowed')return entryView(data);return `
+ <div class="club-member-heading"><div><span class="club-kicker">THE BRICK CLUB / PLAYER</span><h3>${esc(p.name)}</h3><p>形象在游戏大厅中选择</p></div><span class="club-status ${p.status}">${status(p)}</span></div>
+ <section data-player-stats aria-live="polite"><p class="club-empty">正在读取战绩与排名…</p></section>
+ <details class="club-edit-name"><summary>修改昵称</summary><form data-profile><label class="club-name-field"><span>你的昵称</span><input name="name" maxlength="16" required value="${esc(p.name)}" autocomplete="nickname" ${p.activeRoom?'disabled':''}></label><div class="club-form-actions"><span class="club-muted">${p.activeRoom?'离桌后可以修改昵称。':'昵称会同步给同桌玩家。'}</span><button class="club-primary" type="submit" ${p.activeRoom?'disabled':''}>保存昵称</button></div></form></details>
  ${p.activeRoom&&!p.settling?'<button class="club-secondary club-resume" data-resume>返回我的牌桌 →</button>':''}
  <div class="club-profile-footer"><details><summary>设备 ${esc(p.id.slice(0,8))}</summary><p>此浏览器会记住你的身份。换浏览器或清除数据后，需要重新允许。</p></details><button class="club-link" data-admin>${data.admin?'管理玩家 →':'管理员入口'}</button></div>`}
 export function adminView(data){return `<p class="club-intro">管理朋友的入场权限与筹码。</p><div class="club-stats"><div><span>全部玩家</span><strong>${data.players.length}</strong></div><div><span>当前在线</span><strong>${data.players.filter(p=>p.online).length}</strong></div><div><span>等待允许</span><strong>${data.players.filter(p=>p.status==='pending').length}</strong></div></div>

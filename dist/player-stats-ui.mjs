@@ -1,0 +1,16 @@
+const titles={poker:'德州扑克',blackjack:'21 点',roulette:'美国轮盘',craps:'花旗骰',guandan:'掼蛋',bigtwo:'大老二'};
+const icons={poker:'♠',blackjack:'21',roulette:'◎',craps:'⚄',guandan:'♣',bigtwo:'2'};
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const num=n=>Number(n??0).toLocaleString('zh-CN');
+const profit=n=>(n>0?'+':'')+num(n);
+const tone=n=>n>0?'positive':n<0?'negative':'neutral';
+export function statsContent(data,player,tab='history',mode='poker'){
+ const total=data.games.reduce((n,g)=>n+g.net,0),my=data.chips.find(p=>p.id===player.id),rounds=data.games.reduce((n,g)=>n+g.rounds,0);
+ const tabs=[['history','我的战绩'],['chips','筹码排名'],['best','单局盈利榜']];
+ return `<div class="club-metrics"><div><span>全部筹码</span><strong>${num(my?.value??player.bank+player.tableBank)}</strong><small>可用 ${num(player.bank)} · 桌上 ${num((my?.value??player.bank+player.tableBank)-player.bank)}</small></div><div><span>累计净盈利</span><strong class="${tone(total)}">${profit(total)}</strong><small>${num(rounds)} 次结算</small></div><div><span>筹码排名</span><strong>${my?'#'+my.rank:'—'}</strong><small>共 ${data.chips.length} 位玩家</small></div></div>
+ <nav class="club-data-tabs" aria-label="玩家数据">${tabs.map(([id,title])=>`<button data-stat-tab="${id}" aria-current="${id===tab?'page':'false'}">${title}</button>`).join('')}<button class="club-link club-stat-refresh" data-stat-refresh aria-label="刷新战绩">刷新 ↻</button></nav>
+ ${tab==='history'?`<div class="club-data-heading"><h3>各游戏历史盈利</h3><span>净赢亏 / 筹码</span></div><div class="club-game-stats">${data.games.map(g=>`<article><span class="club-game-symbol" aria-hidden="true">${icons[g.mode]}</span><div><b>${titles[g.mode]}</b><small>${g.mode==='guandan'?'不使用筹码':g.rounds?num(g.rounds)+' 次结算 · 最高单笔 +'+num(g.best):'暂无结算记录'}</small></div><strong class="${tone(g.net)}">${g.mode==='guandan'?'—':profit(g.net)}</strong></article>`).join('')}</div>`:
+ `<div class="club-data-heading"><div><h3>${tab==='chips'?'全部玩家筹码榜':titles[mode]+' · 最大单笔净盈利'}</h3><span>${tab==='chips'?'包括桌上筹码，在线与离线玩家均参与排名':'按每次结算的净盈利排名，不含返还本金'}</span></div>${tab==='best'?`<select data-stat-game aria-label="选择游戏">${Object.entries(titles).filter(([id])=>id!=='guandan').map(([id,t])=>`<option value="${id}" ${id===mode?'selected':''}>${t}</option>`).join('')}</select>`:''}</div>${rankings(tab==='chips'?data.chips:data.best[mode]??[],player,tab)}`}
+ <p class="club-stat-note">${data.demo?'本地预览 · 以下为示例数据。 ':''}战绩从新统计启用后累计；管理员发放与初始筹码不计入盈利。${tab==='history'?'花旗骰按每掷结算，掼蛋不计筹码盈利。':''}</p>`
+}
+function rankings(rows,player,tab){return `<div class="club-ranking"><div class="club-ranking-head"><span>排名</span><span>玩家</span><span>${tab==='chips'?'筹码总数':'最高净盈利'}</span></div>${rows.map(p=>`<article class="${p.id===player.id?'is-me':''}"><span class="club-rank ${p.rank<=3?'podium':''}">${String(p.rank).padStart(2,'0')}</span><div><b>${esc(p.name)}</b>${p.id===player.id?'<em>我</em>':''}<small><i class="${p.online?'online':''}"></i>${p.online?'在线':'离线'}${tab==='best'&&p.at?' · '+new Date(p.at).toLocaleDateString('zh-CN'):''}</small></div><strong class="${tab==='best'?'positive':''}">${tab==='best'?'+':''}${num(p.value)}</strong></article>`).join('')||'<p class="club-empty">暂无盈利记录，完成牌局后将在这里显示。</p>'}</div>`}
