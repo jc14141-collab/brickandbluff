@@ -1,7 +1,21 @@
 // Shared, cached artwork for tabletop meshes and HTML hands.
 const images=new Map();
-export const cardRank=r=>({11:'J',12:'Q',13:'K',14:'A',15:'小王',16:'大王'})[r]??String(r);
+export const cardRank=r=>({11:'J',12:'Q',13:'K',14:'A',15:'JOKER',16:'JOKER'})[r]??String(r);
 function suitPath(x,s){x.beginPath();if(s==='★'){for(let i=0;i<10;i++){const a=-Math.PI/2+i*Math.PI/5,r=i%2?.44:1;const px=Math.cos(a)*r,py=Math.sin(a)*r;if(i)x.lineTo(px,py);else x.moveTo(px,py)}x.closePath()}else if(s==='♦'){x.moveTo(0,-1);x.lineTo(.72,0);x.lineTo(0,1);x.lineTo(-.72,0);x.closePath()}else if(s==='♥'){x.moveTo(0,.94);x.bezierCurveTo(-1.45,-.05,-.83,-1.24,0,-.63);x.bezierCurveTo(.83,-1.24,1.45,-.05,0,.94)}else if(s==='♠'){x.moveTo(0,-1);x.bezierCurveTo(-.25,-.62,-1.03,-.21,-.88,.3);x.bezierCurveTo(-.75,.75,-.2,.61,-.12,.35);x.lineTo(-.15,.7);x.lineTo(-.4,.96);x.lineTo(.4,.96);x.lineTo(.15,.7);x.lineTo(.12,.35);x.bezierCurveTo(.2,.61,.75,.75,.88,.3);x.bezierCurveTo(1.03,-.21,.25,-.62,0,-1)}else{x.moveTo(-.15,.45);x.bezierCurveTo(-1.33,1,-1.2,-.5,-.34,-.22);x.bezierCurveTo(-1.03,-1.35,1.03,-1.35,.34,-.22);x.bezierCurveTo(1.2,-.5,1.33,1,.15,.45);x.lineTo(.19,.73);x.lineTo(.43,.97);x.lineTo(-.43,.97);x.lineTo(-.19,.73);x.closePath()}}
+function drawJoker(x,big){
+ const ink=big?'#a31229':'#11191e',gold='#b58a3e';
+ const corner=()=>{x.font='900 23px Georgia,serif';x.textAlign='center';x.fillStyle=ink;for(const [i,c] of [...'JOKER'].entries())x.fillText(c,25,44+i*24)};corner();x.save();x.translate(256,384);x.rotate(Math.PI);corner();x.restore();
+ // A heraldic jester silhouette, shared by the 3D cards and the hand UI.
+ x.save();x.translate(128,190);x.strokeStyle=gold;x.lineWidth=2;
+ const tones=big?['#a31229','#325a87','#8065a2']:['#11191e','#30373b','#151d22'];
+ for(let i=0;i<3;i++){x.beginPath();x.moveTo(-44+i*29,-2);x.lineTo(-72+i*72,-68-(i===1?19:0));x.lineTo(-4+i*29,-2);x.closePath();x.fillStyle=tones[i];x.fill();x.stroke();x.fillStyle=big?['#d95762','#77a17b','#9b83c7'][i]:'#737a7c';x.fillRect(-77+i*72,-76-(i===1?19:0),10,10)}
+ x.fillStyle=ink;x.fillRect(-48,-3,96,15);x.strokeRect(-48,-3,96,15);
+ x.beginPath();x.moveTo(-34,14);x.lineTo(34,14);x.lineTo(25,55);x.lineTo(0,76);x.lineTo(-25,55);x.closePath();x.fillStyle=big?'#ecd7a0':'#dfd9bd';x.fill();x.stroke();
+ x.fillStyle=ink;x.fillRect(-23,30,13,6);x.fillRect(10,30,13,6);x.fillRect(-13,55,26,4);
+ x.beginPath();x.moveTo(-41,69);x.lineTo(0,100);x.lineTo(41,69);x.lineTo(57,103);x.lineTo(-57,103);x.closePath();x.fillStyle=ink;x.fill();x.stroke();
+ x.fillStyle=big?'#52886a':'#c4b37b';x.fillRect(-4,81,8,8);x.restore();
+ x.font='900 32px Georgia,serif';x.textAlign='center';x.fillStyle=ink;x.fillText('JOKER',128,319);
+}
 export function drawCardFace(canvas,c,readable=false){canvas.width=512;canvas.height=768;const x=canvas.getContext('2d');x.scale(2,2);
  const paper=x.createLinearGradient(0,0,256,384);paper.addColorStop(0,'#f4e4b9');paper.addColorStop(.43,'#fff4d4');paper.addColorStop(1,'#e6ce92');x.fillStyle=c?paper:'#173c35';x.fillRect(0,0,256,384);
  // Fine paper grain is deterministic; no new texture allocation during animation.
@@ -9,6 +23,7 @@ export function drawCardFace(canvas,c,readable=false){canvas.width=512;canvas.he
  const gold=x.createLinearGradient(0,0,256,384);gold.addColorStop(0,'#735023');gold.addColorStop(.24,'#f5d274');gold.addColorStop(.48,'#ac762c');gold.addColorStop(.75,'#ffe5a1');gold.addColorStop(1,'#876023');x.strokeStyle=gold;x.lineWidth=5;x.strokeRect(3,3,250,378);x.lineWidth=1.2;x.strokeRect(9,9,238,366);x.strokeStyle='#fff0b0';x.lineWidth=.7;x.strokeRect(6,6,244,372);
  for(const [a,b,angle]of [[14,14,0],[242,14,Math.PI/2],[242,370,Math.PI],[14,370,-Math.PI/2]]){x.save();x.translate(a,b);x.rotate(angle);x.strokeStyle='#a77b35';x.lineWidth=1.5;x.beginPath();x.moveTo(0,20);x.lineTo(0,0);x.lineTo(20,0);x.moveTo(3,11);x.lineTo(11,3);x.stroke();x.restore()}
  if(!c){x.strokeStyle='#b9954d';x.lineWidth=1;for(let y=35;y<365;y+=24)for(let a=23;a<246;a+=24){x.strokeRect(a,y,8,8)}x.fillStyle='#173c35';x.fillRect(32,130,192,123);x.strokeStyle=gold;x.lineWidth=3;x.strokeRect(38,137,180,109);x.fillStyle='#edcc7a';x.font='bold 39px Georgia,serif';x.textAlign='center';x.fillText('B & B',128,206);return canvas}
+ if(c.r>14){drawJoker(x,c.r===16);return canvas}
  const board=readable==='board';const red=c.s==='♥'||c.s==='♦'||c.r===16,ink=red?(board?'#710916':'#850f20'):(board?'#050b08':'#101c19'),rank=cardRank(c.r);x.fillStyle=ink;
  const corner=()=>{x.textAlign='left';x.textBaseline='alphabetic';x.font=`900 ${board?(rank==='10'?88:98):rank==='10'?65:c.r>14?36:78}px Georgia,serif`;x.lineWidth=board?2:readable?1.6:.65;x.strokeStyle=ink;x.strokeText(rank,21,board?99:83);x.fillText(rank,21,board?99:83);};corner();x.save();x.translate(256,384);x.rotate(Math.PI);corner();x.restore();
  x.save();x.translate(128,204);x.scale(73,73);suitPath(x,c.r>14?'★':c.s);const gem=x.createLinearGradient(-1,-1,1,1);gem.addColorStop(0,red?'#ed5260':'#365649');gem.addColorStop(.4,red?'#a71d35':'#102c25');gem.addColorStop(1,red?'#58091b':'#071410');x.fillStyle=gem;x.strokeStyle='#63441e';x.lineWidth=.095;x.stroke();x.fill();x.save();x.scale(.9,.9);suitPath(x,c.r>14?'★':c.s);x.strokeStyle='#caa65a';x.lineWidth=.028;x.stroke();x.restore();
