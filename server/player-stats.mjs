@@ -7,7 +7,7 @@ export function finishStats(r,at){if(r.mode==='craps')return;for(const seat of r
 export function leaveStats(r,seat,available,committed,at){if(r.mode==='craps'){if(committed)queueProfit(r,seat.auth,-committed,at);return}const base=r.statBasis?.[seat.id];if(base){queueProfit(r,base.auth,available-base.bank,at);delete r.statBasis[seat.id]}}
 export function collectStats(state,r){for(const e of r.pendingStats??[]){const p=state.players.find(p=>p.auth===e.auth);if(!p)continue;p.gameStats??={};const a=p.gameStats[e.mode]??={net:0,rounds:0,best:0};a.net+=e.net;a.rounds++;if(e.net>a.best){a.best=e.net;a.bestAt=e.at}if(e.net<(a.worst??0)){a.worst=e.net;a.worstAt=e.at}state.statsSince??=e.at}delete r.pendingStats}
 export function statsView(state,player,tableTotal,now){
- const publicPlayer=p=>({id:p.id,name:p.name,online:now-p.seen<45000});
+ const publicPlayer=p=>({id:p.id,name:rankingName(p.name,p.id===player.id),online:now-p.seen<45000});
  const named=state.players.filter(p=>p.name);
  const sort=(a,b)=>b.value-a.value||a.name.localeCompare(b.name)||a.id.localeCompare(b.id);
  const rank=rows=>{let previous,position=0;return rows.sort(sort).map((p,i)=>{if(p.value!==previous)position=i+1;previous=p.value;return{...p,rank:position}})};

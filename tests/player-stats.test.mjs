@@ -20,5 +20,5 @@ test('cross-game single-settlement rankings keep gains and losses separate with 
  assert.equal(data.chips.find(p=>p.id==='a').name,'自己的全名');assert.equal(data.chips.find(p=>p.id==='b').name,'朋友***');
  const {statsContent}=await import('../dist/player-stats-ui.mjs');
  const own={id:'a',bank:2000,tableBank:0};const win=statsContent(data,own,'best','profit'),loss=statsContent(data,own,'best','loss');
- assert(!win.includes('data-stat-game'));assert(win.includes('21 点')&&win.includes('+600'));assert(loss.includes('美国轮盘')&&loss.includes('−1,200'));assert(!loss.includes('+500'));
+ assert(!win.includes('data-stat-game'));assert(win.includes('21 点')&&win.includes('+600'));assert(loss.includes('美国轮盘')&&loss.includes('−1,200'));assert(!loss.includes('+500'));assert(!JSON.stringify(data).includes('朋友的全名'));assert(win.includes('朋友***')&&loss.includes('朋友***'));assert(win.includes('自己的全名')&&loss.includes('自己的全名'));
 });
