@@ -49,8 +49,10 @@ export function equity(snapshot,samples=1200,rng=Math.random){
  }
  return win/samples;
 }
-export function decide(snapshot,profile=0,{samples=1200,rng=Math.random}={}){
- const model=PROFILES[profile%PROFILES.length],l=snapshot.legal,p=snapshot.players[snapshot.seat],active=snapshot.players.filter(p=>!p.fold).length,eq=equity(snapshot,samples,rng),pot=Math.max(snapshot.bigBlind??20,snapshot.players.reduce((sum,q)=>sum+Math.min(q.total,p.total+l.call),0)),owe=l.call,odds=owe/(pot+owe),position=(snapshot.seat-snapshot.dealer+snapshot.players.length)%snapshot.players.length,onButton=position===0,last=snapshot.lastAggressor===snapshot.seat,ownPF=preflop(snapshot.hole),cat=snapshot.board.length>=3?fastRank([...snapshot.hole,...snapshot.board])[0]:0;
+const clamp=(v,lo,hi)=>Math.max(lo,Math.min(hi,v));
+function adjustedModel(profile,snapshot,adaptation,participation){const base=PROFILES[profile%PROFILES.length],a=adaptation??{},entry=snapshot.players.length>=3?participation:participation*.5;return{...base,tightness:base.tightness-entry-clamp(a.entryBias??0,-.03,.05),callBias:base.callBias+entry*.25+clamp(a.callBias??0,0,.045),aggression:clamp(base.aggression+(a.aggressionBias??0)*(base.aggression<0?.5:1),-.22,.26),bluff:clamp(base.bluff+(a.bluffBias??0)*(base.aggression<0?.45:1),.015,.75),sizes:base.sizes.map(n=>n*(1+clamp(a.sizeBias??0,-.05,.1)))}}
+export function decide(snapshot,profile=0,{samples=1200,rng=Math.random,adaptation=null,participation=.035}={}){
+ const model=adjustedModel(profile,snapshot,adaptation,participation),l=snapshot.legal,p=snapshot.players[snapshot.seat],active=snapshot.players.filter(p=>!p.fold).length,eq=equity(snapshot,samples,rng),pot=Math.max(snapshot.bigBlind??20,snapshot.players.reduce((sum,q)=>sum+Math.min(q.total,p.total+l.call),0)),owe=l.call,odds=owe/(pot+owe),position=(snapshot.seat-snapshot.dealer+snapshot.players.length)%snapshot.players.length,onButton=position===0,last=snapshot.lastAggressor===snapshot.seat,ownPF=preflop(snapshot.hole),cat=snapshot.board.length>=3?fastRank([...snapshot.hole,...snapshot.board])[0]:0;
  const aggressiveOpponents=snapshot.actions.filter(a=>a.street===snapshot.street&&a.kind==='raise').length;
  const realization=snapshot.street===3||owe===p.chips?1:Math.max(.66,Math.min(1,(onButton?1:.90)-.035*(active-2)+model.range));
  const effectiveEq=eq*realization,blocker=snapshot.hole.some(c=>c.r===14)||snapshot.hole.some(c=>c.r>=12&&snapshot.board.filter(b=>b.s===c.s).length>=3);
@@ -71,13 +73,14 @@ export function decide(snapshot,profile=0,{samples=1200,rng=Math.random}={}){
   if(eq>.72||p.chips/(pot+owe)<1.2)targets.push(l.max);
   targets=[...new Set(targets.map(t=>Math.min(l.max,Math.max(l.min,t))))];
   const positionPressure=onButton?.07:0,rangePressure=snapshot.street===0?(ownPF>.7?.12:0):(last?.07:0),bluffEdge=(blocker?.08:0)+(active===2?.09:-.06);
-  for(let to of targets){if(to<l.min&&to!==l.max)continue;let cost=to-p.bet,raiseBy=to-snapshot.current,effective=Math.min(cost,Math.max(...snapshot.players.filter((q,i)=>i!==snapshot.seat&&!q.fold).map(q=>q.chips+q.bet-p.bet).map(v=>Math.max(v,owe)))),ratio=raiseBy/(pot+owe),baseFold=Math.min(.72,Math.max(.08,.16+ratio*.21+positionPressure+rangePressure+bluffEdge-aggressiveOpponents*.065));
+  for(let to of targets){if(to<l.min&&to!==l.max)continue;let cost=to-p.bet,raiseBy=to-snapshot.current,effective=Math.min(cost,Math.max(...snapshot.players.filter((q,i)=>i!==snapshot.seat&&!q.fold).map(q=>q.chips+q.bet-p.bet).map(v=>Math.max(v,owe)))),ratio=raiseBy/(pot+owe),baseFold=Math.min(.72,Math.max(.08,.16+ratio*.21+positionPressure+rangePressure+bluffEdge-aggressiveOpponents*.065+clamp(adaptation?.foldBias??0,-.12,.12)));
    // Multiway folds become less likely; continuing ranges are stronger than the initial range.
    let allFold=snapshot.players.some((q,i)=>i!==snapshot.seat&&!q.fold&&!q.chips)?0:Math.pow(baseFold,active-1),calledEq=Math.max(.02,effectiveEq-(.045+ratio*.025)*(active-1)),value=allFold*pot+(1-allFold)*(calledEq*(pot+effective*2)-effective);
    let valueHand=eq>(active===2?.59:.47),draw=cat<4&&eq>.28,bluffChance=model.bluff*(blocker?1.35:1)*(draw?1:.6)/(active-1);
    if(snapshot.street===0&&ownPF<threshold)bluffChance*=.08;
    if(!valueHand&&rng()>bluffChance)continue;
    if(snapshot.street===0&&ownPF<threshold)value-=(threshold-ownPF)*(pot+cost);
+   value+=(valueHand?clamp(adaptation?.valueBias??0,0,.08)*pot:0);
    value+=model.aggression*pot*Math.min(1,raiseBy/Math.max(snapshot.bigBlind??20,pot))-(model.aggression>0?Math.max(0,ratio-1.5)*pot*.045:0);
    value+=(profile===1&&ratio>=.75&&valueHand?.035:0)*pot;
    if(profile===2&&!onButton)value-=.045*pot;
