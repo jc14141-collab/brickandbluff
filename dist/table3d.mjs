@@ -1,4 +1,4 @@
-import {chipStacks,chipSlots,potLayout} from './poker-chips.mjs';
+import {balancedChipStacks,chipSlots,potLayout} from './poker-chips.mjs';
 import {startVictory,updateVictory} from './victory-animation.mjs';
 import {renderLifecycle,disposeScene,releaseRenderer} from './render-lifecycle.mjs';
 import {refineRanger,updateRangerFace} from './ranger-model.mjs';
@@ -95,7 +95,7 @@ export class Table3D{
  seatPoint(i){if(i===0)return new T.Vector3(0,1.343,1.85);if(this.mode!=='poker')return new T.Vector3(0,1.343,-2.7);if(this.seatCount<=4)return [null,new T.Vector3(-3.48,1.343,.05),new T.Vector3(0,1.343,-2.7),new T.Vector3(3.48,1.343,.05)][i];const p=this.avatarPoint(i);return new T.Vector3(p.x*.77,1.343,p.z*.76);}
  chipPoint(i){if(this.mode==='poker'){if(i===0)return new T.Vector3(1.8,1.38,3.1);const rig=this.rigs.find(r=>r.seat===i),p=rig?.group.position??this.avatarPoint(i),toward=new T.Vector3(-p.x,0,1.2-p.z).normalize(),at=new T.Vector3(p.x,1.38,p.z).addScaledVector(toward,1.65),edge=Math.hypot(at.x/5.1,at.z/4.25);if(edge>.83){at.x*=.83/edge;at.z*=.83/edge}return at}return [new T.Vector3(2.65,1.38,2.18),new T.Vector3(-4.55,1.38,.95),new T.Vector3(1.35,1.38,-3.1),new T.Vector3(4.05,1.38,.95)][i]}
  potLayout(){return potLayout(this.container.clientWidth<=600)}
- renderChipBank(amount,at,seat){const bank=new T.Group();bank.position.copy(at);if(seat===-1)bank.scale.setScalar(this.potLayout().chipScale);bank.rotation.y=seat===0?0:this.rigs.find(r=>r.seat===seat)?.rest??0;bank.userData={seat,amount:Math.max(0,Math.round(amount)),stacks:chipStacks(amount)};this.chipPiles.add(bank);const stacks=bank.userData.stacks;
+ renderChipBank(amount,at,seat){const bank=new T.Group();bank.position.copy(at);if(seat===-1)bank.scale.setScalar(this.potLayout().chipScale);bank.rotation.y=seat===0?0:this.rigs.find(r=>r.seat===seat)?.rest??0;bank.userData={seat,amount:Math.max(0,Math.round(amount)),stacks:balancedChipStacks(amount,{bigBlind:this.chipBigBlind,seed:seat===-1?0:this.chipSeeds?.[seat]??seat+1,pot:seat===-1})};this.chipPiles.add(bank);const stacks=bank.userData.stacks;
   chipSlots(stacks,seat===-1).forEach((stack,i)=>{const {x,z}=stack;for(let n=0;n<stack.count;n++)this.chip(bank,x,n*.055,z,stack.color);const key='chip-denomination-'+stack.value;if(!this.textures.has(key))this.textures.set(key,this.textTexture(String(stack.value),'#fff5d4','#'+stack.color.toString(16).padStart(6,'0'),256,128));const top=new T.Mesh(new T.PlaneGeometry(.155,.13),new T.MeshBasicMaterial({map:this.textures.get(key),toneMapped:false}));top.rotation.x=-Math.PI/2;top.position.set(x,(stack.count-1)*.055+.030,z);bank.add(top)});this.batchBoxes(bank);return bank
  }
 
@@ -207,7 +207,8 @@ export class Table3D{
    }
   }else view.dealerCards.forEach((c,n)=>ensure('dealer'+n,n===1&&!view.reveal&&!view.peek?null:c,this.scene,new T.Vector3((n-(view.dealerCards.length-1)/2)*Math.min(1.15,5.6/view.dealerCards.length)*fit,1.343,-1.55),[angle,0,0],Math.min(1.06,5.1/view.dealerCards.length)*fit,1.48,n));
   for(const[id,e]of this.cardObjects)if(!wanted.has(id)){this.disposeGroup(e.obj);this.cardObjects.delete(id)}
-  const chipSignature=JSON.stringify([this.mode,view.players?.map(p=>p.chips),view.bank,view.pot,this.container.clientWidth<=600,this.rigs.map(r=>[r.group.position.x,r.group.position.z])]);
+  this.chipBigBlind=view.bigBlind??20;this.chipSeeds=view.chipSeeds;
+  const chipSignature=JSON.stringify([this.mode,this.chipBigBlind,this.chipSeeds,view.players?.map(p=>p.chips),view.bank,view.pot,this.container.clientWidth<=600,this.rigs.map(r=>[r.group.position.x,r.group.position.z])]);
   if(chipSignature!==this.chipSignature){this.chipSignature=chipSignature;while(this.chipPiles.children.length)this.disposeGroup(this.chipPiles.children[0]);
    if(this.mode==='poker'){view.players.forEach((p,i)=>this.renderChipBank(p.chips,this.chipPoint(i),i));if(view.pot>0){const p=this.potLayout();this.renderChipBank(view.pot,new T.Vector3(p.x,1.34+.045*p.scale+.0275*p.chipScale+.004,p.z),-1)}}
    else{const piles=[view.bank,0,2000,0];for(let i of [0,2]){const pos=this.chipPoint(i);for(let k=0;k<Math.min(24,Math.max(0,Math.ceil(piles[i]/100)));k++)this.chip(this.chipPiles,pos.x+Math.floor(k/6)*.23,1.38+(k%6)*.055,pos.z,0x73a390)}this.batchBoxes(this.chipPiles)}
