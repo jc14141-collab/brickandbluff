@@ -1,3 +1,4 @@
+import {startVictory,updateVictory} from './victory-animation.mjs';
 import {renderLifecycle,disposeScene,releaseRenderer} from './render-lifecycle.mjs';
 import {refineRanger,updateRangerFace} from './ranger-model.mjs';
 import {refineGuardian,updateGuardianFace} from './guardian-model.mjs';
@@ -84,7 +85,7 @@ export class Table3D{
    this.box(arm,.29,.19,.3,0,-.31,.67,skin);
    for(let f=0;f<3;f++)this.box(arm,.065,.075,.17,-.085+f*.085,-.25,.77,skin);
    this.stud(arm,0,.06,0,coat);arm.rotation.z=side*.035;g.add(arm);arms.push(arm);
-  }const rig={group:g,head,arms,mouth,brows,lids,phase:rand()*8,gesture:0,nextBlink:1+rand()*4,nextIdle:2+rand()*5,reactionAt:-10,reaction:0,reactionDuration:1.5};return avatarRole===0?refineWitch(this,rig):avatarRole===1?refineEngineer(this,rig):avatarRole===2?refineGuardian(this,rig):avatarRole===3?refineRanger(this,rig):rig;
+  }const rig={group:g,chair,head,arms,mouth,brows,lids,phase:rand()*8,gesture:0,nextBlink:1+rand()*4,nextIdle:2+rand()*5,reactionAt:-10,reaction:0,reactionDuration:1.5};return avatarRole===0?refineWitch(this,rig):avatarRole===1?refineEngineer(this,rig):avatarRole===2?refineGuardian(this,rig):avatarRole===3?refineRanger(this,rig):rig;
  }
  buildHands(){this.hands=[];this.foreground=new T.Group();this.camera.add(this.foreground);this.held=new T.Group();this.foreground.add(this.held);for(let side of [-1,1]){let g=new T.Group(),color=COLORS[this.role];g.position.set(side*.61,-.66,-1.28);g.rotation.z=side*-.17;g.rotation.x=-.25;this.box(g,.32,.52,.33,0,-.19,0,color);this.box(g,.35,.14,.36,0,.07,.01,this.role===0?0xc5a358:this.role===2?0x56b1c5:0x2c3e32);const skin=this.role===2?0xcce2dc:this.role===1?0x454537:0xe2bd7e;this.box(g,.3,.26,.28,0,.24,.01,skin);for(let i=0;i<3;i++)this.box(g,.079,.1,.24,-.1+i*.1,.39,.01,skin);this.box(g,.1,.15,.2,side*-.18,.23,.04,skin);for(let i=0;i<2;i++)this.stud(g,-.08+i*.16,.0,.185,color,.04);if(this.role===0){this.box(g,.12,.13,.07,0,.11,.2,0xa28dcd);this.box(g,.06,.06,.08,0,.12,.245,0xe4c977)}if(this.role===1){this.box(g,.2,.17,.1,0,-.05,.2,0x373d32);this.box(g,.13,.1,.04,0,-.05,.27,0xc5dd96)}if(this.role===2){this.box(g,.23,.18,.06,0,-.12,.19,0x406b7c);this.box(g,.12,.04,.03,0,-.1,.23,0x9bddda)}if(this.role===3){for(let n=0;n<2;n++)this.box(g,.34,.045,.35,0,-.16+n*.16,0,0x8a673e)}this.foreground.add(g);this.hands.push(g)}
  }
@@ -97,7 +98,9 @@ export class Table3D{
  showdownPoint(i){const seats=this.showdownSeats(),index=Math.max(0,seats.indexOf(i)),fit=this.cardFit(),many=seats.length>4,cols=many?Math.ceil(seats.length/2):seats.length,row=many?Math.floor(index/cols):0,rowCount=Math.min(cols,seats.length-row*cols),step=many?1.65:2.08*this.showdownScale();return new T.Vector3((index%cols-(rowCount-1)/2)*step*fit,1.343,many?1.22+row*1.13:1.92);}
  // Reactions use only independent randomness and public event timing, never card values.
  react(seat){if(this.reduced)return;for(const rig of this.rigs){if(rig.seat===seat||Math.random()<.38){rig.reaction=Math.floor(Math.random()*5);rig.reactionAt=this.elapsed+Math.random()*.45;rig.reactionDuration=1.3+Math.random()*1.2}}}
+ celebrateWinner(seat){const rig=this.rigs.find(r=>r.seat===seat);if(rig){startVictory(this,rig);if(rig.faceArt)(rig.ranger?updateRangerFace:rig.guardian?updateGuardianFace:rig.engineer?updateEngineerFace:updateWitchFace)(rig,false,2,1);}}
  animateRig(rig,time,dt){
+  if(updateVictory(this,rig,time))return;
   rig.gesture=Math.max(0,rig.gesture-dt*2);if(this.reduced)return;
   if(time>rig.nextBlink){rig.blinkAt=time;rig.nextBlink=time+2.5+Math.random()*5}const blink=time-(rig.blinkAt??-10)<.13;rig.lids.forEach(l=>l.visible=blink);
   if(time>rig.nextIdle){rig.reaction=Math.floor(Math.random()*5);rig.reactionAt=time;rig.reactionDuration=1.6+Math.random();rig.nextIdle=time+4+Math.random()*7}
@@ -136,13 +139,19 @@ export class Table3D{
  moveChips(seat,amount,reverse=false){let start=this.chipPoint(seat),end=new T.Vector3((seat-1.5)*.17,1.4,-1.45);if(reverse)[start,end]=[end,start];for(let n=0;n<Math.min(10,Math.max(2,Math.ceil(amount/60)));n++){let chip=this.chip(this.scene,start.x+(n%3)*.12,start.y+.04*Math.floor(n/3),start.z,seat===0?0xd3bf69:seat===1?0xb36d67:seat===2?0x76a798:0x8b88b8);this.tween(chip,new T.Vector3(end.x+(n%3)*.14,end.y+.05*Math.floor(n/3),end.z),.52,n*.024,.22,()=>this.disposeGroup(chip))}let rig=this.rigs.find(r=>r.seat===seat);if(rig)rig.gesture=1.6;else this.handGesture=1.6}
  disposeGroup(g){g.removeFromParent();g.traverse(o=>{if(o.isInstancedMesh)o.dispose();if(o.geometry&&o.geometry!==this.boxGeo)o.geometry.dispose();if(o.material&&!([...this.materials.values()].includes(o.material)))o.material.dispose?.()})}
  sync(view,{animate=true}={}){
+  if(this.mode==='poker'){
+   if(!view.done){this.victoryPlayed=false;for(const rig of this.rigs)if(rig.victory)updateVictory(this,rig,rig.victory.start+4)}
+   else if(view.winningSeats?.length&&!this.victoryPlayed){this.victoryPlayed=true;for(const seat of view.winningSeats)this.celebrateWinner(seat)}
+  }
   const laidOut=!!(view.done||view.runout),entering=laidOut&&!(this.view?.done||this.view?.runout);const boardCount=view.board?.length??0;if(boardCount>this.lastBoardCount)this.react(-1);this.lastBoardCount=boardCount;this.view=view;
   if(entering){this.showdownAt=this.elapsed;for(const rig of this.rigs)rig.gesture=1.6;}
-  const winners=(view.winningSeats??[]).join(',');if(winners!==this.winnerSignature){this.winnerSignature=winners;if(this.winnerRings)this.disposeGroup(this.winnerRings);this.winnerRings=new T.Group();this.scene.add(this.winnerRings);for(const seat of view.winningSeats??[]){const p=this.showdownPoint(seat),ring=new T.Mesh(new T.RingGeometry(.92,1.0,64),new T.MeshBasicMaterial({color:0xffdb6c,transparent:true,opacity:.9,side:T.DoubleSide,depthWrite:false}));ring.rotation.x=-Math.PI/2;ring.position.copy(p);ring.position.y=1.355;ring.scale.set(1,.8,1);this.winnerRings.add(ring)}}
+  if(this.winnerRings){this.disposeGroup(this.winnerRings);this.winnerRings=null;}
+
   let wanted=new Set();
   const highlighted=new Set((view.winningCards??[]).map(c=>c.r+c.s));
   const ensure=(id,c,parent,target,rotation,w,h,index)=>{
-   wanted.add(id);let entry=this.cardObjects.get(id);const sig=c?c.r+c.s:'back';
+   wanted.add(id);let entry=this.cardObjects.get(id);const sig=c?c.r+c.s:'back',winner=!!(this.mode==='poker'&&view.done&&c&&highlighted.has(sig));
+   if(winner){target=target.clone();target.y+=.10;target.z-=id.startsWith('board')?.12:.17;rotation=[rotation[0]+.035,rotation[1],rotation[2]];}
    const poseKey=[parent.uuid,...target.toArray(),...rotation,w,h].join(',');
    if(!entry){
     const obj=this.makeCard(c,w,h);obj.rotation.set(...rotation);parent.add(obj);obj.userData.index=index;obj.position.copy(target);
@@ -157,11 +166,13 @@ export class Table3D{
     }else if(changed&&animate&&this.mode!=='blackjack'){entry.obj.rotation.x=-Math.PI/2+.8;this.pose(entry.obj,target,rotation,entry.obj.scale.clone(),.55);}
    }
    const obj=entry.obj;obj.visible=true;
-   const winner=!!(view.done&&c&&highlighted.has(sig));
    obj.userData.winner=winner;
    if(winner&&!obj.userData.outline){
-    const outline=new T.Group(),gold=new T.MeshBasicMaterial({color:0xffd46b,transparent:true,opacity:.95,depthWrite:false});
-    for(const [w,h,x,y] of [[entry.w,.018,0,entry.h/2-.009],[entry.w,.018,0,-entry.h/2+.009],[.018,entry.h,entry.w/2-.009,0],[.018,entry.h,-entry.w/2+.009,0]]){const edge=new T.Mesh(new T.PlaneGeometry(w,h),gold.clone());edge.position.set(x,y,.027);outline.add(edge)}obj.add(outline);obj.userData.outline=outline;
+    if(!this.textures.has('winning-halo')){
+     const canvas=document.createElement('canvas');canvas.width=384;canvas.height=544;const ctx=canvas.getContext('2d');ctx.strokeStyle='#ffce55';ctx.lineWidth=5;ctx.shadowColor='#ffbf35';ctx.shadowBlur=22;ctx.strokeRect(25,25,334,494);ctx.shadowBlur=8;ctx.strokeRect(25,25,334,494);
+     const texture=new T.CanvasTexture(canvas);texture.colorSpace=T.SRGBColorSpace;this.textures.set('winning-halo',texture);
+    }
+    const outline=new T.Mesh(new T.PlaneGeometry(entry.w*1.15,entry.h*1.10),new T.MeshBasicMaterial({map:this.textures.get('winning-halo'),transparent:true,opacity:.95,depthWrite:false,toneMapped:false,side:T.DoubleSide}));outline.position.z=.023;obj.add(outline);obj.userData.outline=outline;
    }
    if(obj.userData.outline)obj.userData.outline.visible=winner;
    return obj;

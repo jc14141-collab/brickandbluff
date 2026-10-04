@@ -68,7 +68,7 @@ export function refineRanger(table,rig){
  for(const [x,y] of [...points].reverse())outline.lineTo(x+.028,y);outline.closePath();
  const limb=new T.Mesh(new T.ExtrudeGeometry(outline,{depth:.065,bevelEnabled:false,steps:1}),table.mat(0xad7b43));limb.position.z=-.0325;bow.add(limb);
  b(bow,.018,1.34,.018,-.03,0,0,0xd5c49b);
- table.batchBoxes(gear);table.batchBoxes(bow);for(const part of [gear,bow])part.traverse(o=>{if(o.isMesh){o.castShadow=false;o.receiveShadow=false}});rig.ranger=true;return rig;
+ table.batchBoxes(gear);table.batchBoxes(bow);for(const part of [gear,bow])part.traverse(o=>{if(o.isMesh){o.castShadow=false;o.receiveShadow=false}});rig.weapon=bow;rig.ranger=true;return rig;
 }
 
 export function updateRangerFace(rig,blink,kind,strength){

@@ -43,7 +43,7 @@ export function refineWitch(table,rig){
  // Batch the non-moving details; no additional realtime light or bloom pass.
  table.batchBoxes(detail);table.batchBoxes(staff);table.batchBoxes(hat);
  hat.traverse(o=>{if(o.isMesh)o.castShadow=false});head.children.forEach(o=>{if(o.isMesh&&o.material.isMeshStandardMaterial&&(o.position.z>=.30||o.scale.x===.78)){o.receiveShadow=false;o.material=o.material.clone();o.material.emissive.copy(o.material.color);o.material.emissiveIntensity=.32;}});
- rig.witch=true;return rig;
+ rig.weapon=staff;rig.witch=true;return rig;
 }
 // Keep the seated costume outside the outer table rail at every relative seat.
 export function fitWitchSeat(rig,rx=5.8125,rz=4.76){

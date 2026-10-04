@@ -59,7 +59,7 @@ export function refineEngineer(table,rig){
  b(tool,.39,.14,.12,0,1.50,0,0xb3b7ae);
  for(const side of[-1,1]){const jaw=b(tool,.13,.29,.12,side*.18,1.68,0,0xb3b7ae);jaw.rotation.z=side*-.24}
  table.batchBoxes(detail);table.batchBoxes(tool);
- rig.engineer=true;return rig;
+ rig.weapon=tool;rig.engineer=true;return rig;
 }
 
 export function updateEngineerFace(rig,blink,kind,strength){
