@@ -22,3 +22,10 @@ test('cross-game single-settlement rankings keep gains and losses separate with 
  const own={id:'a',bank:2000,tableBank:0};const win=statsContent(data,own,'best','profit'),loss=statsContent(data,own,'best','loss');
  assert(!win.includes('data-stat-game'));assert(win.includes('21 点')&&win.includes('+600'));assert(loss.includes('美国轮盘')&&loss.includes('−1,200'));assert(!loss.includes('+500'));assert(!JSON.stringify(data).includes('朋友的全名'));assert(win.includes('朋友***')&&loss.includes('朋友***'));assert(win.includes('自己的全名')&&loss.includes('自己的全名'));
 });
+
+
+test('all global rankings keep only the viewer full name',async()=>{
+ const {statsView}=await import('../server/player-stats.mjs');
+ const players=[{id:'a',name:'玩家完整甲名',bank:2000,seen:now,gameStats:{poker:{best:100,worst:-50}}},{id:'b',name:'好友完整乙名',bank:3000,seen:now,gameStats:{blackjack:{best:150,worst:-70}}}];
+ for(const viewer of players){const data=statsView({players},viewer,()=>0,now);for(const rows of [data.chips,data.profitRanks,data.lossRanks,...Object.values(data.best)])for(const row of rows){assert.equal(row.name,row.id===viewer.id?players.find(p=>p.id===row.id).name:players.find(p=>p.id===row.id).name.slice(0,2)+'****')}}
+});

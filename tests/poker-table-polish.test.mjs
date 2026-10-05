@@ -26,3 +26,12 @@ test('balanced banks use blind-scaled values, bounded heights and stable varied 
  const counts=[99000,99500,100000].map(amount=>balancedChipStacks(amount,{bigBlind:1000,seed:12}).reduce((n,r)=>n+r.count,0));
  assert(Math.max(...counts)-Math.min(...counts)<=6,'remainders distort visible bank size');
 });
+
+
+test('table ranking names are private for each viewer, including departed players',()=>{
+ const r={mode:'poker',round:1,status:'roundEnd',seats:[{id:'a',name:'我的完整昵称',bank:2000},{id:'b',name:'朋友完整昵称',bank:2000}],pokerProfits:{a:{id:'a',name:'我的完整昵称',net:200},b:{id:'b',name:'朋友完整昵称',net:0},c:{id:'c',name:'离桌玩家姓名',net:-200}}};
+ const a=pokerProfitView(r,'a'),b=pokerProfitView(r,'b');
+ assert.equal(a.rows.find(p=>p.id==='a').name,'我的完整昵称');assert.equal(a.rows.find(p=>p.id==='b').name,'朋友****');assert.equal(a.rows.find(p=>p.id==='c').name,'离桌****');
+ assert.equal(b.rows.find(p=>p.id==='b').name,'朋友完整昵称');assert.equal(b.rows.find(p=>p.id==='a').name,'我的****');
+ assert.equal(r.pokerProfits.a.name,'我的完整昵称');assert(a.rows.find(p=>p.id==='c').departed);
+});
