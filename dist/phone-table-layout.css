@@ -1,0 +1,78 @@
+/* Compact phone docks preserve the scene and leave the raised cards visible. */
+@media (max-height:500px) and (orientation:landscape){
+ body.in-game .mp-table{--hud-height:54px;--edge:max(10px,env(safe-area-inset-left))}
+ body.in-game .mp-table .gd-heading{right:200px;min-height:36px;gap:8px}
+ body.in-game .mp-table .gd-heading h1{font-size:14px;letter-spacing:1px}
+ body.in-game .mp-table .gd-heading h1 span{display:none}
+ body.in-game .mp-table .gd-heading button{min-height:34px;padding:4px 8px;font-size:12px}
+ body.in-game:has(.mp-table) .topbar{top:6px;height:36px;gap:8px;right:10px}
+ body.in-game:has(.mp-table) .topright :is(.sound,.wallet){min-height:34px!important;padding:4px 7px!important;font-size:14px!important}
+ .mp-table .mp-head{max-width:112px!important;padding:3px 5px!important;gap:1px!important;line-height:1.15!important;display:grid;grid-template-columns:auto auto;column-gap:5px!important}
+ .mp-table .mp-head strong{font-size:10px!important;grid-column:1/-1}
+ .mp-table .mp-head :is(span,small,.poker-seat-state){font-size:10px!important;min-width:0}
+ .mp-table .mp-head :is(.mp-seat-hand,small){grid-column:1/-1}
+ .mp-table .mp-head .mp-seat-hand{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+ body.in-game .mp-table .mp-own{left:10px;bottom:12px;width:138px;max-width:22vw;padding:5px;max-height:105px;overflow:auto}
+ .mp-table .mp-own>strong{font-size:10px;line-height:1.25}
+ .mp-table .mp-own>small{font-size:10px}
+ .mp-table .mp-own>div{margin-top:4px}
+ .mp-table .mp-own .gd-card.small{width:28px;height:40px;flex-basis:28px}
+ .mp-table .mp-own .mp-hands{max-height:70px;overflow:auto}
+ body.in-game .mp-table.mp-poker .mp-controls{left:auto;right:10px;bottom:10px;width:min(360px,46vw);min-height:0;max-height:150px;overflow:visible;padding:0;background:none!important;background-image:none!important;border:0!important;box-shadow:none!important}
+ .mp-poker .mp-action-row{justify-content:flex-end;flex-wrap:wrap;gap:8px;margin-bottom:8px;padding:0}
+ .mp-poker .mp-action-row>strong{flex:0 0 100%;margin:0;text-align:right;font-size:10px;line-height:1.2}
+ .mp-poker .mp-controls button{min-height:34px;padding:5px 7px;font-size:11px;white-space:nowrap;flex:none;box-sizing:border-box}
+ .mp-poker .mp-action-row [data-poker-profits]{font-size:10px;padding:5px}
+ .mp-poker .mp-bet-row{display:flex;flex-wrap:wrap;gap:8px;padding:6px;background:#3b2618!important;box-shadow:0 0 0 2px #9a7840;box-sizing:border-box}
+ .mp-poker .mp-bet-row label{flex:1 0 100%;min-width:0;gap:5px;font-size:10px}
+ .mp-poker .mp-bet-row input[type=range]{width:100%;min-width:0;height:18px}
+ .mp-poker .mp-bet-row input[type=number]{width:54px;min-width:0;min-height:34px;padding:4px;font-size:12px!important;box-sizing:border-box}
+ .mp-poker .mp-bet-row [data-size]{padding:5px;font-size:10px;flex:1;min-width:0}
+ .mp-poker .mp-bet-row .mp-confirm{flex:1.5;min-width:0;padding:5px;font-size:11px}
+ .mp-table.mp-poker .mp-phase{right:12px;top:64px;bottom:auto;max-width:95px;font-size:10px}
+ .mp-poker .mp-pot{min-width:0;padding:4px 8px}.mp-poker .mp-pot strong{font-size:20px}
+ body.in-game .mp-table.mp-blackjack .mp-own{bottom:66px;max-height:100px}
+ body.in-game .mp-table.mp-blackjack .mp-controls{left:auto;right:10px;bottom:10px;width:auto;max-width:calc(100% - 20px);min-height:0;padding:6px;gap:8px;flex-wrap:wrap;overflow:visible}
+ .mp-blackjack .mp-controls>strong{font-size:10px;margin-right:4px}
+ .mp-blackjack .mp-controls button{min-height:34px;padding:5px 8px;font-size:11px;white-space:nowrap}
+ .mp-blackjack .mp-controls input{min-height:34px;width:65px;padding:4px;box-sizing:border-box;font-size:12px!important}
+ .mp-table.mp-blackjack .mp-phase{right:10px;bottom:70px;top:auto;max-width:125px;font-size:10px}
+ .mp-table .mp-connection{bottom:auto;top:46px;right:10px;font-size:9px}
+ .mp-table .mp-skill-dock button{min-height:30px;padding:4px;font-size:10px}
+ /* The lobby skin's typography must scale back on a short phone screen. */
+ body:not(.in-game) #lobbySurface .start>span:first-child{font-size:14px}
+ body:not(.in-game) #lobbySurface :is(.setting-row>span,.modebutton strong){font-size:14px}
+ body:not(.in-game) #lobbySurface :is(.rules-toggle,select){font-size:12px!important}
+ body:not(.in-game) .topbar :is(.navlink,.club-entry){font-size:11px}
+ body:not(.in-game) .topbar .brand>span:not(.brandmark){font-size:17px}
+}
+@media (max-height:500px) and (orientation:landscape){
+ .gd-room :is(.gd-heading button,.gd-actions button),.craps-room :is(.craps-heading button,.craps-dock>button),.roulette-room :is(.rl-heading button,.rl-chips button,.rl-combo>button){min-height:34px;padding:5px 8px;font-size:12px;box-sizing:border-box}
+ .gd-room .gd-actions,.craps-room .craps-dock,.roulette-room .rl-chips{gap:8px}
+ .gd-room .gd-controls{height:auto;min-height:48px;padding:6px}
+ .mp-table .mp-action-row [data-room-mic]{min-height:34px;max-width:65px;font-size:10px;padding:4px}
+}
+/* Keep the raise rail wide; only the action buttons occupy the right side. */
+@media (max-height:500px) and (orientation:landscape){
+ body.in-game .mp-table.mp-poker .mp-controls{left:10px;right:10px;width:auto;max-height:130px}
+ .mp-poker .mp-action-row{width:max-content;max-width:100%;margin-left:auto}
+ .mp-poker .mp-bet-row{flex-wrap:nowrap;padding:6px;min-height:48px}
+ .mp-poker .mp-bet-row label{flex:1 1 auto;min-width:60px}
+ .mp-poker .mp-bet-row [data-size]{flex:0 0 auto;min-width:35px}
+ .mp-poker .mp-bet-row .mp-confirm{flex:0 0 auto}
+ body.in-game .mp-table.mp-poker .mp-own{bottom:72px;max-height:100px}
+}
+@media (max-height:500px) and (orientation:landscape){
+ .mp-table.mp-poker .mp-phase{top:auto;bottom:132px;right:10px}
+ .gd-room .gd-seat{max-width:105px!important;padding:3px 5px!important;gap:1px!important;line-height:1.15!important}
+ .gd-room .gd-seat strong{font-size:10px!important}
+ .gd-room .gd-seat :is(span,small){font-size:10px!important}
+}
+@media (max-height:500px) and (orientation:landscape){
+ .mp-poker .mp-action-row{gap:6px}
+ .mp-poker .mp-action-row>button{font-size:10px;padding:5px 6px;min-height:34px}
+ .mp-poker .mp-action-row [data-poker-profits]{font-size:0;padding:5px 6px}
+ .mp-poker .mp-action-row [data-poker-profits]::after{content:'盈亏榜';font-size:10px}
+ .mp-poker .mp-action-row [data-room-mic]{width:34px;padding:5px}
+ .mp-poker .mp-action-row [data-room-mic] span{display:none}
+}
