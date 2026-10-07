@@ -224,7 +224,7 @@ export class BigTwoUI{
     const breakdown=pairs?`<details class="bt-pairs"><summary>支付明细 · ${r.pairs.length} 笔两两差额${crossLoser?`（${crossLoser} 笔发生在输家之间）`:''}</summary><div>${pairs}</div></details>`:'';
     // 每张牌的价值在开局前定好，本桌中途结算不再提供修改入口。
     const next=`<div class="bt-next"><span>每张牌价值</span><b>${r.value} 筹码 · 开局已定${this.network?' · 由房主设定':''}</b></div>`;
-    return`<div class="gd-result gd-review"><div class="gd-review-hands">${g.hands.map((hand,i)=>`<section><b>${names[i]} · 剩余 ${hand.length} 张${twoCount(hand)?` · 手上 ${twoCount(hand)} 张 2（×${2**twoCount(hand)}）`:''}</b><div>${sortHand(hand).map(c=>bigtwoCard(c,{small:true})).join('')||'<span>已出完</span>'}</div></section>`).join('')}</div><small>本副结束 · 剩余手牌公开 · 每张牌 ${r.value} 筹码</small><h2>${won?'你赢了这一副':names[r.winner]+' 先出完'}</h2><div class="bt-settle">${rows}</div>${breakdown}${notes.length?`<p class="bt-note">${notes.join('<br>')}</p>`:''}${next}<div><button data-gback>返回大厅</button><button class="gd-play-button" data-gnext>下一副 ↗</button></div></div>`;
+    return`<div class="gd-result gd-review"><div class="gd-review-hands">${g.hands.map((hand,i)=>`<section><b>${names[i]} · 剩余 ${hand.length} 张${twoCount(hand)?` · 手上 ${twoCount(hand)} 张 2（×${2**twoCount(hand)}）`:''}</b><div>${sortHand(hand).map(c=>bigtwoCard(c,{small:true})).join('')||'<span>已出完</span>'}</div></section>`).join('')}</div><small>本副结束 · 剩余手牌公开 · 每张牌 ${r.value} 筹码</small><h2>${won?'你赢了这一副':names[r.winner]+' 先出完'}</h2><div class="bt-settle">${rows}</div>${breakdown}${notes.length?`<p class="bt-note">${notes.join('<br>')}</p>`:''}${next}<div class="bt-result-actions"><button data-gback>返回大厅</button><button class="gd-play-button" data-gnext>下一副 ↗</button></div></div>`;
   }
 
   async toggleAutoplay(){

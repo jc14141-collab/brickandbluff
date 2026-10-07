@@ -353,3 +353,18 @@
 .bt-value-picker{display:flex;align-items:center;gap:12px;margin:12px 0}
 [data-btvalue]{max-width:100%;min-height:42px;padding:6px 12px;background:#302619;color:#f0d98a;border:2px solid #8b7950;font:inherit}
 .bt-room [data-btauto][aria-pressed="true"]{background:#705126;color:#fff2bc}
+/* Settlement is an independently bounded overlay, above the live play feed. */
+.bt-room .gd-end:not(:empty){inset:70px 16px 16px;z-index:30;display:grid;place-items:center;padding:10px;box-sizing:border-box;overflow:hidden;background:#140c07b8!important;backdrop-filter:none}
+.bt-room .gd-end .gd-result.gd-review{width:min(1040px,100%);max-width:100%;max-height:100%;min-height:0;box-sizing:border-box;margin:0;padding:16px;overflow:auto;overscroll-behavior:contain;scrollbar-width:thin;touch-action:pan-y}
+.bt-room .gd-review .gd-review-hands{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px!important;margin:0 0 12px!important}
+.bt-room .gd-review-hands section{min-width:0;padding:10px;text-align:left}
+.bt-room .gd-review-hands section>div{flex-wrap:wrap;gap:5px}
+.bt-room .gd-review h2{font-size:24px;margin:10px 0}
+.bt-room .gd-review .bt-settle{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:10px 0}
+.bt-room .gd-review .bt-settle-row{min-width:0}
+.bt-room .gd-review .bt-result-actions{position:sticky;bottom:-16px;z-index:2;display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin:12px -16px -16px;padding:12px 16px 16px;background:#3b2618;border-top:1px solid #9a7840;box-shadow:0 -6px 12px #140c0733}
+.bt-room .bt-result-actions button{min-height:40px;max-width:100%;white-space:normal}
+@media(max-width:720px){.bt-room .gd-end:not(:empty){inset:58px 8px 8px;padding:6px}.bt-room .gd-review .bt-settle{grid-template-columns:repeat(2,minmax(0,1fr))}.bt-room .gd-review h2{font-size:20px}}
+@media(max-height:500px) and (orientation:landscape){.bt-room .gd-end:not(:empty){inset:52px 8px 8px;padding:6px}.bt-room .gd-end .gd-result.gd-review{padding:12px}.bt-room .gd-review .bt-result-actions{bottom:-12px;margin:10px -12px -12px;padding:10px 12px 12px}}
+/* Override the shared 60vh scrolling cap: only the inner review scrolls. */
+body.in-game .gd-room.bt-room .gd-end:not(:empty){max-height:none;overflow:hidden;grid-template-rows:minmax(0,1fr);border:0;border-image:none!important;border-radius:0;outline:0}
