@@ -1,0 +1,90 @@
+/* Poker table skin: walnut panels, brass hairline, stepped 2px pixel corners.
+   Skin only: colours, frames and shadows. Geometry stays in the game styles.
+   The frame is drawn with box-shadow rings (ink outline, brass trim, inner
+   highlight/shade, hard drop) so element sizes are unchanged. */
+
+.mp-table.mp-poker,body.in-game:has(.mp-poker){
+ --pe-ink:#140c07;--pe-wood:#3b2618;--pe-brass:#d6ae5f;--pe-text:#f1e3c0;--pe-muted:#cdb48a;--pe-gold:#ffe7a6;
+}
+
+/* One frame recipe, recoloured per element through custom properties. */
+.mp-poker :is(.mp-controls,.mp-own,.mp-pot,.mp-labels .mp-head,.opponent-label,[data-poker-profits],.gd-heading button,.mp-action-row button,.mp-bet-row button,.mp-bet-row input[type=number]),
+body.in-game:has(.mp-poker) .topright :is(.sound,.wallet){
+ --pf-ink:var(--pe-ink);--pf-trim:#9a7840;--pf-hi:rgba(255,236,196,.16);--pf-lo:rgba(0,0,0,.32);--pf-drop:rgba(8,4,2,.55);
+ border-radius:0!important;border-color:transparent!important;border-image:none!important;outline:0;backdrop-filter:none!important;
+ box-shadow:inset 0 2px 0 0 var(--pf-hi),inset 0 -3px 0 0 var(--pf-lo),
+  0 -2px 0 0 var(--pf-trim),0 2px 0 0 var(--pf-trim),-2px 0 0 0 var(--pf-trim),2px 0 0 0 var(--pf-trim),
+  0 -4px 0 0 var(--pf-ink),0 4px 0 0 var(--pf-ink),-4px 0 0 0 var(--pf-ink),4px 0 0 0 var(--pf-ink),
+  -2px -2px 0 0 var(--pf-ink),2px -2px 0 0 var(--pf-ink),-2px 2px 0 0 var(--pf-ink),2px 2px 0 0 var(--pf-ink),
+  0 8px 0 0 var(--pf-drop)!important;
+ filter:none;
+}
+
+/* Header strip above the 3D stage. */
+.mp-table.mp-poker{background-color:var(--pe-wood);background-image:repeating-linear-gradient(180deg,transparent 0 10px,rgba(0,0,0,.13) 10px 12px)}
+.mp-poker .mp-stage{box-shadow:0 -2px 0 0 #9a7840,0 -6px 0 0 var(--pe-ink),0 -12px 0 0 rgba(8,4,2,.35)}
+.mp-poker .gd-heading h1{color:#f6e7c2;letter-spacing:3px;text-shadow:2px 2px 0 #6b4c22}
+
+/* Panels. */
+.mp-poker :is(.mp-controls,.mp-own,.mp-pot){
+ background-color:var(--pe-wood)!important;background-image:repeating-linear-gradient(180deg,transparent 0 10px,rgba(0,0,0,.13) 10px 12px)!important;color:var(--pe-text);
+}
+.mp-poker .mp-own>strong,.mp-poker .mp-action-row>strong{color:var(--pe-gold)}
+.mp-poker .mp-own>small,.mp-poker .mp-pot small,.mp-poker .mp-bet-row label{color:var(--pe-muted)}
+.mp-poker .mp-pot strong{color:var(--pe-gold);text-shadow:2px 2px 0 #5a3f1c}
+.mp-poker .mp-phase>b{display:inline-block;padding:2px 8px;background:var(--pe-brass);color:#24160a;text-shadow:none;
+ box-shadow:0 -2px 0 0 #0e0805,0 2px 0 0 #0e0805,-2px 0 0 0 #0e0805,2px 0 0 0 #0e0805}
+/* Dotted brass divider between the action and raise rows. */
+.mp-poker .mp-bet-row{border-top:0;background-image:repeating-linear-gradient(90deg,#9a7840 0 4px,transparent 4px 8px);background-size:100% 2px;background-repeat:no-repeat;background-position:0 0;padding-top:12px}
+.mp-poker .mp-connection{color:#9fe3cc}
+
+/* Seat nameplates: walnut plaque, state shown by the trim colour. */
+.mp-poker :is(.mp-labels .mp-head,.opponent-label){background-color:var(--pe-wood)!important;color:var(--pe-text)}
+.mp-poker :is(.mp-head,.opponent-label).poker-live{--pf-trim:#5fae9c}
+.mp-poker :is(.mp-head,.opponent-label).poker-live .poker-seat-state{color:#a6ecd6}
+.mp-poker :is(.mp-head,.opponent-label).poker-folded{--pf-trim:#c97a6a;background-color:#2e1c15!important;filter:saturate(.7)}
+.mp-poker :is(.mp-head,.opponent-label).poker-folded .poker-seat-state{color:#f7c0b0}
+.mp-poker :is(.mp-head,.opponent-label).poker-acting{--pf-trim:#ffe08a;--pf-hi:rgba(255,230,160,.3);outline:0!important;background-color:#4a3420!important}
+.mp-poker :is(.mp-head,.opponent-label).poker-acting .poker-seat-state{color:#24160a;background:var(--pe-brass)}
+.mp-poker :is(.mp-head,.opponent-label) .player-chip-total{color:var(--pe-gold)}
+
+/* Buttons: secondary by default, then call / fold / all-in / confirm. */
+.mp-poker :is(.gd-heading button,.mp-action-row button,.mp-bet-row button,[data-poker-profits]),
+body.in-game:has(.mp-poker) .topright .sound{
+ background:#24170e!important;--pf-trim:#6b4f2c;color:#e9d7ae!important;text-shadow:0 1px 0 #0e0805;transition:transform .06s steps(1)
+}
+.mp-poker .mp-action-row button.mp-call{background:var(--pe-brass)!important;--pf-trim:#f6e2a4;--pf-hi:rgba(255,250,225,.55);--pf-lo:rgba(110,70,20,.45);color:#2a1a0c!important;text-shadow:none}
+.mp-poker .mp-action-row button[data-action=fold]{background:#8c3b35!important;--pf-trim:#d48a72;--pf-hi:rgba(255,215,195,.25);color:#fbe6d6!important}
+.mp-poker .mp-action-row button[data-action=allin]{background:#4f1b25!important;--pf-trim:#e0b45e;--pf-hi:rgba(255,220,170,.18);color:#f7dfa0!important}
+.mp-poker .mp-bet-row button.mp-confirm{background:#6c9e45!important;--pf-trim:#c9ea8c;--pf-hi:rgba(240,255,200,.4);--pf-lo:rgba(30,60,10,.4);color:#13200a!important;text-shadow:none}
+
+.mp-table.mp-poker button:not(:disabled):hover,body.in-game:has(.mp-poker) .topright .sound:hover{--pf-trim:#ffe9a8;transform:translateY(-2px);filter:none}
+.mp-table.mp-poker button:not(:disabled):not([aria-disabled="true"]):is(:active,.button-pressed),
+body.in-game:has(.mp-poker) .topright .sound:not(:disabled):not([aria-disabled="true"]):is(:active,.button-pressed){
+ transform:translateY(4px);--pf-drop:transparent;--pf-hi:rgba(0,0,0,.25);--pf-lo:rgba(255,236,196,.1);filter:none!important;
+ box-shadow:inset 0 2px 0 0 var(--pf-hi),inset 0 -3px 0 0 var(--pf-lo),
+  0 -2px 0 0 var(--pf-trim),0 2px 0 0 var(--pf-trim),-2px 0 0 0 var(--pf-trim),2px 0 0 0 var(--pf-trim),
+  0 -4px 0 0 var(--pf-ink),0 4px 0 0 var(--pf-ink),-4px 0 0 0 var(--pf-ink),4px 0 0 0 var(--pf-ink),
+  -2px -2px 0 0 var(--pf-ink),2px -2px 0 0 var(--pf-ink),-2px 2px 0 0 var(--pf-ink),2px 2px 0 0 var(--pf-ink)!important;
+ transition:none!important
+}
+.mp-table.mp-poker button:disabled{filter:saturate(.2) brightness(.7);opacity:1;--pf-drop:rgba(8,4,2,.3)}
+.mp-table.mp-poker button:focus-visible{outline:3px solid #f7d67e;outline-offset:6px}
+
+/* Wallet: wine plaque with gold figures. */
+body.in-game:has(.mp-poker) .topright .wallet{background:#4f1b25!important;--pf-trim:#e0b45e;--pf-hi:rgba(255,220,170,.18);color:#f7dfa0}
+body.in-game:has(.mp-poker) .topright .wallet b{color:var(--pe-gold)}
+body.in-game:has(.mp-poker) .topright .wallet small{color:#d8b77a}
+
+/* Raise amount field and slider. */
+.mp-poker .mp-bet-row input[type=number]{background:var(--pe-ink)!important;--pf-trim:#6b4f2c;--pf-hi:rgba(0,0,0,.4);--pf-lo:rgba(255,236,196,.06);--pf-drop:transparent;color:var(--pe-gold)!important}
+.mp-poker input[type=range]::-webkit-slider-runnable-track{height:10px;border:0;background:#1b110a repeating-linear-gradient(90deg,transparent 0 46px,rgba(255,232,170,.25) 46px 48px);
+ box-shadow:0 -2px 0 0 #6b4f2c,0 2px 0 0 #6b4f2c,-2px 0 0 0 #6b4f2c,2px 0 0 0 #6b4f2c,inset 0 2px 0 0 rgba(0,0,0,.5)}
+.mp-poker input[type=range]::-moz-range-track{height:10px;border:0;background:#1b110a;box-shadow:0 -2px 0 0 #6b4f2c,0 2px 0 0 #6b4f2c,-2px 0 0 0 #6b4f2c,2px 0 0 0 #6b4f2c}
+.mp-poker input[type=range]::-moz-range-progress{height:10px;background:#8fbf5a}
+.mp-poker input[type=range]::-webkit-slider-thumb{width:16px;height:26px;margin-top:-8px;border:0;border-radius:0;background:var(--pe-brass);
+ box-shadow:inset 0 2px 0 0 rgba(255,250,225,.55),inset 0 -3px 0 0 rgba(110,70,20,.45),0 -2px 0 0 #f6e2a4,0 2px 0 0 #f6e2a4,-2px 0 0 0 #f6e2a4,2px 0 0 0 #f6e2a4,0 -4px 0 0 #140c07,0 4px 0 0 #140c07,-4px 0 0 0 #140c07,4px 0 0 0 #140c07,0 6px 0 0 rgba(8,4,2,.5)}
+.mp-poker input[type=range]::-moz-range-thumb{width:16px;height:26px;border:0;border-radius:0;background:var(--pe-brass);
+ box-shadow:0 -2px 0 0 #f6e2a4,0 2px 0 0 #f6e2a4,-2px 0 0 0 #f6e2a4,2px 0 0 0 #f6e2a4,0 -4px 0 0 #140c07,0 4px 0 0 #140c07,-4px 0 0 0 #140c07,4px 0 0 0 #140c07}
+
+@media(prefers-reduced-motion:reduce){.mp-table.mp-poker button,body.in-game:has(.mp-poker) .topright .sound{transition:none;transform:none!important}}
