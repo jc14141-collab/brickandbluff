@@ -1,0 +1,209 @@
+/* Lobby skin: same walnut / brass / stepped-pixel-corner recipe as poker-elegant.css.
+   Skin only (colour, frame, shadow). Lobby geometry stays in lobby-layout.css / lobby-setup.css.
+   Scoped to the lobby screen (body without .in-game), so game tables are untouched. */
+
+body:not(.in-game){
+ --le-ink:#140c07;--le-wood:#3b2618;--le-wood-2:#2d1d12;--le-brass:#d6ae5f;--le-trim:#9a7840;
+ --le-text:#f1e3c0;--le-muted:#bfa57a;--le-gold:#ffe7a6;
+ background:#1a120c radial-gradient(ellipse 80% 60% at 50% 35%,#2a1c12 0,#1a120c 70%) fixed;
+}
+
+/* Shared frame: ink outline with notched corners, brass hairline, inner light/shade, hard drop. */
+body:not(.in-game) :is(.topright .sound,.topright .wallet,.club-entry,#lobbySurface :is(.room-directory,#lobbyPlayers,.config,.selected-panel,.charcard,.lobby-portrait,.modebutton,select,.rules-toggle,.start,.mini-stakes button,.room-directory-list button)){
+ --f-ink:var(--le-ink);--f-trim:var(--le-trim);--f-hi:rgba(255,236,196,.14);--f-lo:rgba(0,0,0,.3);--f-drop:rgba(8,4,2,.5);--f-dy:6px;
+ border-radius:0!important;border-color:transparent!important;border-image:none!important;backdrop-filter:none!important;
+ box-shadow:inset 0 2px 0 0 var(--f-hi),inset 0 -3px 0 0 var(--f-lo),
+  0 -2px 0 0 var(--f-trim),0 2px 0 0 var(--f-trim),-2px 0 0 0 var(--f-trim),2px 0 0 0 var(--f-trim),
+  0 -4px 0 0 var(--f-ink),0 4px 0 0 var(--f-ink),-4px 0 0 0 var(--f-ink),4px 0 0 0 var(--f-ink),
+  -2px -2px 0 0 var(--f-ink),2px -2px 0 0 var(--f-ink),-2px 2px 0 0 var(--f-ink),2px 2px 0 0 var(--f-ink),
+  0 var(--f-dy) 0 0 var(--f-drop)!important;
+}
+
+/* ── Top bar: walnut strip, brass rule underneath ─────────────────────────── */
+body:not(.in-game) .topbar{
+ border:0!important;border-image:none!important;
+ background:var(--le-wood) repeating-linear-gradient(180deg,transparent 0 10px,rgba(0,0,0,.13) 10px 12px)!important;
+ box-shadow:0 2px 0 0 var(--le-trim),0 6px 0 0 var(--le-ink),0 12px 0 0 rgba(8,4,2,.35)!important;
+}
+body:not(.in-game) .topbar .brand>span:not(.brandmark){color:#f6e7c2;text-shadow:2px 2px 0 #6b4c22}
+body:not(.in-game) .topbar .brand small{color:var(--le-muted)}
+/* Nav: quiet text tabs, active one gets a brass pixel underline. */
+body:not(.in-game) .topbar .navlink{
+ background:transparent!important;border-color:transparent!important;box-shadow:none!important;color:#d9c49a;position:relative;
+}
+body:not(.in-game) .topbar .navlink::after{content:"";position:absolute;left:14px;right:14px;bottom:12px;height:2px;background:transparent}
+body:not(.in-game) .topbar .navlink:hover{color:#fff1c0;filter:none}
+body:not(.in-game) .topbar .navlink:hover::after{background:repeating-linear-gradient(90deg,var(--le-trim) 0 4px,transparent 4px 8px)}
+body:not(.in-game) .topbar .navlink.active{color:var(--le-gold)}
+body:not(.in-game) .topbar .navlink.active::after{background:var(--le-brass);box-shadow:0 2px 0 0 #5a3f1c}
+body:not(.in-game) .topbar .navlink+.navlink::before{content:"";position:absolute;left:-14px;top:50%;width:4px;height:4px;margin-top:-2px;background:#6b4f2c}
+/* Right cluster. */
+body:not(.in-game) :is(.topright .sound,.club-entry){background:#24170e!important;--f-trim:#6b4f2c;color:#e9d7ae!important}
+body:not(.in-game) .topright .wallet{background:#4f1b25!important;--f-trim:#e0b45e;--f-hi:rgba(255,220,170,.18);color:#f7dfa0}
+body:not(.in-game) .topright .wallet>span{color:#e3bf62}
+body:not(.in-game) .topright .wallet b{color:var(--le-gold)}
+body:not(.in-game) .topright .wallet small{color:#d8b77a}
+
+/* ── Headings ─────────────────────────────────────────────────────────── */
+body:not(.in-game) #lobbySurface .eyebrow{color:var(--le-brass);letter-spacing:.12em}
+body:not(.in-game) #lobbySurface .lobbyhead h1{color:#f6e7c2;text-shadow:3px 3px 0 #4a321a}
+body:not(.in-game) #lobbySurface .sectionlabel>span{color:#f1e3c0;display:inline-flex;align-items:center;gap:8px}
+body:not(.in-game) #lobbySurface .sectionlabel>span::before{content:"";width:6px;height:6px;background:var(--le-brass);box-shadow:2px 2px 0 0 #5a3f1c}
+body:not(.in-game) #lobbySurface .sectionlabel small{color:#8a7354}
+
+/* ── Panels ───────────────────────────────────────────────────────────── */
+body:not(.in-game) #lobbySurface :is(.room-directory,#lobbyPlayers,.config,.selected-panel){
+ background:var(--le-wood) repeating-linear-gradient(180deg,transparent 0 10px,rgba(0,0,0,.12) 10px 12px)!important;color:var(--le-text);
+}
+body:not(.in-game) #lobbySurface :is(.room-directory,#lobbyPlayers,.config)>h2,
+body:not(.in-game) #lobbySurface .lobby-list-title{color:#f6e7c2;border-color:transparent!important}
+/* Dotted brass rule under panel titles. */
+body:not(.in-game) #lobbySurface :is(.room-directory>h2,.lobby-list-title,.config>h2){
+ padding-bottom:10px;background:repeating-linear-gradient(90deg,var(--le-trim) 0 4px,transparent 4px 8px) left bottom/100% 2px no-repeat;
+}
+body:not(.in-game) #lobbySurface .config>h2 span{color:var(--le-brass)}
+body:not(.in-game) #lobbySurface :is(.room-directory p,.mode-desc,.lobby-list-title small,.lobby-list-title span:last-child){color:var(--le-muted)}
+/* Online player rows. */
+body:not(.in-game) #lobbySurface .lobby-player-list>*{border-color:rgba(154,120,64,.35)!important}
+body:not(.in-game) #lobbySurface .lobby-player-list :is(.online,[class*=online]){color:#9fe3cc}
+
+/* ── Characters ───────────────────────────────────────────────────────── */
+body:not(.in-game) #lobbySurface .characters{padding:4px 4px 8px}
+body:not(.in-game) #lobbySurface .charcard{background:#24170e!important;--f-trim:#6b4f2c;transition:transform .06s steps(1)}
+body:not(.in-game) #lobbySurface .charcard:hover{--f-trim:#c9a663;transform:translateY(-2px)}
+body:not(.in-game) #lobbySurface .charcard.chosen{--f-trim:#ffe08a;--f-hi:rgba(255,230,160,.28);background:#4a3420!important}
+body:not(.in-game) #lobbySurface .charcard .check{border-radius:0;background:var(--le-brass);color:#24160a;box-shadow:0 -2px 0 0 #140c07,0 2px 0 0 #140c07,-2px 0 0 0 #140c07,2px 0 0 0 #140c07}
+body:not(.in-game) #lobbySurface .charcard h2,body:not(.in-game) #lobbySurface .charcard .charinfo{color:#f1e3c0}
+body:not(.in-game) #lobbySurface .charcard.chosen h2{color:var(--le-gold)}
+body:not(.in-game) #lobbySurface .lobby-portrait{--f-trim:#9a7840;--f-hi:transparent;--f-lo:transparent;background-color:#24170e}
+body:not(.in-game) #lobbySurface .selected-panel .skill-symbol{border-radius:0;background:var(--le-brass);color:#24160a}
+body:not(.in-game) #lobbySurface .selected-panel strong{color:var(--le-gold)}
+body:not(.in-game) #lobbySurface .selected-panel p{color:var(--le-muted)}
+body:not(.in-game) #lobbySurface .selected-panel .badge{border-radius:0;background:#24170e;color:var(--le-brass);border-color:#6b4f2c}
+
+/* ── Game mode list ───────────────────────────────────────────────────── */
+/* Room for the outer frame inside the scrolling list. */
+body:not(.in-game) #lobbySurface .lobby-modes{padding:6px 10px 10px 6px;gap:10px!important}
+body:not(.in-game) #lobbySurface .modebutton{--f-dy:4px;background:#2b1c11!important;--f-trim:#6b4f2c;color:#e9d7ae!important;transition:transform .06s steps(1)}
+body:not(.in-game) #lobbySurface .modebutton .mode-icon{color:var(--le-brass)}
+body:not(.in-game) #lobbySurface .modebutton small{color:#9c8463}
+body:not(.in-game) #lobbySurface .modebutton:not(.selected):hover{--f-trim:#c9a663;background:#342215!important;filter:none;transform:translateY(-2px)}
+body:not(.in-game) #lobbySurface .modebutton.selected{
+ background:var(--le-brass)!important;--f-trim:#f6e2a4;--f-hi:rgba(255,250,225,.55);--f-lo:rgba(110,70,20,.45);color:#2a1a0c!important;text-shadow:none;
+}
+body:not(.in-game) #lobbySurface .modebutton.selected :is(small,.mode-icon){color:#6b4a1c!important}
+body:not(.in-game) #lobbySurface .modebutton .radio{border-radius:0}
+
+/* ── Settings rows and controls ───────────────────────────────────────── */
+body:not(.in-game) #lobbySurface .setting-row{
+ border:0!important;background:repeating-linear-gradient(90deg,rgba(154,120,64,.55) 0 4px,transparent 4px 8px) left top/100% 2px no-repeat;
+}
+body:not(.in-game) #lobbySurface .setting-row>span{color:var(--le-muted)}
+body:not(.in-game) #lobbySurface .setting-row>b{color:var(--le-gold)}
+body:not(.in-game) #lobbySurface select{--f-dy:0px;--f-trim:#6b4f2c;--f-hi:rgba(0,0,0,.4);--f-lo:rgba(255,236,196,.06);background-color:var(--le-ink)!important;color:var(--le-gold)!important}
+body:not(.in-game) #lobbySurface select option{background:#24170e;color:#f1e3c0}
+body:not(.in-game) #lobbySurface :is(.rules-toggle,.mini-stakes button){--f-dy:4px;background:#24170e!important;--f-trim:#6b4f2c;color:#e9d7ae!important}
+body:not(.in-game) #lobbySurface :is(.rules-toggle[aria-pressed=true],.mini-stakes button.selected){background:#6c9e45!important;--f-trim:#c9ea8c;--f-hi:rgba(240,255,200,.4);--f-lo:rgba(30,60,10,.4);color:#13200a!important;text-shadow:none}
+
+/* ── Start buttons ────────────────────────────────────────────────────── */
+body:not(.in-game) #lobbySurface .start{transition:transform .06s steps(1)}
+body:not(.in-game) #lobbySurface .start.primary{background:var(--le-brass)!important;--f-trim:#f6e2a4;--f-hi:rgba(255,250,225,.55);--f-lo:rgba(110,70,20,.45);color:#2a1a0c!important;text-shadow:none}
+body:not(.in-game) #lobbySurface .start.friend-start{background:#4f1b25!important;--f-trim:#e0b45e;--f-hi:rgba(255,220,170,.18);color:#f7dfa0!important}
+body:not(.in-game) #lobbySurface .start :is(small,span){color:inherit;opacity:.78}
+
+/* ── Shared button states ─────────────────────────────────────────────── */
+body:not(.in-game) :is(#lobbySurface :is(.start,.rules-toggle,.mini-stakes button,.room-directory-list button),.topright .sound,.club-entry):not(:disabled):hover{--f-trim:#ffe9a8;filter:none}
+body:not(.in-game) #lobbySurface .start:not(:disabled):hover{transform:translateY(-2px)}
+body:not(.in-game) :is(#lobbySurface :is(.start,.modebutton,.charcard,.rules-toggle,.mini-stakes button,.room-directory-list button),.topright .sound,.club-entry):not(:disabled):is(:active,.button-pressed){
+ transform:translateY(3px)!important;filter:none!important;--f-drop:transparent;
+ box-shadow:inset 0 2px 0 0 rgba(0,0,0,.28),inset 0 -2px 0 0 rgba(255,236,196,.08),
+  0 -2px 0 0 var(--f-trim),0 2px 0 0 var(--f-trim),-2px 0 0 0 var(--f-trim),2px 0 0 0 var(--f-trim),
+  0 -4px 0 0 var(--f-ink),0 4px 0 0 var(--f-ink),-4px 0 0 0 var(--f-ink),4px 0 0 0 var(--f-ink),
+  -2px -2px 0 0 var(--f-ink),2px -2px 0 0 var(--f-ink),-2px 2px 0 0 var(--f-ink),2px 2px 0 0 var(--f-ink)!important;transition:none!important
+}
+body:not(.in-game) #lobbySurface :is(button,select):disabled{filter:saturate(.25) brightness(.75)}
+body:not(.in-game) :is(#lobbySurface,.topbar) :is(button,select):focus-visible{outline:3px solid #f7d67e!important;outline-offset:6px}
+
+/* ── Scrollbars and footer ────────────────────────────────────────────── */
+body:not(.in-game) #lobbySurface *{scrollbar-color:#9a7840 #1b110a}
+body:not(.in-game) #lobbySurface ::-webkit-scrollbar{width:8px;height:8px}
+body:not(.in-game) #lobbySurface ::-webkit-scrollbar-track{background:#1b110a}
+body:not(.in-game) #lobbySurface ::-webkit-scrollbar-thumb{background:#9a7840;border:2px solid #1b110a;border-radius:0}
+body:not(.in-game) footer{border-top:0!important;background:repeating-linear-gradient(90deg,#5a4326 0 4px,transparent 4px 8px) left top/100% 2px no-repeat;color:#8a7354}
+body:not(.in-game) footer i{background:var(--le-brass)!important;border-radius:0}
+body:not(.in-game) footer b{color:var(--le-brass)}
+
+@media(prefers-reduced-motion:reduce){body:not(.in-game) :is(#lobbySurface :is(.start,.modebutton,.charcard)){transition:none;transform:none!important}}
+
+/* ── Typography: brighter, larger, pixel-crisp ────────────────────────────
+   Fusion Pixel is a 12px grid font; it stays sharp at 12 / 24 / 36px.
+   "Bold" is a 1px same-colour offset; every label sits on a 2px ink drop. */
+body:not(.in-game){--le-muted:#e2c99a}
+body:not(.in-game) :is(#lobbySurface,.topbar,footer){-webkit-font-smoothing:none;font-smooth:never;text-rendering:optimizeSpeed}
+body:not(.in-game) :is(#lobbySurface,.topbar) :is(h1,h2,strong,b,.navlink,.sectionlabel>span,.start,.club-entry,.sound,.charcard h2,.modebutton strong){
+ text-shadow:1px 0 0 currentColor,2px 2px 0 #0e0805,3px 2px 0 #0e0805!important;
+}
+body:not(.in-game) :is(#lobbySurface,.topbar) :is(p,small,span,.eyebrow,.tag,.ability,.class-name){text-shadow:2px 2px 0 #0e0805}
+/* Inverted text on brass surfaces gets a light emboss instead of a dark drop. */
+body:not(.in-game) #lobbySurface :is(.modebutton.selected,.start.primary,.rules-toggle[aria-pressed=true],.mini-stakes button.selected) :is(strong,small,span,b),
+body:not(.in-game) #lobbySurface :is(.start.primary,.modebutton.selected){text-shadow:1px 0 0 currentColor,1px 1px 0 rgba(255,246,214,.45)!important}
+
+/* Top bar. */
+body:not(.in-game) .topbar .brand>span:not(.brandmark){font-size:24px}
+body:not(.in-game) .topbar .brand small{font-size:12px;color:#e2c99a}
+body:not(.in-game) .topbar .navlink{font-size:16px;color:#f1e3c0}
+body:not(.in-game) .topbar .navlink.active{color:#ffe7a6}
+body:not(.in-game) .topright .sound span,body:not(.in-game) .club-entry{font-size:16px;color:#f6e7c2!important}
+body:not(.in-game) .topright .wallet b{font-size:24px}
+body:not(.in-game) .topright .wallet small{font-size:12px;color:#f0d08e}
+
+/* Page heading. */
+body:not(.in-game) #lobbySurface .eyebrow{font-size:12px;color:#f0c66e}
+body:not(.in-game) #lobbySurface .lobbyhead h1{font-size:36px;color:#fff3d2;text-shadow:2px 0 0 #fff3d2,3px 3px 0 #6b4c22,5px 5px 0 #0e0805!important}
+body:not(.in-game) #lobbySurface .sectionlabel>span{font-size:18px;color:#fff3d2}
+body:not(.in-game) #lobbySurface .sectionlabel small{font-size:12px;color:#c9ab76}
+
+/* Panels. */
+body:not(.in-game) #lobbySurface :is(.room-directory,#lobbyPlayers,.config)>h2,
+body:not(.in-game) #lobbySurface .lobby-list-title h2,
+body:not(.in-game) #lobbySurface .lobby-list-title>strong{font-size:24px;color:#fff3d2}
+body:not(.in-game) #lobbySurface :is(.room-directory p,.room-muted,.mode-desc,.selected-panel p){font-size:16px;line-height:1.6;color:#ead6ae}
+body:not(.in-game) #lobbySurface .lobby-player-list strong{font-size:16px;color:#fff3d2}
+body:not(.in-game) #lobbySurface .lobby-player-chips{font-size:16px;color:#ffe08a}
+body:not(.in-game) #lobbySurface :is(.online-dot,.lobby-list-title span){font-size:14px}
+body:not(.in-game) #lobbySurface .online-dot{color:#a8f0d6}
+
+/* Character cards. */
+body:not(.in-game) #lobbySurface .charcard h2{font-size:14px;color:#fff3d2}
+body:not(.in-game) #lobbySurface .charcard.chosen h2{color:#ffe7a6}
+body:not(.in-game) #lobbySurface .charcard .class-name{font-size:12px;filter:brightness(1.15)}
+body:not(.in-game) #lobbySurface .charcard :is(.ability,.tag){color:#ead6ae}
+body:not(.in-game) #lobbySurface .selected-panel strong{font-size:18px;color:#ffe7a6}
+
+/* Mode list. */
+body:not(.in-game) #lobbySurface .modebutton strong{font-size:20px;color:#fff3d2}
+body:not(.in-game) #lobbySurface .modebutton small{font-size:12px;color:#c9ab76;letter-spacing:.06em}
+body:not(.in-game) #lobbySurface .modebutton .mode-icon{font-size:24px;color:#f0c66e}
+body:not(.in-game) #lobbySurface .modebutton.selected strong{color:#24160a}
+body:not(.in-game) #lobbySurface .modebutton.selected :is(small,.mode-icon){color:#5c3d12!important}
+
+/* Settings. */
+body:not(.in-game) #lobbySurface .setting-row>span{font-size:18px;color:#f6e7c2}
+body:not(.in-game) #lobbySurface .setting-row>b{font-size:16px;color:#ffe08a}
+body:not(.in-game) #lobbySurface select{font-size:16px;color:#ffe7a6!important}
+body:not(.in-game) #lobbySurface .rules-toggle{font-size:16px;color:#f6e7c2!important}
+
+/* Start buttons. */
+body:not(.in-game) #lobbySurface .start strong,body:not(.in-game) #lobbySurface .start>span:first-child{font-size:20px}
+body:not(.in-game) #lobbySurface .start small{font-size:12px;opacity:.9}
+body:not(.in-game) #lobbySurface .start.primary{color:#1e1208!important}
+body:not(.in-game) #lobbySurface .start.friend-start{color:#ffe7a6!important}
+
+body:not(.in-game) footer{color:#c9ab76}
+/* Fixes: panel title inside #lobbyPlayers, and start-button labels (spans, not strong). */
+body:not(.in-game) #lobbySurface #lobbyPlayers .lobby-list-title h2{font-size:24px!important;color:#fff3d2}
+body:not(.in-game) #lobbySurface .start>span:first-child{text-shadow:1px 0 0 currentColor,2px 2px 0 #0e0805,3px 2px 0 #0e0805!important}
+body:not(.in-game) #lobbySurface .start.primary>span:first-child{text-shadow:1px 0 0 currentColor,1px 1px 0 rgba(255,246,214,.45)!important}
+body:not(.in-game) #lobbySurface .start>span small{text-shadow:none!important}
+body:not(.in-game) #lobbySurface .start.friend-start>span small{text-shadow:2px 2px 0 #0e0805!important}
+@media(max-width:600px){body:not(.in-game) #lobbySurface .lobbyhead h1{font-size:24px}body:not(.in-game) #lobbySurface :is(.room-directory,#lobbyPlayers,.config)>h2,body:not(.in-game) #lobbySurface #lobbyPlayers .lobby-list-title h2{font-size:18px!important}}
