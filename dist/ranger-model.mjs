@@ -11,13 +11,13 @@ export function refineRanger(table,rig){
  const hood=new T.Group();head.add(hood);
  for(let n=0;n<5;n++){
   b(hood,.98-n*.105,.105,.85-n*.075,0,.37+n*.077,-.055-n*.034,n%2?green:moss);
-  for(const side of [-1,1])b(hood,.135,.15,.73,side*(.445-n*.009),.24-n*.135,-.075,n%2?green:deep);
+  for(const side of [-1,1])b(hood,.135+(n%2)*.01,.15,.73+(n%2)*.014,side*(.445-n*.009),.24-n*.135,-.075,n%2?green:deep);
  }
  b(hood,.80,.67,.13,0,.01,-.40,green);
  for(const side of [-1,1]){
   for(let n=0;n<4;n++)b(hood,.055,.125,.075,side*(.416-n*.005),.20-n*.125,.317,moss);
   const edge=b(hood,.31,.06,.09,side*.25,.345,.34,moss);edge.rotation.z=side*.21;
-  for(let n=0;n<3;n++)b(hood,.105,.20,.12,side*.365,.15-n*.12,.29,n%2?0x67472d:0x89603a);
+  for(let n=0;n<3;n++)b(hood,.105+(n%2)*.012,.20,.12+(n%2)*.014,side*.365,.15-n*.12,.29+(n%2)*.004,n%2?0x67472d:0x89603a);
  }
  for(let n=0;n<5;n++)b(hood,.13,.095+(n%2)*.035,.09,-.27+n*.135,.29-(n%2)*.016,.328,0x765031);
  table.batchBoxes(hood);
@@ -28,7 +28,7 @@ export function refineRanger(table,rig){
  b(outfit,1.055,.73,.63,0,.43,-.025,green);
  // Layered shoulders, diagonal leather harness and brass leaf clasp.
  for(const side of [-1,1]){
-  for(let n=0;n<3;n++)b(outfit,.24+n*.05,.085,.65,side*(.37+n*.02),.80-n*.065,-.025,n%2?deep:moss);
+  for(let n=0;n<3;n++)b(outfit,.24+n*.05,.085,.65+n*.012,side*(.37+n*.02),.80-n*.065,-.025,n%2?deep:moss);
   const collar=b(outfit,.28,.14,.07,side*.16,.76,.33,moss);collar.rotation.z=side*.37;
  }
  const strap=b(outfit,.12,.73,.058,.04,.44,.343,leather);strap.rotation.z=-.60;
@@ -48,9 +48,9 @@ export function refineRanger(table,rig){
   arm.clear();b(arm,.35,.33,.39,0,-.10,.01,green);
   for(let n=0;n<3;n++)b(arm,.38,.055,.405,0,.01-n*.09,.01,n%2?deep:moss);
   b(arm,.30,.20,.24,0,-.27,.21,0xd8ac72);b(arm,.35,.25,.28,0,-.29,.46,leather);
-  for(const z of [.34,.54]){b(arm,.37,.045,.055,0,-.17,z,gold);b(arm,.035,.25,.05,-.19,-.29,z,0x9d7845)}
+  for(const z of [.34,.54]){b(arm,.37,.045,.055,0,-.17,z,gold);b(arm,.035,.262,.05,-.19,-.29,z,0x9d7845)}
   b(arm,.36,.23,.20,0,-.29,.705,0x403a28);
-  for(let f=0;f<4;f++){b(arm,.079,.20,.085,-.133+f*.09,-.285,.8575,0xd8ac72);b(arm,.079,.215,.04,-.133+f*.09,-.285,.82,0x403a28)}
+  for(let f=0;f<4;f++){b(arm,.079,.20,.085,-.133+f*.09,-.285,.8575,0xd8ac72);b(arm,.084,.215,.04,-.133+f*.09,-.285,.82,0x403a28)}
   b(arm,.10,.17,.19,i?-.24:.24,-.32,.70,0xd8ac72);
   arm.traverse(o=>{if(o.isMesh)o.receiveShadow=false});
  }
@@ -87,7 +87,7 @@ function dressRanger(table,rig,hood,gear,bow,{green,moss,deep,leather,gold}){
  for(const a of arms){
   const out=a.position.x>0?1:-1;
   for(let n=0;n<3;n++){const leaf=b(a,.16,.26,.05,out*(.13+n*.04),.08-n*.05,.12-n*.13,n===1?moss:0x7d9a52);leaf.rotation.set(0,out*Math.PI/2,out*(.55+n*.12));b(a,.02,.2,.055,out*(.13+n*.04),.08-n*.05,.12-n*.13,deep).rotation.set(0,out*Math.PI/2,out*(.55+n*.12))}
-  b(a,.39,.04,.42,0,.1,.01,gold);
+  b(a,.4,.04,.43,0,.1,.01,gold);
  }
  // Emerald clasp at the throat of the cloak.
  const clasp=new T.Group();clasp.position.set(0,.78,.36);g.add(clasp);
@@ -95,7 +95,7 @@ function dressRanger(table,rig,hood,gear,bow,{green,moss,deep,leather,gold}){
  const gem=new T.Mesh(new T.OctahedronGeometry(.06,0),new T.MeshStandardMaterial({color:0x2fd07a,emissive:0x0f9a52,emissiveIntensity:.7,roughness:.25,metalness:.1}));gem.position.z=.04;clasp.add(gem);
  // Red feather tucked into the hood band.
  const feather=new T.Group();feather.position.set(.42,.48,-.12);feather.rotation.set(-.35,0,-.5);hood.add(feather);
- for(let n=0;n<6;n++)b(feather,.07-Math.abs(n-2.5)*.008,.07,.035,0,n*.065,0,n<4?0xc8452f:0xf1e6d2);
+ for(let n=0;n<6;n++)b(feather,.07-Math.abs(n-2.5)*.008+(n%2)*.006,.07,.035+(n%2)*.008,0,n*.065,0,n<4?0xc8452f:0xf1e6d2);
  b(feather,.012,.42,.012,0,.17,.02,0xf1e6d2);
  // Leather grip and gold nocks on the bow.
  b(bow,.07,.22,.085,.17,0,0,leather);for(const y of [-.08,.08])b(bow,.075,.025,.09,.17,y,0,gold);

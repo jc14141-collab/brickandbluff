@@ -28,7 +28,7 @@ export function refineGuardian(table,rig){
  b(shell,.84,.13,.20,0,-.365,.39,white);b(shell,.77,.055,.08,0,-.315,.462,blue);
  b(shell,.90,.16,.17,0,-.39,-.43,blue);b(shell,.93,.66,.10,0,-.005,-.43,white);
  // Brown fringe inside the helmet, above the eyebrows.
- for(let i=0;i<5;i++)b(shell,.15,.12+(i%2)*.035,.075,-.30+i*.15,.266-(i%2)*.01,.363,i%2?0x60442d:0x795335);
+ for(let i=0;i<5;i++)b(shell,.15,.12+(i%2)*.035,.075+(i%2)*.012,-.30+i*.15,.266-(i%2)*.01,.363,i%2?0x60442d:0x795335);
  const glass=new T.Mesh(new T.PlaneGeometry(.82,.54),new T.MeshStandardMaterial({color:0xbce8ef,transparent:true,opacity:.075,metalness:.05,roughness:.18,depthWrite:false}));glass.position.set(0,-.018,.492);head.add(glass);
  const shine=new T.Mesh(new T.PlaneGeometry(.035,.21),new T.MeshBasicMaterial({color:0xe9fbff,transparent:true,opacity:.23,depthWrite:false}));shine.position.set(-.345,.13,.494);shine.rotation.z=-.14;head.add(shine);
  table.batchBoxes(shell);
@@ -36,8 +36,8 @@ export function refineGuardian(table,rig){
  b(suit,1.08,.72,.66,0,.43,-.025,blue);b(suit,.83,.58,.05,0,.43,.325,white);
  for(const side of[-1,1]){b(suit,.115,.64,.085,side*.46,.43,.345,white);b(suit,.13,.11,.11,side*.31,.72,.36,dark);b(suit,.10,.065,.03,side*.31,.74,.422,gold)}
  b(suit,.68,.40,.15,0,.44,.405,white);b(suit,.09,.32,.14,-.39,.43,.39,dark);
- const dial=(x,y,r,color)=>{const m=new T.Mesh(new T.CylinderGeometry(r,r,.035,12),table.mat(color,.28));m.rotation.x=Math.PI/2;m.position.set(x,y,.51);suit.add(m)};
- dial(-.12,.44,.13,dark);dial(-.12,.44,.091,0x4ec0d0);dial(.21,.52,.066,0xba652b);dial(.21,.37,.051,0xe5ae3e);
+ const dial=(x,y,r,color,z=.51)=>{const m=new T.Mesh(new T.CylinderGeometry(r,r,.035,12),table.mat(color,.28));m.rotation.x=Math.PI/2;m.position.set(x,y,z);suit.add(m)};
+ dial(-.12,.44,.13,dark);dial(-.12,.44,.091,0x4ec0d0,.522);dial(.21,.52,.066,0xba652b);dial(.21,.37,.051,0xe5ae3e);
  b(suit,.025,.045,.009,-.145,.48,.538,0xe6faf4);
  b(suit,.89,.12,.70,0,.10,0,white);b(suit,.20,.11,.055,0,.1,.383,dark);b(suit,.11,.05,.065,0,.1,.418,gold);
  for(const side of[-1,1]){b(suit,.40,.24,.67,side*.25,.0,.33,blue);b(suit,.37,.40,.34,side*.25,-.33,.59,white);b(suit,.43,.18,.54,side*.25,-.64,.74,dark);b(suit,.37,.065,.08,side*.25,-.53,.78,blue)}
@@ -48,7 +48,7 @@ export function refineGuardian(table,rig){
  for(let n=0;n<3;n++)b(arm,.355,.012,.435,0,-.22+n*.045,.25,0xc8d6d2);
  b(arm,.40,.27,.16,0,-.29,.48,blue);b(arm,.40,.26,.28,0,-.29,.68,dark);
  b(arm,.37,.065,.29,0,-.14,.65,blue);
- for(let f=0;f<4;f++){b(arm,.082,.235,.145,-.137+f*.091,-.285,.84,0x344149);b(arm,.082,.014,.148,-.137+f*.091,-.23,.842,0x63737a)}
+ for(let f=0;f<4;f++){b(arm,.082,.235,.145,-.137+f*.091,-.285,.84,0x344149);b(arm,.088,.014,.152,-.137+f*.091,-.23,.842,0x63737a)}
  b(arm,.105,.19,.23,i?-.23:.23,-.32,.67,dark);
  const logo=new T.Group();logo.position.set((i?1:-1)*.205,-.04,.025);logo.rotation.y=(i?1:-1)*Math.PI/2;arm.add(logo);
  const planet=new T.Mesh(new T.CircleGeometry(.105,16),table.mat(0xe9b943,.12));logo.add(planet);

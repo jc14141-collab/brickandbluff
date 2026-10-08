@@ -66,7 +66,7 @@ function dressWitch(table,rig,detail,hat,{violet,plum,gold,gem}){
  // Chest: lighter stomacher with gold lacing and a star brooch at the throat.
  box(detail,.34,.36,.03,0,.55,.282,0x8b47c1);
  for(let n=0;n<3;n++){const y=.64-n*.1;for(const r of [.7,-.7]){const l=box(detail,.15,.022,.02,0,y,.3,gold);l.rotation.z=r}}
- for(const side of [-1,1])box(detail,.025,.36,.025,side*.17,.55,.3,gold);
+ for(const side of [-1,1])box(detail,.025,.38,.025,side*.17,.55,.3,gold);
  box(detail,.13,.13,.035,0,.79,.34,gold).rotation.z=Math.PI/4;gem(detail,.06,0,.79,.37);
  // Starry trim down both robe edges.
  for(const side of [-1,1])for(let n=0;n<3;n++)box(detail,.035,.035,.02,side*(.36+(n%2)*.04),.68-n*.14,.27,star);

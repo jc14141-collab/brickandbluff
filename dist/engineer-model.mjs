@@ -10,10 +10,10 @@ export function refineEngineer(table,rig){
  const hairGroup=new T.Group();head.add(hairGroup);
  for(let layer=0;layer<5;layer++)for(let row=0;row<4;row++){
  const w=.87-layer*.07,y=.31+layer*.057,z=-.30+row*.18;
- b(hairGroup,w,.073,.20,-.025+layer*.009,y,z,layer%2?0x87502c:0x744020);
+ b(hairGroup,w,.073,.20+(layer%2)*.012,-.025+layer*.009,y,z,layer%2?0x87502c:0x744020);
  }
  for(const side of[-1,1])for(let n=0;n<5;n++)b(hairGroup,.16,.14,.22,side*(.415+(n%2)*.02),.26-n*.11,-.16+(n%2)*.11,n%2?0x663b24:0x87502c);
- for(let n=0;n<7;n++){const fringe=b(hairGroup,.137,.16+(n%3)*.025,.17,-.39+n*.13,.30-(n%3)*.024,.365,n%2?0x744020:0x955b32);fringe.rotation.z=(n-3)*.035}
+ for(let n=0;n<7;n++){const fringe=b(hairGroup,.137,.16+(n%3)*.025,.17+(n%2)*.012,-.39+n*.13,.30-(n%3)*.024,.365,n%2?0x744020:0x955b32);fringe.rotation.z=(n-3)*.035}
  for(const side of[-1,1]){b(head,.085,.14,.12,side*.433,-.085,.09,0xd6aa73);b(head,.08,.035,.07,side*.438,-.055,.16,0xbc8656)}
  // Thick cylindrical goggle housings and inset lenses, raised above the fringe.
  const optics=new T.Group();optics.position.set(0,.49,.425);optics.rotation.x=-.10;head.add(optics);
@@ -45,7 +45,7 @@ export function refineEngineer(table,rig){
  b(arm,.31,.20,.31,0,-.27,.25,0xe0b077);
  b(arm,.39,.25,.14,0,-.29,.43,0x35302a);b(arm,.30,.18,.025,0,-.285,.511,0x6c5c46);
  b(arm,.37,.255,.32,0,-.29,.65,0x3c352c);
- for(let f=0;f<4;f++){b(arm,.081,.24,.15,-.137+f*.091,-.28,.82,0x4b4133);b(arm,.08,.027,.155,-.137+f*.091,-.245,.825,0x77674e)}
+ for(let f=0;f<4;f++){b(arm,.081,.24,.15,-.137+f*.091,-.28,.82,0x4b4133);b(arm,.088,.027,.154,-.137+f*.091,-.245,.825,0x77674e)}
  b(arm,.105,.19,.22,i?-.22:.22,-.32,.65,0x3c352c);
  }
  const pack=new T.Group();pack.position.set(0,.45,-.90);g.add(pack);
@@ -86,7 +86,7 @@ function dressEngineer(table,rig,detail,pack,{orange,leather,brass}){
   const out=a.position.x>0?1:-1;
   b(a,.42,.13,.43,out*.02,.09,.01,leather);b(a,.38,.06,.39,out*.02,.17,.01,0x6e4c36);b(a,.44,.035,.45,out*.02,.03,.01,brass);
   for(const z of [-.12,.13])b(a,.03,.045,.045,out*.225,.09,z,brass);
-  if(i===0){b(a,.2,.13,.05,0,-.27,.395,brass);b(a,.15,.09,.02,0,-.27,.42,0xe9e3c8);b(a,.012,.06,.012,.0,-.255,.432,dark);b(a,.04,.012,.012,.015,-.27,.432,dark)}
+  if(i===0){b(a,.2,.13,.05,0,-.27,.395,brass);b(a,.15,.09,.02,0,-.27,.42,0xe9e3c8);b(a,.012,.05,.012,.0,-.255,.432,dark);b(a,.04,.012,.012,.015,-.27,.432,dark)}
  }
  // Cog badge on the bib.
  const cog=new T.Group();cog.position.set(-.17,.64,.335);detail.add(cog);
@@ -94,7 +94,7 @@ function dressEngineer(table,rig,detail,pack,{orange,leather,brass}){
  b(cog,.12,.12,.035,0,0,.005,brass).rotation.z=Math.PI/4;b(cog,.05,.05,.04,0,0,.01,dark);
  // Screwdriver and pencil standing in the chest pocket.
  b(detail,.035,.17,.035,-.06,.53,.35,0xe2b437);b(detail,.016,.08,.016,-.06,.65,.35,steel);
- b(detail,.03,.2,.03,.07,.54,.35,0x3f6fa0);b(detail,.03,.03,.03,.07,.655,.35,0xf0d2a0);
+ b(detail,.03,.2,.03,.07,.54,.35,0x3f6fa0);b(detail,.036,.03,.036,.07,.655,.35,0xf0d2a0);
  // Flue on the backpack, with brass bands.
  b(pack,.12,.62,.12,.24,.62,.0,0x4a4440);for(const y of [.42,.72])b(pack,.15,.05,.15,.24,y,0,brass);b(pack,.18,.06,.18,.24,.95,0,0x3a3531);
  // Steam puffs rise from the flue and fade; one shared material, no lights.
