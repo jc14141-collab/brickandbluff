@@ -87,3 +87,13 @@ body .gd-room .gd-current-half .gd-feed-card i{font-size:21px}
  body .gd-room .gd-current-half .gd-feed-card b{font-size:17px}
  body .gd-room .gd-current-half .gd-feed-card i{font-size:15px}
 }
+/* Guandan settlement: one centred frame; the outer layer is only a backdrop. */
+body.in-game .gd-room:not(.bt-room) .gd-end:not(:empty){inset:72px 14px 14px;z-index:30;display:grid;grid-template-rows:minmax(0,1fr);place-items:center;padding:10px;box-sizing:border-box;max-height:none;overflow:hidden;background:#140c07b8!important;border:0!important;border-image:none!important;box-shadow:none!important;border-radius:0;outline:0;backdrop-filter:none}
+.gd-room:not(.bt-room) .gd-end .gd-result.gd-review{width:min(1000px,100%);max-width:100%;max-height:100%;min-height:0;box-sizing:border-box;margin:0;padding:16px;overflow:auto;overscroll-behavior:contain;scrollbar-width:thin;touch-action:pan-y}
+.gd-room:not(.bt-room) .gd-review .gd-review-hands{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px!important;margin:0 0 12px!important}
+.gd-room:not(.bt-room) .gd-review-hands section{min-width:0;padding:10px}
+.gd-room:not(.bt-room) .gd-review-hands section>div{flex-wrap:wrap;gap:5px}
+.gd-room:not(.bt-room) .gd-review h2{font-size:24px;margin:10px 0}
+.gd-room:not(.bt-room) .gd-review .gd-result-actions{position:sticky;bottom:-16px;z-index:2;display:flex;justify-content:center;gap:14px;flex-wrap:wrap;margin:12px -16px -16px;padding:12px 16px 16px;background:#3b2618;border-top:1px solid #9a7840;box-shadow:0 -6px 12px #140c0733}
+.gd-room:not(.bt-room) .gd-result-actions button{min-height:40px;max-width:100%;white-space:normal}
+@media(max-height:500px) and (orientation:landscape){body.in-game .gd-room:not(.bt-room) .gd-end:not(:empty){inset:52px 8px 8px;padding:6px}.gd-room:not(.bt-room) .gd-end .gd-result.gd-review{padding:12px}.gd-room:not(.bt-room) .gd-review .gd-result-actions{bottom:-12px;margin:10px -12px -12px;padding:10px 12px 12px}.gd-room:not(.bt-room) .gd-review h2{font-size:20px}}

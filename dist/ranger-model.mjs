@@ -68,6 +68,7 @@ export function refineRanger(table,rig){
  for(const [x,y] of [...points].reverse())outline.lineTo(x+.028,y);outline.closePath();
  const limb=new T.Mesh(new T.ExtrudeGeometry(outline,{depth:.065,bevelEnabled:false,steps:1}),table.mat(0xad7b43));limb.position.z=-.0325;bow.add(limb);
  b(bow,.018,1.34,.018,-.03,0,0,0xd5c49b);
+ dressRanger(table,rig,hood,gear,bow,{green,moss,deep,leather,gold});
  table.batchBoxes(gear);table.batchBoxes(bow);for(const part of [gear,bow])part.traverse(o=>{if(o.isMesh){o.castShadow=false;o.receiveShadow=false}});rig.weapon=bow;rig.ranger=true;return rig;
 }
 
@@ -78,4 +79,32 @@ export function updateRangerFace(rig,blink,kind,strength){
   if(blink)r(x,110,36,5,'#243226');else{r(x,86,37,44,'#293429');r(x+5,94,27,34,'#31543a');r(x+10,94,17,29,'#18251d');r(x+4,88,12,13,'#fff7db');r(x+26,117,6,6,'#b1c585')}
  }
  r(104,178,48,5,'#745038');r(99,173,7,6,'#745038');r(150,172,7,7,'#745038');a.texture.needsUpdate=true;
+}
+
+// Third-person kit: leaf pauldrons, emerald cloak clasp, a feather in the hood, bow grip and drifting fireflies.
+function dressRanger(table,rig,hood,gear,bow,{green,moss,deep,leather,gold}){
+ const {group:g,arms,head}=rig;const b=(p,w,h,d,x,y,z,c)=>table.box(p,w,h,d,x,y,z,c);
+ for(const a of arms){
+  const out=a.position.x>0?1:-1;
+  for(let n=0;n<3;n++){const leaf=b(a,.16,.26,.05,out*(.13+n*.04),.08-n*.05,.12-n*.13,n===1?moss:0x7d9a52);leaf.rotation.set(0,out*Math.PI/2,out*(.55+n*.12));b(a,.02,.2,.055,out*(.13+n*.04),.08-n*.05,.12-n*.13,deep).rotation.set(0,out*Math.PI/2,out*(.55+n*.12))}
+  b(a,.39,.04,.42,0,.1,.01,gold);
+ }
+ // Emerald clasp at the throat of the cloak.
+ const clasp=new T.Group();clasp.position.set(0,.78,.36);g.add(clasp);
+ b(clasp,.15,.15,.035,0,0,0,gold).rotation.z=Math.PI/4;
+ const gem=new T.Mesh(new T.OctahedronGeometry(.06,0),new T.MeshStandardMaterial({color:0x2fd07a,emissive:0x0f9a52,emissiveIntensity:.7,roughness:.25,metalness:.1}));gem.position.z=.04;clasp.add(gem);
+ // Red feather tucked into the hood band.
+ const feather=new T.Group();feather.position.set(.42,.48,-.12);feather.rotation.set(-.35,0,-.5);hood.add(feather);
+ for(let n=0;n<6;n++)b(feather,.07-Math.abs(n-2.5)*.008,.07,.035,0,n*.065,0,n<4?0xc8452f:0xf1e6d2);
+ b(feather,.012,.42,.012,0,.17,.02,0xf1e6d2);
+ // Leather grip and gold nocks on the bow.
+ b(bow,.07,.22,.085,.17,0,0,leather);for(const y of [-.08,.08])b(bow,.075,.025,.09,.17,y,0,gold);
+ for(const y of [-.7,.7])b(bow,.05,.05,.05,-.03,y,0,gold);
+ // Fireflies drifting around her; one shared emissive material, no lights.
+ const flyMat=new T.MeshStandardMaterial({color:0xe8ff8a,emissive:0xc6f04a,emissiveIntensity:1.6});
+ const swarm=new T.Group();swarm.position.set(0,.9,.1);g.add(swarm);
+ const geo=new T.BoxGeometry(1,1,1);
+ const flies=[0,1,2,3].map(n=>{const m=new T.Mesh(geo,flyMat);m.scale.setScalar(.03+(n%2)*.01);m.castShadow=false;swarm.add(m);return m});
+ flies[0].onBeforeRender=()=>{const t=(typeof performance!=='undefined'?performance.now():0)/1000;flies.forEach((m,i)=>{const a=t*(.3+i*.07)+i*1.7;m.position.set(Math.cos(a)*(.75+.1*Math.sin(t+i)),.25*Math.sin(t*.8+i*2)+(i%2)*.2,Math.sin(a*1.3)*.45+.1);m.visible=((t*.7+i*.37)%1)<.85})};
+ flies[0].onBeforeRender();
 }

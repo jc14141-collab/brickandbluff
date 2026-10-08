@@ -58,6 +58,7 @@ export function refineGuardian(table,rig){
  b(pack,.91,.77,.36,0,0,0,blue);b(pack,.78,.16,.37,0,.36,0,white);b(pack,.77,.12,.38,0,-.33,0,white);
  for(const side of[-1,1]){b(pack,.16,.61,.39,side*.39,0,-.01,white);b(pack,.13,.08,.12,side*.28,.49,-.05,blue);b(pack,.13,.10,.055,side*.29,-.08,-.225,gold)}
  b(pack,.46,.42,.065,0,.02,-.225,dark);for(let n=0;n<4;n++)b(pack,.32,.035,.025,0,.14-n*.08,-.27,0x94bfc7);
+ dressGuardian(table,rig,suit,pack,b,{blue,white,dark,gold});
  table.batchBoxes(pack);table.batchBoxes(suit);rig.guardian=true;return rig;
 }
 
@@ -67,4 +68,30 @@ export function updateGuardianFace(rig,blink,kind,strength){
  for(const left of [58,156]){const lift=strength>.35&&kind===2?-3:0;r(left-1,64+lift,40,7,'#50382a');r(left+5,60+lift,25,5,'#50382a');
  if(blink)r(left,109,39,5,'#2a2221');else{r(left,84,40,47,'#342522');r(left+5,89,30,40,'#1c2024');r(left+5,88,13,14,'#fff9e8');r(left+27,119,6,6,'#a6cbd3')}}
  r(99,173,61,6,'#68452c');r(102,179,55,12,'#68452c');r(109,191,42,4,'#68452c');r(106,179,48,5,'#fff4d6');a.texture.needsUpdate=true;
+}
+
+// Third-person kit: shoulder caps with rank bars, blinking status lights, pack antenna and an orbiting probe.
+function dressGuardian(table,rig,suit,pack,b,{blue,white,dark,gold}){
+ const {group:g,arms}=rig;
+ for(const a of arms){
+  const out=a.position.x>0?1:-1;
+  b(a,.44,.12,.44,out*.02,.12,.025,white);b(a,.4,.05,.4,out*.02,.2,.025,0xf2f2ea);b(a,.45,.04,.45,out*.02,.06,.025,blue);
+  for(let n=0;n<2;n++)b(a,.03,.03,.16,out*.235,.13-n*.045,.025,gold);
+ }
+ // Status lights along the chest plate: each has its own material so they blink in turn.
+ const leds=[0x5cf2a6,0xffd25a,0xff6a5a].map((c,i)=>{const m=new T.Mesh(new T.BoxGeometry(.05,.035,.02),new T.MeshStandardMaterial({color:c,emissive:c,emissiveIntensity:1}));m.position.set(.06+i*.075,.3,.49);m.castShadow=false;g.add(m);return m});
+ // Antenna on the life-support pack with a red beacon.
+ b(pack,.035,.62,.035,.33,.68,-.05,0xc8d6d2);b(pack,.09,.05,.09,.33,.4,-.05,dark);
+ const beacon=new T.Mesh(new T.BoxGeometry(.075,.075,.075),new T.MeshStandardMaterial({color:0xff5a4a,emissive:0xff3020,emissiveIntensity:1.5}));beacon.position.set(.33,.53+1.0,-.66);beacon.castShadow=false;g.add(beacon);
+ // A palm-sized probe with solar wings circles the helmet.
+ const orbit=new T.Group();orbit.position.set(0,1.45,0);g.add(orbit);
+ const probe=new T.Group();orbit.add(probe);
+ const geo=new T.BoxGeometry(1,1,1),body=new T.Mesh(geo,new T.MeshStandardMaterial({color:0xe4e5d9,metalness:.3,roughness:.4}));body.scale.set(.09,.07,.09);probe.add(body);
+ const wingMat=new T.MeshStandardMaterial({color:0x2f5f9a,emissive:0x1d3f7a,emissiveIntensity:.5,metalness:.4,roughness:.3});
+ for(const side of [-1,1]){const w=new T.Mesh(geo,wingMat);w.scale.set(.12,.012,.07);w.position.x=side*.11;probe.add(w)}
+ const eye=new T.Mesh(geo,new T.MeshStandardMaterial({color:0x7fe7ff,emissive:0x4fd8ff,emissiveIntensity:1.4}));eye.scale.set(.03,.03,.02);eye.position.z=.05;probe.add(eye);
+ probe.traverse(o=>{if(o.isMesh)o.castShadow=false});
+ body.onBeforeRender=()=>{const t=(typeof performance!=='undefined'?performance.now():0)/1000,a=t*.5;probe.position.set(Math.cos(a)*.78,Math.sin(t*1.4)*.06,Math.sin(a)*.55);probe.rotation.y=-a+Math.PI;probe.rotation.z=Math.sin(t*2)*.15;
+  leds.forEach((m,i)=>m.material.emissiveIntensity=((t*1.6-i*.5)%3+3)%3<1?1.6:.25);beacon.material.emissiveIntensity=(t%1.4)<.18?2.2:.35};
+ body.onBeforeRender();
 }

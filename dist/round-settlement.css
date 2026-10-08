@@ -1,0 +1,25 @@
+/* Compact end-of-hand plaques, using the existing walnut / brass frame skin. */
+.mp-table.mp-poker.round-settled .mp-controls{display:none!important}
+.mp-table.mp-poker.settlement-shown .mp-phase{display:none}
+.mp-table.mp-poker .mp-result:not(:empty){inset:auto 14px 18px;display:flex;justify-content:center;pointer-events:none;max-height:calc(100dvh - 90px);overflow:visible}
+.mp-table.mp-poker .mp-settlement.poker-round-settlement{display:flex;flex-direction:column;align-items:center;gap:5px;width:440px;max-width:100%;box-sizing:border-box;padding:14px 20px 16px;text-align:center;pointer-events:auto;max-height:calc(100dvh - 100px);overflow:auto}
+.mp-settlement.poker-round-settlement .settlement-caption{font-size:10px;color:#cdb48a;letter-spacing:3px}
+.mp-settlement.poker-round-settlement h2{margin:3px 0;font-size:23px;line-height:1.25;overflow-wrap:anywhere;color:#ffe7a6}
+.mp-settlement.poker-round-settlement .settlement-amount{font-size:30px;line-height:1.2;font-variant-numeric:tabular-nums;color:#ffe08a}
+.mp-settlement.poker-round-settlement .settlement-amount small{font-size:11px;font-weight:400;color:#cdb48a}
+.mp-settlement.poker-round-settlement.settlement-win .settlement-amount{color:#b8e29b}
+.mp-settlement.poker-round-settlement.settlement-lose .settlement-amount{color:#ec9990}
+.mp-settlement.poker-round-settlement.settlement-draw .settlement-amount{color:#e5d9bf}
+.mp-settlement.poker-round-settlement p.settlement-detail{flex:none;font-size:11px;line-height:1.3;color:#cdb48a;margin:2px 0 4px}
+.mp-settlement.poker-round-settlement .settlement-actions{display:flex;justify-content:center;gap:14px;flex-wrap:wrap;width:100%;padding-top:10px;margin-top:3px;border-top:1px solid #9a784066}
+.mp-settlement.poker-round-settlement .settlement-actions button{min-height:40px;flex:1;min-width:0;padding:8px 12px;margin:0;font-size:13px;white-space:normal;box-sizing:border-box;background:#24170e;color:#f1e3c0}
+.mp-settlement.poker-round-settlement .settlement-actions [data-next-room]{background:#d6ae5f;color:#24160b;font-weight:700}
+.mp-settlement.poker-round-settlement .settlement-winners{display:grid;gap:5px;width:100%;max-height:105px;overflow:auto}
+.mp-settlement.poker-round-settlement .settlement-winners>div{display:flex;justify-content:space-between;gap:12px;padding:3px 8px;font-size:14px}
+.mp-settlement.poker-round-settlement .settlement-winners span{min-width:0;overflow-wrap:anywhere}
+.mp-settlement.poker-round-settlement .settlement-winners b{color:#ffe08a;white-space:nowrap;font-variant-numeric:tabular-nums}
+@media(max-height:500px) and (orientation:landscape){.mp-table.mp-poker .mp-result:not(:empty){bottom:10px}.mp-table.mp-poker .mp-settlement.poker-round-settlement{width:350px;padding:10px 16px 12px;gap:3px}.mp-settlement.poker-round-settlement h2{font-size:19px}.mp-settlement.poker-round-settlement .settlement-amount{font-size:24px}.mp-settlement.poker-round-settlement .settlement-actions{padding-top:7px;gap:12px}.mp-settlement.poker-round-settlement .settlement-actions button{min-height:34px;padding:5px 8px;font-size:12px}}
+.mp-table.mp-poker .mp-result:not(:empty){border:0!important;border-image:none!important;box-shadow:none!important;background:none!important;backdrop-filter:none!important}
+.mp-table.mp-poker .mp-settlement.poker-round-settlement{flex:none}
+body.in-game .mp-table.mp-poker .mp-result:not(:empty){max-height:calc(100dvh - 90px);overflow:visible;align-items:flex-end}
+.mp-poker .mp-settlement.poker-round-settlement .settlement-actions [data-next-room]{background:#d6ae5f!important;color:#24160b!important}

@@ -52,6 +52,7 @@ export function refineEngineer(table,rig){
  b(pack,.74,.77,.32,0,0,0,0x4d3829);b(pack,.77,.17,.35,0,.29,.02,0x755238);
  for(const side of[-1,1]){b(pack,.09,.70,.04,side*.22,0,-.19,leather);b(pack,.13,.13,.06,side*.22,-.05,-.22,brass);b(pack,.19,.37,.32,side*.44,-.12,0,0x654630)}
  b(pack,.49,.23,.05,0,-.12,-.19,0x93633d);
+ dressEngineer(table,rig,detail,pack,{orange,leather,brass});
  table.batchBoxes(pack);table.batchBoxes(hairGroup);
  // Steel wrench is secured outside the chair, away from cards and bets.
  const tool=new T.Group();tool.position.set(-.84,-.55,.04);tool.rotation.z=.15;tool.scale.setScalar(.62);g.add(tool);
@@ -75,4 +76,31 @@ export function updateEngineerFace(rig,blink,kind,strength){
  }
  ink(98,175,63,5,'#653d24');ink(101,180,57,11,'#653d24');ink(107,191,45,5,'#653d24');ink(105,180,49,5,'#fff0ca');
  art.texture.needsUpdate=true;
+}
+
+// Third-person kit: riveted pauldrons, cog badge, pocket tools, wrist gauge and a steaming pack flue.
+function dressEngineer(table,rig,detail,pack,{orange,leather,brass}){
+ const {group:g,arms}=rig;const b=(p,w,h,d,x,y,z,c)=>table.box(p,w,h,d,x,y,z,c);
+ const steel=0x9aa3a2,dark=0x2f2822;
+ for(const [i,a] of arms.entries()){
+  const out=a.position.x>0?1:-1;
+  b(a,.42,.13,.43,out*.02,.09,.01,leather);b(a,.38,.06,.39,out*.02,.17,.01,0x6e4c36);b(a,.44,.035,.45,out*.02,.03,.01,brass);
+  for(const z of [-.12,.13])b(a,.03,.045,.045,out*.225,.09,z,brass);
+  if(i===0){b(a,.2,.13,.05,0,-.27,.395,brass);b(a,.15,.09,.02,0,-.27,.42,0xe9e3c8);b(a,.012,.06,.012,.0,-.255,.432,dark);b(a,.04,.012,.012,.015,-.27,.432,dark)}
+ }
+ // Cog badge on the bib.
+ const cog=new T.Group();cog.position.set(-.17,.64,.335);detail.add(cog);
+ for(let n=0;n<8;n++){const t=b(cog,.035,.17,.03,0,0,0,brass);t.rotation.z=n*Math.PI/8}
+ b(cog,.12,.12,.035,0,0,.005,brass).rotation.z=Math.PI/4;b(cog,.05,.05,.04,0,0,.01,dark);
+ // Screwdriver and pencil standing in the chest pocket.
+ b(detail,.035,.17,.035,-.06,.53,.35,0xe2b437);b(detail,.016,.08,.016,-.06,.65,.35,steel);
+ b(detail,.03,.2,.03,.07,.54,.35,0x3f6fa0);b(detail,.03,.03,.03,.07,.655,.35,0xf0d2a0);
+ // Flue on the backpack, with brass bands.
+ b(pack,.12,.62,.12,.24,.62,.0,0x4a4440);for(const y of [.42,.72])b(pack,.15,.05,.15,.24,y,0,brass);b(pack,.18,.06,.18,.24,.95,0,0x3a3531);
+ // Steam puffs rise from the flue and fade; one shared material, no lights.
+ const steam=new T.Group();steam.position.set(.24,.45+.98,-.90);g.add(steam);
+ const geo=new T.BoxGeometry(1,1,1);
+ const puffs=[0,1,2].map(n=>{const m=new T.Mesh(geo,new T.MeshStandardMaterial({color:0xe9e4dc,transparent:true,opacity:.5,depthWrite:false,roughness:1}));m.castShadow=false;steam.add(m);return m});
+ puffs[0].onBeforeRender=()=>{const t=(typeof performance!=='undefined'?performance.now():0)/1000;puffs.forEach((m,i)=>{const k=((t*.45+i/3)%1);m.position.set(Math.sin(t+i*2)*.05+k*.08,k*.55,0);m.scale.setScalar(.09+k*.12);m.material.opacity=.55*(1-k)})};
+ puffs[0].onBeforeRender();
 }

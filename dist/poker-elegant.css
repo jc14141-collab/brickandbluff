@@ -8,7 +8,7 @@
 }
 
 /* One frame recipe, recoloured per element through custom properties. */
-.mp-poker :is(.mp-controls,.mp-own,.mp-pot,.mp-labels .mp-head,.opponent-label,[data-poker-profits],.gd-heading button,.mp-action-row button,.mp-bet-row button,.mp-bet-row input[type=number]),
+.mp-poker :is(.mp-controls,.mp-own,.mp-pot,.mp-settlement,.mp-labels .mp-head,.opponent-label,[data-poker-profits],.gd-heading button,.mp-action-row button,.mp-bet-row button,.mp-bet-row input[type=number],.settlement-actions button),
 body.in-game:has(.mp-poker) .topright :is(.sound,.wallet){
  --pf-ink:var(--pe-ink);--pf-trim:#9a7840;--pf-hi:rgba(255,236,196,.16);--pf-lo:rgba(0,0,0,.32);--pf-drop:rgba(8,4,2,.55);
  border-radius:0!important;border-color:transparent!important;border-image:none!important;outline:0;backdrop-filter:none!important;
@@ -26,7 +26,7 @@ body.in-game:has(.mp-poker) .topright :is(.sound,.wallet){
 .mp-poker .gd-heading h1{color:#f6e7c2;letter-spacing:3px;text-shadow:2px 2px 0 #6b4c22}
 
 /* Panels. */
-.mp-poker :is(.mp-controls,.mp-own,.mp-pot){
+.mp-poker :is(.mp-controls,.mp-own,.mp-pot,.mp-settlement){
  background-color:var(--pe-wood)!important;background-image:repeating-linear-gradient(180deg,transparent 0 10px,rgba(0,0,0,.13) 10px 12px)!important;color:var(--pe-text);
 }
 .mp-poker .mp-own>strong,.mp-poker .mp-action-row>strong{color:var(--pe-gold)}
