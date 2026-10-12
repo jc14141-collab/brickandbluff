@@ -1,0 +1,210 @@
+/* American roulette: printed-felt betting layout, casino chips, and layouts per device.
+   Loaded last. Markup and bet logic are unchanged.
+   Desktop: wheel left, betting right. Tablet landscape and phone landscape: the same two
+   columns, scaled so the whole felt is visible without scrolling the page. Tablet portrait:
+   a shorter wheel on top so the felt starts on the first screen. */
+
+.roulette-room{
+ --rf-felt:#1c4f31;--rf-line:rgba(238,222,164,.62);--rf-cream:#f3e6bd;--rf-gold:#f2cf73;
+ --rf-red:#a8262b;--rf-red-hi:#c53a3c;--rf-black:#141614;--rf-green:#127a45;--rf-ink:#0d0905;--rf-wood:#4a2f1b;--rf-brass:#d6ae5f;
+ background:radial-gradient(ellipse 80% 60% at 50% 25%,#2a3b2a,#121810 75%) #121810;
+}
+
+/* ---------- felt frame: walnut rail, brass hairline, stepped pixel corners ---------- */
+.roulette-room .rl-felt-scroll{
+ border:0!important;border-radius:0!important;padding:12px!important;margin:4px 6px 0;
+ background:var(--rf-wood) repeating-linear-gradient(90deg,transparent 0 46px,rgba(0,0,0,.16) 46px 48px,transparent 48px 97px,rgba(255,220,160,.05) 97px 99px)!important;
+ box-shadow:inset 0 2px 0 rgba(255,226,170,.22),inset 0 -3px 0 rgba(0,0,0,.35),
+  inset 0 0 0 8px var(--rf-wood),inset 0 0 0 10px var(--rf-brass),inset 0 0 0 12px var(--rf-ink),
+  0 -2px 0 #9a7840,0 2px 0 #9a7840,-2px 0 0 #9a7840,2px 0 0 #9a7840,
+  0 -4px 0 var(--rf-ink),0 4px 0 var(--rf-ink),-4px 0 0 var(--rf-ink),4px 0 0 var(--rf-ink),
+  -2px -2px 0 var(--rf-ink),2px -2px 0 var(--rf-ink),-2px 2px 0 var(--rf-ink),2px 2px 0 var(--rf-ink),0 10px 0 rgba(8,4,2,.55)!important;
+}
+.roulette-room .rl-felt{
+ gap:0!important;padding:10px;border-radius:0;
+ background-color:var(--rf-felt);
+ background-image:
+  radial-gradient(ellipse 75% 70% at 45% 40%,rgba(120,200,120,.13),transparent 70%),
+  radial-gradient(ellipse 120% 110% at 50% 50%,transparent 55%,rgba(0,0,0,.38)),
+  repeating-linear-gradient(45deg,rgba(255,255,255,.028) 0 1px,transparent 1px 3px),
+  repeating-linear-gradient(-45deg,rgba(0,0,0,.06) 0 1px,transparent 1px 3px);
+ box-shadow:inset 0 0 0 2px #0b2716,inset 0 6px 0 rgba(0,0,0,.25);
+}
+
+/* ---------- cells: printed boxes ---------- */
+.roulette-room .rl-felt .rl-cell{
+ position:relative;border:0!important;border-radius:0;background:transparent;color:var(--rf-cream);padding:4px 2px;gap:3px;
+ box-shadow:inset 0 0 0 1px var(--rf-line)!important;text-shadow:0 2px 0 rgba(0,0,0,.45);transition:background-color .12s,box-shadow .12s;
+}
+.roulette-room .rl-felt .rl-cell b{font:400 clamp(16px,1.5vw,22px)/1 'Fusion Pixel',sans-serif;letter-spacing:.5px}
+.roulette-room .rl-felt .rl-cell:hover{background-color:rgba(242,207,115,.10)}
+.roulette-room .rl-felt .rl-cell:focus-visible{outline:3px solid var(--rf-gold);outline-offset:-3px}
+
+/* Numbers sit on red / black plaques inside their box, the way the layout is printed. */
+.roulette-room .rl-felt .rl-cell.red,.roulette-room .rl-felt .rl-cell.black{background-clip:padding-box}
+.roulette-room .rl-felt .rl-cell.red{background:linear-gradient(180deg,var(--rf-red-hi),var(--rf-red)) content-box,transparent;padding:5px}
+.roulette-room .rl-felt .rl-cell.black{background:linear-gradient(180deg,#262a26,var(--rf-black)) content-box,transparent;padding:5px}
+.roulette-room .rl-felt .rl-cell.red:hover{background:linear-gradient(180deg,#d6494a,#b52f33) content-box,rgba(242,207,115,.10)}
+.roulette-room .rl-felt .rl-cell.black:hover{background:linear-gradient(180deg,#333833,#1d201d) content-box,rgba(242,207,115,.10)}
+.roulette-room .rl-felt :is([data-bet=n0],[data-bet=n00]){background:linear-gradient(180deg,#1a9255,var(--rf-green)) content-box,transparent;padding:5px}
+.roulette-room .rl-felt :is([data-bet=n0],[data-bet=n00]) b{font-size:clamp(18px,1.7vw,26px)}
+
+/* Outside bets: gold labels; red / black get a diamond. */
+.roulette-room .rl-felt :is([data-bet^=col],[data-bet^=d],[data-bet=low],[data-bet=high],[data-bet=even],[data-bet=odd],[data-bet=red],[data-bet=black]) b{color:var(--rf-gold);font-size:clamp(14px,1.25vw,19px);letter-spacing:2px}
+.roulette-room .rl-felt :is([data-bet=red],[data-bet=black]) b{display:inline-flex;align-items:center;gap:8px}
+.roulette-room .rl-felt :is([data-bet=red],[data-bet=black]) b::before{content:'';width:18px;height:18px;transform:rotate(45deg);box-shadow:0 0 0 2px rgba(243,230,189,.75),0 2px 0 2px rgba(0,0,0,.4)}
+.roulette-room .rl-felt [data-bet=red] b::before{background:var(--rf-red-hi)}
+.roulette-room .rl-felt [data-bet=black] b::before{background:var(--rf-black)}
+.roulette-room .rl-felt [data-bet^=col] b{font-size:clamp(12px,1.05vw,16px);letter-spacing:1px}
+.roulette-room .rl-felt [data-bet^=col] b::after{content:'2:1';display:block;margin-top:3px;font-size:11px;color:rgba(243,230,189,.7)}
+
+/* States: combination coverage, selection, last result. */
+.roulette-room .rl-felt .rl-cell.covered{box-shadow:inset 0 0 0 1px var(--rf-line),inset 0 0 0 3px rgba(242,207,115,.75)!important}
+.roulette-room .rl-felt .rl-cell.selected{outline:0;box-shadow:inset 0 0 0 1px var(--rf-line),inset 0 0 0 3px var(--rf-gold),inset 0 0 14px rgba(242,207,115,.35)!important}
+.roulette-room .rl-felt .rl-cell.won{outline:0;box-shadow:inset 0 0 0 1px var(--rf-line),inset 0 0 0 3px #fff3b0,0 0 18px 2px rgba(255,236,150,.55)!important;z-index:1}
+.roulette-room .rl-felt .rl-cell.won b{color:#fff8dc}
+
+/* Wagers as seat-coloured chips (text stays "seat: amount"). */
+.roulette-room .rl-felt .rl-cell small{gap:3px;max-width:100%}
+.roulette-room .rl-felt .rl-cell small span{
+ display:inline-flex;align-items:center;gap:3px;padding:1px 5px 1px 2px;border-radius:0;background:rgba(9,24,15,.88);color:var(--rf-cream);
+ font:700 10px/1.2 system-ui,sans-serif;box-shadow:0 0 0 1px rgba(0,0,0,.6),0 2px 0 rgba(0,0,0,.4);text-shadow:none;white-space:nowrap
+}
+.roulette-room .rl-felt .rl-cell small span::before{content:'';flex:none;width:11px;height:11px;border-radius:50%;background:radial-gradient(circle,var(--player) 0 2.5px,#fff8 2.5px 3.5px,var(--player) 3.5px),repeating-conic-gradient(var(--player) 0 30deg,#fff 30deg 45deg);box-shadow:0 0 0 1px rgba(0,0,0,.65)}
+
+/* ---------- casino chips for the denomination picker ---------- */
+.roulette-room .rl-chips{gap:10px;align-items:center}
+.roulette-room .rl-chips button[data-chip]:not(#rl-chip-id){
+ --chip:#7c8a95;--chip-edge:#f4efe0;
+ width:50px!important;height:50px!important;min-height:0!important;padding:0!important;border:0!important;border-radius:50%!important;flex:none;
+ background:radial-gradient(circle,var(--chip) 0 15px,var(--chip-edge) 15px 16.5px,var(--chip) 16.5px 19px,transparent 19px),repeating-conic-gradient(var(--chip) 0 22.5deg,var(--chip-edge) 22.5deg 45deg)!important;
+ color:#fff!important;font:400 14px/1 'Fusion Pixel',sans-serif!important;text-shadow:0 1px 0 rgba(0,0,0,.7)!important;
+ box-shadow:0 0 0 2px var(--rf-ink),0 4px 0 rgba(0,0,0,.55)!important;filter:none!important;transition:transform .08s!important
+}
+.roulette-room .rl-chips button[data-chip="5"]:not(#rl-chip-id){--chip:#b5312e}
+.roulette-room .rl-chips button[data-chip="10"]:not(#rl-chip-id){--chip:#2f62b0}
+.roulette-room .rl-chips button[data-chip="25"]:not(#rl-chip-id){--chip:#2c8a4b}
+.roulette-room .rl-chips button[data-chip="100"]:not(#rl-chip-id){--chip:#1d1d1d;--chip-edge:#e9c66b}
+.roulette-room .rl-chips button[data-chip="500"]:not(#rl-chip-id){--chip:#6b3fa0;--chip-edge:#f2d98c}
+.roulette-room .rl-chips button[data-chip]:not(#rl-chip-id)[aria-pressed=true]{transform:translateY(-4px);box-shadow:0 0 0 2px var(--rf-ink),0 0 0 5px var(--rf-gold),0 8px 0 rgba(0,0,0,.45)!important}
+.roulette-room .rl-chips button[data-chip]:not(#rl-chip-id):active{transform:translateY(1px)}
+.roulette-room .rl-chips [data-launch]{margin-left:auto}
+.roulette-room .rl-chips .rl-sync:empty{display:none}
+
+/* Selected-bet bar and combination row read as one control strip under the felt. */
+.roulette-room .rl-combo{margin:12px 6px 8px}
+.roulette-room .rl-selected strong{color:var(--rf-gold)}
+
+/* ---------- tablet and small desktop in landscape: keep two columns ---------- */
+@media(max-width:1100px) and (min-width:601px) and (min-height:521px) and (orientation:landscape){
+ .roulette-room .rl-main,.roulette-room.rl-locked .rl-main{grid-template-columns:minmax(0,36%) minmax(0,1fr);gap:12px;align-items:start}
+ .roulette-room .rl-canvas,.roulette-room.rl-locked .rl-canvas{height:min(380px,calc(var(--app-height,100dvh) - 250px))}
+ .roulette-room .rl-wheel{min-height:0}
+ .roulette-room .rl-felt{min-width:0!important;grid-template-columns:34px repeat(12,minmax(0,1fr)) 46px!important;grid-template-rows:repeat(3,minmax(54px,auto)) repeat(2,minmax(42px,auto))!important}
+ .roulette-room .rl-felt .rl-cell b{font-size:16px}
+ .roulette-room .rl-felt :is([data-bet^=col]) b{font-size:11px}
+ .roulette-room .rl-chips button[data-chip]:not(#rl-chip-id){width:42px!important;height:42px!important;font-size:12px!important}
+}
+/* Tablet portrait: shorter wheel so the felt starts on the first screen. */
+@media(max-width:1100px) and (min-width:601px) and (orientation:portrait){
+ .roulette-room .rl-canvas,.roulette-room.rl-locked .rl-canvas{height:260px}
+ .roulette-room .rl-wheel{min-height:260px}
+}
+
+/* ---------- phone landscape (and very short windows) ---------- */
+@media(max-height:520px) and (min-width:601px){
+ .roulette-room .rl-heading{min-height:36px!important}
+ .roulette-room .rl-heading h1{font-size:16px}
+ .roulette-room .rl-heading h1 small{display:none}
+ .roulette-room .rl-heading button{min-height:36px!important;padding:4px 8px!important;font-size:12px!important}
+ .roulette-room .rl-status{font-size:13px!important;padding:5px 8px!important;margin:4px 0}
+ .roulette-room .rl-main,.roulette-room.rl-locked .rl-main{grid-template-columns:minmax(0,34%) minmax(0,1fr)!important;gap:8px;align-items:start}
+ .roulette-room:not(.rl-focus) .rl-wheel,.roulette-room:not(.rl-focus) .rl-canvas{height:calc(var(--app-height,100dvh) - 150px)!important;min-height:180px!important}
+ .roulette-room .rl-chips{gap:6px;margin-bottom:6px}
+ .roulette-room .rl-chips label.custom-wager{display:none}
+ .roulette-room .rl-chips button[data-chip]:not(#rl-chip-id){width:36px!important;height:36px!important;font-size:11px!important}
+ .roulette-room .rl-chips button:not([data-chip]){min-height:36px!important;padding:4px 8px!important;font-size:11px!important}
+ .roulette-room .rl-felt-scroll{padding:7px!important;margin:2px 2px 0}
+ .roulette-room .rl-felt{min-width:0!important;padding:4px;grid-template-columns:30px repeat(12,minmax(0,1fr)) 38px!important;grid-template-rows:repeat(3,minmax(40px,auto)) repeat(2,minmax(32px,auto))!important}
+ .roulette-room .rl-felt .rl-cell{min-width:0!important;min-height:0!important;padding:2px 1px}
+ .roulette-room .rl-felt .rl-cell.red,.roulette-room .rl-felt .rl-cell.black,.roulette-room .rl-felt :is([data-bet=n0],[data-bet=n00]){padding:3px}
+ .roulette-room .rl-felt .rl-cell b{font-size:13px!important;letter-spacing:0}
+ .roulette-room .rl-felt :is([data-bet^=col],[data-bet^=d],[data-bet=low],[data-bet=high],[data-bet=even],[data-bet=odd],[data-bet=red],[data-bet=black]) b{font-size:11px!important;letter-spacing:0}
+ .roulette-room .rl-felt :is([data-bet=red],[data-bet=black]) b::before{width:10px;height:10px}
+ .roulette-room .rl-felt [data-bet^=col] b::after{font-size:9px;margin-top:1px}
+ .roulette-room .rl-felt .rl-cell small span{font-size:9px;padding:0 3px 0 1px}
+ .roulette-room .rl-felt .rl-cell small span::before{width:8px;height:8px}
+}
+@media(prefers-reduced-motion:reduce){.roulette-room .rl-felt .rl-cell,.roulette-room .rl-chips button[data-chip]:not(#rl-chip-id){transition:none!important}}
+
+/* The global button.selected style paints a gold fill; on the felt selection is the gold frame instead. */
+.roulette-room .rl-felt .rl-cell.selected{color:var(--rf-cream)!important;border-color:transparent!important;text-shadow:0 2px 0 rgba(0,0,0,.45)!important}
+.roulette-room .rl-felt .rl-cell.selected:not(.red):not(.black):not([data-bet=n0]):not([data-bet=n00]){background:rgba(242,207,115,.14)!important}
+.roulette-room .rl-felt .rl-cell.red.selected{background:linear-gradient(180deg,var(--rf-red-hi),var(--rf-red)) content-box,rgba(242,207,115,.14)!important}
+.roulette-room .rl-felt .rl-cell.black.selected{background:linear-gradient(180deg,#262a26,var(--rf-black)) content-box,rgba(242,207,115,.14)!important}
+.roulette-room .rl-felt :is([data-bet=n0],[data-bet=n00]).selected{background:linear-gradient(180deg,#1a9255,var(--rf-green)) content-box,rgba(242,207,115,.14)!important}
+.roulette-room .rl-felt .rl-cell.selected b{color:inherit}
+.roulette-room .rl-felt .rl-cell.selected:is([data-bet^=col],[data-bet^=d],[data-bet=low],[data-bet=high],[data-bet=even],[data-bet=odd],[data-bet=red],[data-bet=black]) b{color:var(--rf-gold)}
+
+/* Three or more players on one box: overlapping seat chips plus the box total. */
+.roulette-room .rl-felt .rl-cell small span.rl-stack::before{display:none}
+.roulette-room .rl-felt .rl-cell small span.rl-stack{gap:0;padding-left:2px}
+.roulette-room .rl-felt .rl-cell small span.rl-stack i{width:11px;height:11px;border-radius:50%;margin-right:-4px;background:radial-gradient(circle,var(--player) 0 2.5px,#fff8 2.5px 3.5px,var(--player) 3.5px),repeating-conic-gradient(var(--player) 0 30deg,#fff 30deg 45deg);box-shadow:0 0 0 1px rgba(0,0,0,.7)}
+.roulette-room .rl-felt .rl-cell small span.rl-stack i:last-of-type{margin-right:4px}
+/* Chips sit along the bottom edge of the box so the number keeps its place. */
+.roulette-room .rl-felt .rl-cell small{position:absolute;left:2px;right:2px;bottom:3px;justify-content:center;pointer-events:none}
+.roulette-room .rl-felt .rl-cell:has(small span){justify-content:flex-start;padding-top:8px}
+.roulette-room .rl-felt .rl-cell.red:has(small span),.roulette-room .rl-felt .rl-cell.black:has(small span){padding-top:5px}
+@media(max-height:520px) and (min-width:601px){
+ .roulette-room .rl-status{margin:2px 0!important;padding:3px 8px!important}
+ .roulette-room .rl-felt{grid-template-rows:repeat(3,minmax(38px,auto)) repeat(2,minmax(30px,auto))!important}
+ .roulette-room .rl-felt .rl-cell:has(small span){padding-top:2px}
+ .roulette-room .rl-felt .rl-cell small{bottom:1px}
+}
+@media(max-width:1100px){
+ .roulette-room .rl-felt [data-bet^=col]:has(small span) b::after{display:none}
+ .roulette-room .rl-felt [data-bet^=col] b{line-height:1.05}
+}
+@media(max-width:1100px) and (min-width:601px) and (min-height:521px) and (orientation:landscape){
+ .roulette-room .rl-felt{grid-template-rows:repeat(3,minmax(54px,auto)) repeat(2,minmax(48px,auto))!important}
+}
+@media(max-width:1100px),(max-height:520px){
+ .roulette-room .rl-felt .rl-cell small span.rl-stack i:nth-of-type(n+3){display:none}
+ .roulette-room .rl-felt .rl-cell small span.rl-stack i:nth-of-type(2){margin-right:3px}
+ .roulette-room .rl-felt .rl-cell small span{padding-right:3px}
+}
+@media(max-height:520px) and (min-width:601px){
+ .roulette-room .rl-felt .rl-cell small span.rl-stack i{width:8px;height:8px;margin-right:-3px}
+ .roulette-room .rl-felt .rl-cell small span.rl-stack i:nth-of-type(2){margin-right:2px}
+ .roulette-room .rl-felt .rl-cell small span{padding:0 2px 0 1px;gap:2px}
+}
+@media(max-height:520px) and (min-width:601px) and (max-width:720px){
+ .roulette-room .rl-felt .rl-cell small span.rl-stack i:nth-of-type(n+2){display:none}
+ .roulette-room .rl-felt .rl-cell small span.rl-stack i:first-of-type{margin-right:2px}
+}
+@media(max-height:520px) and (min-width:601px) and (max-width:720px){
+ .roulette-room .rl-chips{gap:4px;flex-wrap:nowrap}
+ .roulette-room .rl-chips button[data-chip]:not(#rl-chip-id){width:31px!important;height:31px!important;font-size:10px!important;background:radial-gradient(circle,var(--chip) 0 9px,var(--chip-edge) 9px 10px,var(--chip) 10px 12px,transparent 12px),repeating-conic-gradient(var(--chip) 0 22.5deg,var(--chip-edge) 22.5deg 45deg)!important}
+ .roulette-room .rl-chips button:not([data-chip]){padding:3px 5px!important;font-size:10px!important;white-space:nowrap}
+}
+
+/* Betting closed: keep the felt's colours, just dimmed; the winning boxes stay bright. */
+.roulette-room .rl-felt .rl-cell:disabled{opacity:1!important;filter:saturate(.55) brightness(.78);cursor:default}
+.roulette-room .rl-felt .rl-cell.won:disabled{filter:none}
+
+/* Round result: stays pinned to the bottom of the screen, so "开始下一局" is reachable without
+   scrolling past the players on any device. */
+body.in-game .roulette-room .rl-result:not(:empty){position:sticky;bottom:max(8px,env(safe-area-inset-bottom));z-index:20;margin-top:14px;background:#2a1a10f2;border:0;border-radius:0;
+ box-shadow:inset 0 2px 0 rgba(255,226,170,.18),0 -2px 0 #9a7840,0 2px 0 #9a7840,-2px 0 0 #9a7840,2px 0 0 #9a7840,0 -4px 0 #0d0905,0 4px 0 #0d0905,-4px 0 0 #0d0905,4px 0 0 #0d0905,0 -10px 24px rgba(0,0,0,.5)}
+body.in-game .roulette-room .rl-result strong{color:var(--rf-gold)}
+@media(max-height:520px) and (min-width:601px){
+ body.in-game .roulette-room .rl-result:not(:empty){padding:8px 12px;gap:10px;flex-wrap:nowrap}
+ body.in-game .roulette-room .rl-result strong{font-size:16px}
+ body.in-game .roulette-room .rl-result-summary p{margin:4px 0;max-height:34px;font-size:12px}
+ body.in-game .roulette-room [data-next]{min-height:44px;min-width:140px;font-size:15px}
+}
+
+/* After the full-screen spin the 3D canvas can keep its larger pixel size for a frame and push
+   the grid wider than the screen; let the columns shrink and the canvas follow its box. */
+.roulette-room .rl-main>*{min-width:0}
+.roulette-room .rl-canvas canvas{max-width:100%}
