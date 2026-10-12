@@ -1,0 +1,116 @@
+{
+  "status": "experimental-not-promoted",
+  "evaluation": {
+    "samples": 100,
+    "offset": 900000,
+    "variant": "full",
+    "reports": [
+      {
+        "variant": "full",
+        "opponent": "松跟注",
+        "profile": 2,
+        "handsPerVersion": 2000,
+        "groups": 1000,
+        "baselineBB100": 69.31499999999997,
+        "newBB100": 85.48999999999997,
+        "improvementBB100": 16.175,
+        "improvement95CI": [
+          -17.929783190154208,
+          50.279783190154205
+        ],
+        "searches": 313,
+        "eligible": 325,
+        "latencyMs": {
+          "mean": 1.0909096258298177,
+          "p95": 4.731200000000172
+        }
+      },
+      {
+        "variant": "full",
+        "opponent": "紧凶",
+        "profile": 3,
+        "handsPerVersion": 2000,
+        "groups": 1000,
+        "baselineBB100": -20.61999999999999,
+        "newBB100": -19.202499999999997,
+        "improvementBB100": 1.4175,
+        "improvement95CI": [
+          -7.490226001715017,
+          10.325226001715016
+        ],
+        "searches": 13,
+        "eligible": 16,
+        "latencyMs": {
+          "mean": 0.7323461428570772,
+          "p95": 1.3338000000003376
+        }
+      },
+      {
+        "variant": "full",
+        "opponent": "诈唬施压",
+        "profile": 4,
+        "handsPerVersion": 2000,
+        "groups": 1000,
+        "baselineBB100": 43.660000000000004,
+        "newBB100": 45.15749999999999,
+        "improvementBB100": 1.4975000000000003,
+        "improvement95CI": [
+          -4.12338327282797,
+          7.118383272827969
+        ],
+        "searches": 7,
+        "eligible": 8,
+        "latencyMs": {
+          "mean": 0.6498730093070867,
+          "p95": 1.2901999999958207
+        }
+      },
+      {
+        "variant": "full",
+        "opponent": "价值猎手",
+        "profile": 7,
+        "handsPerVersion": 2000,
+        "groups": 1000,
+        "baselineBB100": 3.8750000000000053,
+        "newBB100": 7.710000000000004,
+        "improvementBB100": 3.8349999999999995,
+        "improvement95CI": [
+          -5.725212044655657,
+          13.395212044655658
+        ],
+        "searches": 27,
+        "eligible": 29,
+        "latencyMs": {
+          "mean": 0.7643048135593279,
+          "p95": 1.0898999999990338
+        }
+      }
+    ],
+    "limitations": "Ablation: pooled public range and samples100 in both arms; only experimental river valuation differs. Complete teacher-family games with reset stacks, no behavior inference, no human evidence."
+  },
+  "testsPassed": 32,
+  "buildPassed": true,
+  "sourceHashes": {
+    "dist/poker-river-value.mjs": "971f47ccf5c61c38cd22cd30b4bc75568316ca607e448ffec9f8cf540545d2e1",
+    "dist/poker-range.mjs": "eb483d6d412c98db76364e5f745b73a3704fa0c270fc78307992217a400753f7",
+    "dist/poker-response.mjs": "3930ed1a814d9db2ea52664cbd1d2a0ae105f3115636486021c3f5f9c09678ba",
+    "dist/poker-response-data.mjs": "dacc90d3657b72a751e7eebcf7149d7a364e926fe04406b3f237aac0c5be671c",
+    "dist/strategy.mjs": "e94cac041a2c9e97a350212423252e642514b05919fbc62f3d98350003def6fa",
+    "scripts/benchmark-poker-river-value.mjs": "88dc21f4671e31d5f06080f2ce54e5c05f3b3c2a7adde30f4942430cc73f4e5e"
+  },
+  "preShortCallGuardRiverHash": "7b063bea96c3b1e7851826241264bfe497e90f6d57438ae8ee7bc16f1b07c5b7",
+  "guardAddedAfterPilot": "Short calls with unmatched excess bypass. Cannot trigger in this equal-start-stack pilot when prior contributions match.",
+  "productionDefaults": {
+    "rangeModel": "legacy",
+    "lookahead": false,
+    "riverValue": false
+  },
+  "limitations": [
+    "Only classic heads-up river",
+    "Finite size and response abstraction, no optimality guarantee",
+    "Teacher family only, no human evidence",
+    "Few eligible river decisions for tight/aggressive opponents",
+    "Confidence intervals unadjusted for multiple comparisons",
+    "Whole-decision latency is not river-only latency"
+  ]
+}

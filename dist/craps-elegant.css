@@ -1,0 +1,293 @@
+/* Craps betting felt: printed-felt layout and texture.
+   Loaded last. Markup and bet logic are unchanged; the main group ("常用桌布")
+   is rearranged with grid areas so it reads like a real table: place numbers on
+   top, COME / DON'T COME, FIELD, DON'T PASS, PASS LINE with BIG 6 / 8 in the
+   corner, and the centre action (hardways, one-roll bets) in its own panel. */
+
+.craps-room{
+ --cf-felt:#1c4f31;--cf-felt-hi:#24603b;--cf-felt-lo:#123a23;--cf-center:#163f28;
+ --cf-line:rgba(238,222,164,.62);--cf-line-soft:rgba(238,222,164,.26);
+ --cf-cream:#f3e6bd;--cf-gold:#f2cf73;--cf-red:#e2543a;--cf-red-deep:#b8361f;
+ --cf-ink:#0d0905;--cf-wood:#4a2f1b;--cf-brass:#d6ae5f;
+}
+
+/* ---------- board column: tabs, then the felt fills the rest ---------- */
+.craps-room:not(.is-immersive) .craps-board{display:flex;flex-direction:column;gap:0}
+.craps-room:not(.is-immersive) .craps-board>.craps-readout{flex:none}
+.craps-room .craps-bet-groups{flex:none;background:transparent;padding:4px 6px 12px;margin:0;border-radius:0;gap:10px}
+.craps-room .craps-bet-groups button{font-family:'Fusion Pixel',sans-serif!important;font-size:13px!important;letter-spacing:.5px;padding:8px 6px!important}
+.craps-room .craps-bet-groups b{background:#2a1a0c;color:var(--cf-gold);border-radius:0;font-family:'Fusion Pixel',sans-serif;box-shadow:0 0 0 1px #6b4f2c}
+.craps-room .craps-bet-groups button.selected b{background:#2a1a0c;color:var(--cf-gold)}
+
+/* Wood rail: walnut planks, brass hairline, stepped pixel corners (box-shadow rings). */
+.craps-room .craps-wood-frame{
+ flex:1 1 0;display:flex;margin:6px 8px 10px;padding:10px;border:0!important;border-radius:0!important;outline:0!important;
+ background:var(--cf-wood) repeating-linear-gradient(90deg,transparent 0 46px,rgba(0,0,0,.16) 46px 48px,transparent 48px 97px,rgba(255,220,160,.05) 97px 99px)!important;
+ box-shadow:inset 0 2px 0 rgba(255,226,170,.22),inset 0 -3px 0 rgba(0,0,0,.35),
+  inset 0 0 0 8px var(--cf-wood),inset 0 0 0 10px var(--cf-brass),inset 0 0 0 12px var(--cf-ink),
+  0 -2px 0 #9a7840,0 2px 0 #9a7840,-2px 0 0 #9a7840,2px 0 0 #9a7840,
+  0 -4px 0 var(--cf-ink),0 4px 0 var(--cf-ink),-4px 0 0 var(--cf-ink),4px 0 0 var(--cf-ink),
+  -2px -2px 0 var(--cf-ink),2px -2px 0 var(--cf-ink),-2px 2px 0 var(--cf-ink),2px 2px 0 var(--cf-ink),0 10px 0 rgba(8,4,2,.55)!important;
+}
+
+/* Felt: woven nap, soft lamp falloff, printed lines. */
+.craps-room .craps-felt.single-felt{
+ flex:1 1 0;margin:2px;padding:12px;gap:0;border-radius:0;box-sizing:border-box;align-content:stretch;
+ background-color:var(--cf-felt);
+ background-image:
+  radial-gradient(ellipse 75% 70% at 45% 40%,rgba(120,200,120,.13),transparent 70%),
+  radial-gradient(ellipse 120% 110% at 50% 50%,transparent 55%,rgba(0,0,0,.38)),
+  repeating-linear-gradient(45deg,rgba(255,255,255,.028) 0 1px,transparent 1px 3px),
+  repeating-linear-gradient(-45deg,rgba(0,0,0,.06) 0 1px,transparent 1px 3px);
+ box-shadow:inset 0 0 0 2px #0b2716,inset 0 6px 0 rgba(0,0,0,.25);
+}
+
+/* ---------- every cell: printed box ---------- */
+.craps-room .single-felt .craps-bet{
+ min-height:0;padding:8px 8px 7px;gap:3px;justify-content:center;
+ background:transparent;border:0;border-radius:0;color:var(--cf-cream);
+ box-shadow:inset 0 0 0 1px var(--cf-line);transition:background-color .12s,box-shadow .12s;
+}
+.craps-room .single-felt .craps-bet strong{font-family:'Fusion Pixel',sans-serif;font-weight:400;color:var(--cf-cream);text-shadow:0 2px 0 rgba(0,0,0,.45);letter-spacing:.5px}
+.craps-room .single-felt .craps-bet small{font:600 11px/1.3 system-ui,sans-serif;color:rgba(243,230,189,.72);letter-spacing:.3px}
+.craps-room .single-felt .craps-bet:hover:not(:disabled){background:rgba(242,207,115,.10)}
+.craps-room .single-felt .craps-bet.selected{background:rgba(242,207,115,.14)!important;color:var(--cf-cream)!important;border-color:transparent!important}
+.craps-room .single-felt .craps-bet.selected:not(:disabled){box-shadow:inset 0 0 0 1px var(--cf-line),inset 0 0 0 3px var(--cf-gold)}
+.craps-room .single-felt .craps-bet:active:not(:disabled){background:rgba(242,207,115,.24)}
+.craps-room .single-felt .craps-bet:focus-visible{outline:3px solid var(--cf-gold);outline-offset:-3px}
+
+/* Closed for this roll: hatched over, text faded, still readable. */
+.craps-room .single-felt .craps-bet:disabled{
+ cursor:not-allowed;background:repeating-linear-gradient(135deg,rgba(0,0,0,.22) 0 6px,transparent 6px 12px)!important;
+}
+.craps-room .single-felt .craps-bet:disabled>:is(strong,small){opacity:.55}
+/* Why a main bet is closed (come / don't come need a point; pass / don't pass are fixed once a point is set). */
+.craps-room:not(.is-immersive) .single-felt :is([data-bet=come],[data-bet=dcome]):disabled>small::after{content:'  ·  目标建立后开放';color:var(--cf-gold)}
+.craps-room:not(.is-immersive) .single-felt :is([data-bet=pass],[data-bet=dont]):disabled>small::after{content:'  ·  本轮目标进行中';color:var(--cf-gold)}
+
+/* Last roll winners. */
+.craps-room .single-felt .craps-bet.roll-hit{background:rgba(255,225,135,.16);box-shadow:inset 0 0 0 1px var(--cf-line),inset 0 0 0 3px #ffe187,inset 0 0 22px rgba(255,225,135,.35);outline:0}
+
+/* ---------- wagers as chips ---------- */
+.craps-room .single-felt .felt-wagers{position:absolute;left:4px;right:4px;bottom:5px;display:flex;flex-wrap:wrap-reverse;justify-content:center;gap:3px;margin:0;padding:0;width:auto;max-height:none;overflow:visible;pointer-events:none;z-index:1}
+/* Number boxes and centre bets: chips in a top corner so the numeral stays clear
+   (place numbers use the left corner, the ON puck takes the right). */
+.craps-room .single-felt:has(>[data-bet=come]) :is(.point,.hard,.prop,.big) .felt-wagers{top:5px;bottom:auto;right:5px;left:auto;justify-content:flex-end;flex-wrap:wrap;max-width:62%}
+.craps-room .single-felt:has(>[data-bet=come]) :is(.point,.hard,.prop,.big) .felt-wagers{top:auto;bottom:4px;left:3px;right:3px;justify-content:center;max-width:none}
+/* Boxes: label and odds at the top, chips on the strip below, so neither covers the other. */
+.craps-room .single-felt :is(.point,.hard,.prop,.big){justify-content:flex-start;padding-top:6px}
+.craps-room .single-felt .craps-bet.point{justify-content:flex-start;padding-top:8px}
+/* Number boxes are narrow: chip and amount only, the name is in the tooltip and the ledger. */
+.craps-room .single-felt :is(.point,.hard,.prop,.big) .felt-wagers b:not(.wager-stack){padding:1px 5px 1px 2px;gap:3px}
+.craps-room .single-felt :is(.point,.hard,.prop,.big) .felt-wagers b:not(.wager-stack)>span{display:none}
+.craps-room .single-felt .point .felt-wagers b::before{width:13px;height:13px}
+/* Long bands: chips sit at the right end, text stays centred. */
+.craps-room .single-felt:has(>[data-bet=come]) :is([data-bet=pass],[data-bet=dont],[data-bet=field],[data-bet=any7],[data-bet=craps],[data-bet=come],[data-bet=dcome]) .felt-wagers{left:auto;right:8px;top:auto;bottom:6px;justify-content:flex-end;max-width:45%}
+.craps-room .single-felt .felt-wagers>i{display:none}
+.craps-room .single-felt .felt-wagers b{
+ display:inline-flex;align-items:center;gap:5px;padding:2px 7px 2px 3px;max-width:100%;
+ background:rgba(9,24,15,.82);border:0;border-radius:0;color:var(--cf-cream);
+ box-shadow:0 0 0 1px rgba(0,0,0,.6),0 2px 0 rgba(0,0,0,.45);font:700 11px/1.2 system-ui,sans-serif;min-width:0;
+}
+.craps-room .single-felt .felt-wagers b:not(.wager-stack)::before{
+ content:'';flex:none;width:16px;height:16px;border-radius:50%;
+ background:radial-gradient(circle,var(--chip) 0 4px,#fff8 4px 5px,var(--chip) 5px),
+  repeating-conic-gradient(var(--chip) 0 30deg,#fff 30deg 45deg);
+ background-blend-mode:normal;box-shadow:0 0 0 1px rgba(0,0,0,.65),inset 0 -2px 0 rgba(0,0,0,.3);
+}
+.craps-room .single-felt .felt-wagers b:not(.wager-stack)>span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600;opacity:.85;max-width:7em}
+.craps-room .single-felt .felt-wagers em{font-style:normal;color:var(--cf-gold);flex:none}
+
+/* Several players on one box: overlapping seat chips, table total, head count, your share. */
+.craps-room .single-felt .felt-wagers b.wager-stack{gap:5px;padding:2px 6px 2px 3px}
+.craps-room .single-felt .wager-stack .stack-chips{display:inline-flex;flex:none}
+.craps-room .single-felt .wager-stack .stack-chips i{width:14px;height:14px;border-radius:50%;margin-left:-7px;background:radial-gradient(circle,var(--chip) 0 3px,#fff8 3px 4px,var(--chip) 4px),repeating-conic-gradient(var(--chip) 0 30deg,#fff 30deg 45deg);box-shadow:0 0 0 1px rgba(0,0,0,.7)}
+.craps-room .single-felt .wager-stack .stack-chips i:first-child{margin-left:0}
+.craps-room .single-felt .wager-stack .stack-count{font:600 10px/1 system-ui,sans-serif;color:rgba(243,230,189,.7)}
+.craps-room .single-felt .wager-stack u{text-decoration:none;font:700 10px/1 system-ui,sans-serif;color:var(--cf-ink);background:var(--chip);padding:2px 4px}
+/* Narrow number boxes: drop the head count, keep chips, total and your share. */
+.craps-room .single-felt :is(.point,.hard,.prop,.big) .wager-stack .stack-count{display:none}
+
+/* ---------- main group: table arrangement ---------- */
+.craps-room .single-felt:has(>[data-bet=come]){
+ grid-template-columns:repeat(12,minmax(0,1fr)) 16px repeat(6,minmax(0,1fr));
+ grid-template-rows:22px minmax(80px,1.25fr) repeat(5,minmax(60px,1fr));
+ grid-template-areas:
+  "cap cap cap cap cap cap cap cap cap cap cap cap . ctr ctr ctr ctr ctr ctr"
+  "p4 p4 p5 p5 p6 p6 p8 p8 p9 p9 p10 p10 . h4 h4 h4 h6 h6 h6"
+  "co co co co co co co co co dc dc dc . h8 h8 h8 h10 h10 h10"
+  "co co co co co co co co co dc dc dc . a7 a7 a7 a7 a7 a7"
+  "fd fd fd fd fd fd fd fd fd fd fd fd . r2 r2 r2 r12 r12 r12"
+  "b6 b6 b8 b8 dp dp dp dp dp dp dp dp . r3 r3 r3 r11 r11 r11"
+  "b6 b6 b8 b8 pl pl pl pl pl pl pl pl . cr cr cr cr cr cr";
+}
+.craps-room .single-felt>.craps-bet[data-bet=p4]{grid-area:p4}.craps-room .single-felt>.craps-bet[data-bet=p5]{grid-area:p5}.craps-room .single-felt>.craps-bet[data-bet=p6]{grid-area:p6}
+.craps-room .single-felt>.craps-bet[data-bet=p8]{grid-area:p8}.craps-room .single-felt>.craps-bet[data-bet=p9]{grid-area:p9}.craps-room .single-felt>.craps-bet[data-bet=p10]{grid-area:p10}
+.craps-room .single-felt>.craps-bet[data-bet=come]{grid-area:co}.craps-room .single-felt>.craps-bet[data-bet=dcome]{grid-area:dc}.craps-room .single-felt>.craps-bet[data-bet=field]{grid-area:fd}
+.craps-room .single-felt>.craps-bet[data-bet=dont]{grid-area:dp}.craps-room .single-felt>.craps-bet[data-bet=pass]{grid-area:pl}
+.craps-room .single-felt>.craps-bet[data-bet=big6]{grid-area:b6}.craps-room .single-felt>.craps-bet[data-bet=big8]{grid-area:b8}
+.craps-room .single-felt>.craps-bet[data-bet=h4]{grid-area:h4}.craps-room .single-felt>.craps-bet[data-bet=h6]{grid-area:h6}.craps-room .single-felt>.craps-bet[data-bet=h8]{grid-area:h8}.craps-room .single-felt>.craps-bet[data-bet=h10]{grid-area:h10}
+.craps-room .single-felt>.craps-bet[data-bet=any7]{grid-area:a7}.craps-room .single-felt>.craps-bet[data-bet=craps]{grid-area:cr}
+.craps-room .single-felt>.craps-bet[data-bet=r2]{grid-area:r2}.craps-room .single-felt>.craps-bet[data-bet=r3]{grid-area:r3}.craps-room .single-felt>.craps-bet[data-bet=r11]{grid-area:r11}.craps-room .single-felt>.craps-bet[data-bet=r12]{grid-area:r12}
+
+/* Section captions printed on the felt. */
+.craps-room .single-felt:has(>[data-bet=come])::before,.craps-room .single-felt:has(>[data-bet=come])::after{
+ align-self:start;font:12px/1 'Fusion Pixel',sans-serif;letter-spacing:3px;color:rgba(242,207,115,.8);white-space:nowrap;overflow:hidden;text-overflow:ellipsis
+}
+.craps-room .single-felt:has(>[data-bet=come])::before{content:'PLACE 点数  ·  4 · 5 · SIX · 8 · NINE · 10';grid-area:cap}
+.craps-room .single-felt:has(>[data-bet=come])::after{content:'CENTER ACTION 中央押注';grid-area:ctr;text-align:center}
+
+/* Place numbers: big casino numerals, odds underneath. */
+.craps-room .single-felt .craps-bet.point strong{font-size:clamp(26px,3vw,42px);line-height:1;color:var(--cf-cream);text-shadow:0 3px 0 rgba(0,0,0,.5)}
+.craps-room .single-felt .craps-bet.point{box-shadow:inset 0 0 0 1px var(--cf-line),inset 0 -4px 0 rgba(0,0,0,.14)}
+.craps-room .single-felt [data-bet=p6].point strong,.craps-room .single-felt [data-bet=p9].point strong{font-size:clamp(20px,2.3vw,32px);letter-spacing:2px}
+.craps-room .single-felt .craps-bet.point small{font-size:12px;color:var(--cf-gold)}
+.craps-room .single-felt .craps-bet.target-number{background:rgba(255,255,255,.06)}
+.craps-room .single-felt .craps-bet.target-number::after{
+ content:'ON';position:absolute;top:6px;right:6px;width:28px;height:28px;display:grid;place-items:center;border-radius:50%;
+ background:#f6f1e3;color:#141414;font:11px/1 'Fusion Pixel',sans-serif;box-shadow:0 0 0 2px #141414,0 3px 0 rgba(0,0,0,.5)
+}
+
+/* COME: the big red word. DON'T COME: black bar. */
+.craps-room .single-felt [data-bet=come] strong{font-size:clamp(34px,4.2vw,64px);color:var(--cf-red);letter-spacing:6px;text-shadow:0 3px 0 #4a1408,0 0 18px rgba(226,84,58,.25)}
+.craps-room .single-felt [data-bet=come] small{font-size:12px;color:var(--cf-gold)}
+.craps-room .single-felt [data-bet=dcome],.craps-room .single-felt [data-bet=dont]{background:rgba(6,18,11,.32)}
+.craps-room .single-felt [data-bet=dcome] strong,.craps-room .single-felt [data-bet=dont] strong{font-size:clamp(16px,1.6vw,24px);color:#f1ece0}
+.craps-room .single-felt :is([data-bet=dcome],[data-bet=dont]) small{color:rgba(241,236,224,.7)}
+
+/* FIELD: numbers are the content. */
+.craps-room .single-felt [data-bet=field]{background:linear-gradient(180deg,rgba(242,207,115,.07),transparent 60%)}
+.craps-room .single-felt [data-bet=field] strong{font-size:clamp(20px,2vw,30px);color:var(--cf-gold);letter-spacing:8px}
+.craps-room .single-felt [data-bet=field]>small{font:400 clamp(14px,1.4vw,19px)/1.2 'Fusion Pixel',sans-serif;color:var(--cf-cream);letter-spacing:2px}
+.craps-room .single-felt [data-bet=field]>small::after{content:'  ·  2 与 12 赔 2:1';font-size:11px;color:rgba(242,207,115,.85);letter-spacing:.5px}
+
+/* PASS LINE: widest, brightest. */
+.craps-room .single-felt [data-bet=pass] strong{font-size:clamp(24px,2.6vw,38px);letter-spacing:7px;color:#fff6d8}
+.craps-room .single-felt [data-bet=pass]{box-shadow:inset 0 0 0 1px var(--cf-line),inset 0 0 0 4px rgba(243,230,189,.14)}
+
+/* BIG 6 / 8: corner, red numerals. */
+.craps-room .single-felt :is([data-bet=big6],[data-bet=big8]) strong{font-size:clamp(18px,1.8vw,26px);color:var(--cf-red);text-shadow:0 2px 0 #3a0f06}
+
+/* Centre action panel: darker felt, its own frame. */
+.craps-room .single-felt :is([data-bet=h4],[data-bet=h6],[data-bet=h8],[data-bet=h10],[data-bet=any7],[data-bet=craps],[data-bet=r2],[data-bet=r3],[data-bet=r11],[data-bet=r12]){background-color:rgba(4,20,11,.34)}
+.craps-room .single-felt [data-bet=h4]{box-shadow:inset 0 0 0 1px var(--cf-line),inset 2px 2px 0 var(--cf-gold)}
+.craps-room .single-felt [data-bet=h6]{box-shadow:inset 0 0 0 1px var(--cf-line),inset -2px 2px 0 var(--cf-gold)}
+.craps-room .single-felt [data-bet=craps]{box-shadow:inset 0 0 0 1px var(--cf-line),inset 0 -2px 0 var(--cf-gold)}
+.craps-room .single-felt .craps-bet.hard strong{font-size:clamp(13px,1.15vw,17px);letter-spacing:1px}
+.craps-room .single-felt .craps-bet.hard small{font-size:10px}
+.craps-room .single-felt .craps-bet.prop strong{font-size:clamp(12px,1.05vw,16px);color:#ff8a70;letter-spacing:.5px}
+.craps-room .single-felt [data-bet=any7] strong{font-size:clamp(18px,1.9vw,28px);color:var(--cf-red);letter-spacing:5px}
+.craps-room .single-felt [data-bet=craps] strong{font-size:clamp(15px,1.5vw,22px);color:var(--cf-red);letter-spacing:3px}
+.craps-room .single-felt .craps-bet.prop small{color:var(--cf-gold)}
+
+/* Hardway dice drawn as pixel pips (2+2, 3+3, 4+4, 5+5). */
+.craps-room .single-felt .tiny-dice{display:none!important}
+.craps-room .single-felt .craps-bet.hard::before{content:'';flex:none;width:44px;height:20px;background-repeat:no-repeat;filter:drop-shadow(0 2px 0 rgba(0,0,0,.5))}
+.craps-room .single-felt [data-bet=h4]::before{background-image:radial-gradient(circle,#1b1b1b 0 2.2px,transparent 2.8px),radial-gradient(circle,#1b1b1b 0 2.2px,transparent 2.8px),radial-gradient(circle,#1b1b1b 0 2.2px,transparent 2.8px),radial-gradient(circle,#1b1b1b 0 2.2px,transparent 2.8px),linear-gradient(#f6f1e3,#f6f1e3),linear-gradient(#f6f1e3,#f6f1e3);background-size:7px 7px,7px 7px,7px 7px,7px 7px,20px 20px,20px 20px;background-position:2px 2px,11px 11px,26px 2px,35px 11px,0 0,24px 0}
+.craps-room .single-felt [data-bet=h6]::before{background-image:radial-gradient(circle,#1b1b1b 0 2.2px,transparent 2.8px),radial-gradient(circle,#1b1b1b 0 2.2px,transparent 2.8px),radial-gradient(circle,#1b1b1b 0 2.2px,transparent 2.8px),radial-gradient(circle,#1b1b1b 0 2.2px,transparent 2.8px),radial-gradient(circle,#1b1b1b 0 2.2px,transparent 2.8px),radial-gradient(circle,#1b1b1b 0 2.2px,transparent 2.8px),linear-gradient(#f6f1e3,#f6f1e3),linear-gradient(#f6f1e3,#f6f1e3);background-size:7px 7px,7px 7px,7px 7px,7px 7px,7px 7px,7px 7px,20px 20px,20px 20px;background-position:2px 2px,6.5px 6.5px,11px 11px,26px 2px,30.5px 6.5px,35px 11px,0 0,24px 0}
+.craps-room .single-felt [data-bet=h8]::before{background-image:radial-gradient(circle,#1b1b1b 0 2.2px,transparent 2.8px),radial-gradient(circle,#1b1b1b 0 2.2px,transparent 2.8px),radial-gradient(circle,#1b1b1b 0 2.2px,transparent 2.8px),radial-gradient(circle,#1b1b1b 0 2.2px,transparent 2.8px),radial-gradient(circle,#1b1b1b 0 2.2px,transparent 2.8px),radial-gradient(circle,#1b1b1b 0 2.2px,transparent 2.8px),radial-gradient(circle,#1b1b1b 0 2.2px,transparent 2.8px),radial-gradient(circle,#1b1b1b 0 2.2px,transparent 2.8px),linear-gradient(#f6f1e3,#f6f1e3),linear-gradient(#f6f1e3,#f6f1e3);background-size:7px 7px,7px 7px,7px 7px,7px 7px,7px 7px,7px 7px,7px 7px,7px 7px,20px 20px,20px 20px;background-position:2px 2px,11px 2px,2px 11px,11px 11px,26px 2px,35px 2px,26px 11px,35px 11px,0 0,24px 0}
+.craps-room .single-felt [data-bet=h10]::before{background-image:radial-gradient(circle,#1b1b1b 0 2.2px,transparent 2.8px),radial-gradient(circle,#1b1b1b 0 2.2px,transparent 2.8px),radial-gradient(circle,#1b1b1b 0 2.2px,transparent 2.8px),radial-gradient(circle,#1b1b1b 0 2.2px,transparent 2.8px),radial-gradient(circle,#1b1b1b 0 2.2px,transparent 2.8px),radial-gradient(circle,#1b1b1b 0 2.2px,transparent 2.8px),radial-gradient(circle,#1b1b1b 0 2.2px,transparent 2.8px),radial-gradient(circle,#1b1b1b 0 2.2px,transparent 2.8px),radial-gradient(circle,#1b1b1b 0 2.2px,transparent 2.8px),radial-gradient(circle,#1b1b1b 0 2.2px,transparent 2.8px),linear-gradient(#f6f1e3,#f6f1e3),linear-gradient(#f6f1e3,#f6f1e3);background-size:7px 7px,7px 7px,7px 7px,7px 7px,7px 7px,7px 7px,7px 7px,7px 7px,7px 7px,7px 7px,20px 20px,20px 20px;background-position:2px 2px,11px 2px,6.5px 6.5px,2px 11px,11px 11px,26px 2px,35px 2px,30.5px 6.5px,26px 11px,35px 11px,0 0,24px 0}
+
+/* ---------- other groups: tidy grids ---------- */
+.craps-room .single-felt:not(:has(>[data-bet=come])){grid-template-columns:repeat(4,minmax(0,1fr));grid-auto-rows:minmax(72px,1fr);align-content:stretch}
+.craps-room .single-felt:not(:has(>[data-bet=come])) .craps-bet{grid-column:span 1}
+.craps-room .single-felt:has(>[data-bet^=hop]){grid-template-columns:repeat(6,minmax(0,1fr))}
+.craps-room .single-felt .craps-bet.extra strong{font-size:clamp(14px,1.4vw,20px)}
+.craps-room .single-felt .craps-bet.extra small{font-size:11px}
+.craps-room .single-felt :is([data-bet^=lay],[data-bet^=od],[data-bet=odont]){background:rgba(6,18,11,.32)}
+.craps-room .single-felt :is([data-bet^=lay],[data-bet^=od],[data-bet=odont]) strong{color:#f1ece0}
+
+/* ---------- smaller screens ---------- */
+@media(max-height:920px){
+ .craps-room .single-felt .craps-bet{padding:4px 6px;gap:1px}
+ .craps-room .single-felt .craps-bet.hard::before{transform:scale(.8);margin:-2px 0}
+ .craps-room .craps-bet-groups{padding:2px 6px 8px}
+}
+@media(max-height:820px){
+ .craps-room .single-felt:has(>[data-bet=come]){grid-template-rows:18px minmax(74px,1.2fr) repeat(5,minmax(56px,1fr))}
+ .craps-room .single-felt .craps-bet{padding:5px 6px 5px}
+}
+@media(max-height:800px) and (min-width:601px){
+ .craps-room .craps-felt.single-felt{padding:8px}
+ .craps-room .craps-wood-frame{margin:4px 6px 8px;padding:8px}
+ .craps-room .craps-bet-groups{padding:2px 6px 8px}
+ .craps-room .single-felt:has(>[data-bet=come]){grid-template-rows:0 minmax(68px,1.3fr) repeat(5,minmax(42px,1fr))}
+ .craps-room .single-felt:has(>[data-bet=come])::before,.craps-room .single-felt:has(>[data-bet=come])::after{display:none}
+ .craps-room .single-felt .craps-bet{padding:3px 6px;gap:1px}
+ .craps-room .single-felt .craps-bet small{font-size:10px}
+ .craps-room .single-felt .craps-bet.point strong{font-size:28px}
+ .craps-room .single-felt .craps-bet.point{padding-top:4px}
+ .craps-room .single-felt [data-bet=come] strong{font-size:44px}
+ .craps-room .single-felt [data-bet=pass] strong{font-size:28px}
+ .craps-room .single-felt .craps-bet.hard::before{display:none}
+}
+@media(max-width:1100px){
+ .craps-room .single-felt .felt-wagers b:not(.wager-stack)>span{display:none}
+}
+@media(max-width:600px){
+ .craps-room .craps-wood-frame{margin:4px 4px 8px;padding:7px}
+ .craps-room .craps-felt.single-felt{padding:7px}
+ .craps-room .single-felt:has(>[data-bet=come]){
+  grid-template-columns:repeat(6,minmax(0,1fr));
+  grid-template-rows:auto;grid-auto-rows:minmax(74px,auto);
+  grid-template-areas:
+   "p4 p4 p5 p5 p6 p6" "p8 p8 p9 p9 p10 p10"
+   "co co co co dc dc" "fd fd fd fd fd fd" "dp dp dp dp dp dp" "pl pl pl pl pl pl"
+   "b6 b6 b6 b8 b8 b8"
+   "h4 h4 h4 h6 h6 h6" "h8 h8 h8 h10 h10 h10" "a7 a7 a7 a7 a7 a7"
+   "r2 r2 r2 r12 r12 r12" "r3 r3 r3 r11 r11 r11" "cr cr cr cr cr cr";
+ }
+ .craps-room .single-felt:has(>[data-bet=come])::before,.craps-room .single-felt:has(>[data-bet=come])::after{display:none}
+ .craps-room .single-felt [data-bet=come] strong{font-size:40px}
+ .craps-room .single-felt .craps-bet.point strong{font-size:34px}
+ .craps-room .single-felt .craps-bet.point{padding-bottom:24px}
+ .craps-room .single-felt :is([data-bet=field],[data-bet=pass],[data-bet=dont],[data-bet=any7],[data-bet=craps],[data-bet=come],[data-bet=dcome]){padding-bottom:24px}
+ .craps-room .single-felt:has(>[data-bet=come]) .point .felt-wagers{top:auto;bottom:4px;left:4px;right:4px;justify-content:center;max-width:none}
+ .craps-room .single-felt [data-bet=field]>small{font-size:15px}
+ .craps-room .single-felt [data-bet=field]>small::after{display:block;content:'2 与 12 赔 2:1'}
+ .craps-room .single-felt:not(:has(>[data-bet=come])){grid-template-columns:repeat(2,minmax(0,1fr))}
+ .craps-room .single-felt:has(>[data-bet^=hop]){grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media(prefers-reduced-motion:reduce){.craps-room .single-felt .craps-bet{transition:none}}
+
+/* Chips inside boxes: slimmer strip so label, odds and chips stack without touching. */
+.craps-room .single-felt:has(>[data-bet=come]) :is(.point,.hard,.prop,.big) .felt-wagers{bottom:3px}
+.craps-room .single-felt :is(.point,.hard,.prop,.big) .felt-wagers b{font-size:10px;line-height:1;padding-top:1px;padding-bottom:1px}
+.craps-room .single-felt :is(.point,.hard,.prop,.big) .felt-wagers b:not(.wager-stack)::before{width:12px;height:12px}
+.craps-room .single-felt :is(.point,.hard,.prop,.big) .wager-stack .stack-chips i{width:12px;height:12px;margin-left:-6px}
+.craps-room .single-felt :is(.point,.hard,.prop,.big) .wager-stack u{padding:1px 3px}
+.craps-room .single-felt :is(.point,.hard,.prop,.big)>small{line-height:1.1}
+.craps-room .single-felt :is(.point,.hard,.prop,.big){padding-top:4px}
+@media(max-height:920px){.craps-room .single-felt .craps-bet.hard::before{transform:scale(.7);margin:-3px 0 -4px}}
+
+/* Tabs stay readable when the felt scrolls under them (the board scrolls on short screens). */
+.craps-room .craps-bet-groups{align-self:stretch;justify-content:center;position:sticky;top:0;z-index:6;background:#1b1813!important;box-shadow:0 6px 8px -4px rgba(0,0,0,.6)}
+
+/* Narrow number boxes (tablet portrait, small laptops): the ON puck would cover SIX / NINE,
+   so the target is marked in the odds line instead. */
+@media(max-width:1100px){
+ .craps-room .single-felt .craps-bet.target-number::after{display:none}
+ .craps-room .single-felt .craps-bet.target-number>small::before{content:'ON · ';color:#fff6d8;font-weight:800}
+}
+
+/* Phone landscape: very little height. Keep the table arrangement, drop captions and
+   dice art, keep every box at least 44 px tall and let the felt scroll under the tabs. */
+@media(max-height:500px) and (min-width:601px){
+ .craps-room .craps-bet-groups{padding:2px 4px 6px;gap:6px}
+ .craps-room .craps-bet-groups button{padding:6px 4px!important;font-size:12px!important}
+ .craps-room .craps-wood-frame{margin:2px 4px 6px;padding:6px;flex:none}
+ .craps-room .craps-felt.single-felt{padding:5px;flex:none}
+ .craps-room .single-felt:has(>[data-bet=come]){grid-template-rows:0 repeat(6,minmax(44px,auto))}
+ .craps-room .single-felt:has(>[data-bet=come])::before,.craps-room .single-felt:has(>[data-bet=come])::after{display:none}
+ .craps-room .single-felt .craps-bet.hard::before{display:none}
+ .craps-room .single-felt .craps-bet{padding:3px 5px;gap:0}
+ .craps-room .single-felt .craps-bet.point strong{font-size:22px}
+ .craps-room .single-felt [data-bet=come] strong{font-size:30px;letter-spacing:4px}
+ .craps-room .single-felt [data-bet=pass] strong{font-size:22px}
+ .craps-room .single-felt [data-bet=field] strong{font-size:16px}
+ .craps-room .single-felt [data-bet=field]>small{font-size:12px}
+ .craps-room .single-felt .craps-bet small{font-size:9px}
+ .craps-room .single-felt .craps-bet.target-number::after{display:none}
+ .craps-room .single-felt .craps-bet.target-number>small::before{content:'ON · ';color:#fff6d8;font-weight:800}
+ .craps-room .single-felt:not(:has(>[data-bet=come])){grid-auto-rows:minmax(48px,auto)}
+}

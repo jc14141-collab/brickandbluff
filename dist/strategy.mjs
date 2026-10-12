@@ -1,3 +1,6 @@
+// Production strategy. Experimental models are NOT imported here: they plug in
+// through the optional `lab` hooks from dist/strategy-lab.mjs, so the client,
+// worker and server bundles never ship the lab code or its probability tables.
 import {fastRank,compare} from './engine.mjs';
 export const PROFILES=[
  {name:'ATLAS',label:'均衡混合',bluff:.26,risk:.02,range:.0,sizes:[.33,.66,1],temperature:.028},
@@ -30,11 +33,11 @@ export function preflop(h){let hi=Math.max(h[0].r,h[1].r),lo=Math.min(h[0].r,h[1
 function rangeWeight(h,p,street,board){let s=preflop(h),raises=p.history.filter(a=>a.kind==='raise'),pre=raises.filter(a=>a.street===0).length,w=.15+.85*s;if(pre)w*=Math.pow(.08+.92*s,1+pre);if(p.history.some(a=>a.kind==='call'&&a.street===0))w*=.35+.65*s;if(board.length>=3&&raises.some(a=>a.street>0)){let cat=fastRank([...h,...board])[0];w*=cat>=2?1:cat===1?.7:.28}return Math.max(.004,w)}
 // Cache weighted ranges per decision, rather than accepting an arbitrary hand
 // after a fixed number of failed rejection attempts. No private opponent cards.
-export function equity(snapshot,samples=1200,rng=Math.random){
+export function equity(snapshot,samples=1200,rng=Math.random,{rangeOf=null,worlds=null}={}){
  const known=new Set([...snapshot.hole,...snapshot.board].map(key)),pool=full.filter(c=>!known.has(key(c)));
  const opponents=snapshot.players.filter((p,i)=>i!==snapshot.seat&&!p.fold);
  if(!opponents.length)return 1;
- const ranges=opponents.map(p=>{let total=0,entries=[];for(let a=0;a<pool.length-1;a++)for(let b=a+1;b<pool.length;b++){const weight=rangeWeight([pool[a],pool[b]],p,snapshot.street,snapshot.board);total+=weight;entries.push({a,b,weight,cumulative:total})}return{entries,total}});
+ const ranges=opponents.map(p=>{let total=0,entries=[];const updated=rangeOf?rangeOf(snapshot,snapshot.players.indexOf(p)):null;for(let a=0;a<pool.length-1;a++)for(let b=a+1;b<pool.length;b++){const weight=updated?updated.entries[entries.length].weight:rangeWeight([pool[a],pool[b]],p,snapshot.street,snapshot.board);total+=weight;entries.push({a,b,weight,cumulative:total})}return{entries,total}});
  let win=0;
  for(let n=0;n<samples;n++){
   const used=new Uint8Array(pool.length),hands=[];
@@ -44,15 +47,19 @@ export function equity(snapshot,samples=1200,rng=Math.random){
    used[chosen.a]=used[chosen.b]=1;hands.push([pool[chosen.a],pool[chosen.b]]);
   }
   const board=snapshot.board.slice();while(board.length<5){const i=Math.floor(rng()*pool.length);if(!used[i]){used[i]=1;board.push(pool[i])}}
-  const mine=fastRank([...snapshot.hole,...board]);let ties=1,lost=false;
+  const mine=fastRank([...snapshot.hole,...board]);if(worlds)worlds.push({hands,board,mine});let ties=1,lost=false;
   for(const h of hands){const c=compare(fastRank([...h,...board]),mine);if(c>0){lost=true;break}if(c===0)ties++}if(!lost)win+=1/ties;
  }
  return win/samples;
 }
 const clamp=(v,lo,hi)=>Math.max(lo,Math.min(hi,v));
 function adjustedModel(profile,snapshot,adaptation,participation){const base=PROFILES[profile%PROFILES.length],a=adaptation??{},entry=snapshot.players.length>=3?participation:participation*.5;return{...base,tightness:base.tightness-entry-clamp(a.entryBias??0,-.03,.05),callBias:base.callBias+entry*.25+clamp(a.callBias??0,0,.045),aggression:clamp(base.aggression+(a.aggressionBias??0)*(base.aggression<0?.5:1),-.22,.26),bluff:clamp(base.bluff+(a.bluffBias??0)*(base.aggression<0?.45:1),.015,.75),sizes:base.sizes.map(n=>n*(1+clamp(a.sizeBias??0,-.05,.1)))}}
-export function decide(snapshot,profile=0,{samples=1200,rng=Math.random,adaptation=null,participation=.035}={}){
- const model=adjustedModel(profile,snapshot,adaptation,participation),l=snapshot.legal,p=snapshot.players[snapshot.seat],active=snapshot.players.filter(p=>!p.fold).length,eq=equity(snapshot,samples,rng),pot=Math.max(snapshot.bigBlind??20,snapshot.players.reduce((sum,q)=>sum+Math.min(q.total,p.total+l.call),0)),owe=l.call,odds=owe/(pot+owe),position=(snapshot.seat-snapshot.dealer+snapshot.players.length)%snapshot.players.length,onButton=position===0,last=snapshot.lastAggressor===snapshot.seat,ownPF=preflop(snapshot.hole),cat=snapshot.board.length>=3?fastRank([...snapshot.hole,...snapshot.board])[0]:0;
+// equityRng (optional) draws only the equity Monte Carlo samples; rng still drives every
+// action choice. Evaluations comparing sample counts pass separate streams so a change in
+// sample count does not also reshuffle the action-mixing draws. Omitted: identical to before.
+export function decide(snapshot,profile=0,{samples=1200,rng=Math.random,equityRng=null,adaptation=null,participation=.035,searchBudgetMs=24,lab=null}={}){
+ const worlds=lab?.collectWorlds?[]:null;let multiwayEvaluation=null;
+ const model=adjustedModel(profile,snapshot,adaptation,participation),l=snapshot.legal,p=snapshot.players[snapshot.seat],active=snapshot.players.filter(p=>!p.fold).length,eq=equity(snapshot,samples,equityRng??rng,{rangeOf:lab?.rangeOf??null,worlds}),pot=Math.max(snapshot.bigBlind??20,snapshot.players.reduce((sum,q)=>sum+Math.min(q.total,p.total+l.call),0)),owe=l.call,odds=owe/(pot+owe),position=(snapshot.seat-snapshot.dealer+snapshot.players.length)%snapshot.players.length,onButton=position===0,last=snapshot.lastAggressor===snapshot.seat,ownPF=preflop(snapshot.hole),cat=snapshot.board.length>=3?fastRank([...snapshot.hole,...snapshot.board])[0]:0;
  const aggressiveOpponents=snapshot.actions.filter(a=>a.street===snapshot.street&&a.kind==='raise').length;
  const realization=snapshot.street===3||owe===p.chips?1:Math.max(.66,Math.min(1,(onButton?1:.90)-.035*(active-2)+model.range));
  const effectiveEq=eq*realization,blocker=snapshot.hole.some(c=>c.r===14)||snapshot.hole.some(c=>c.r>=12&&snapshot.board.filter(b=>b.s===c.s).length>=3);
@@ -64,6 +71,7 @@ export function decide(snapshot,profile=0,{samples=1200,rng=Math.random,adaptati
   if(enter){const raiseChance=model.aggression<0?(ownPF>.8?.55:.12):Math.min(.94,.7+model.aggression*1.5);if(l.canRaise&&rng()<raiseChance){const limpers=snapshot.actions.filter(a=>a.street===0&&a.kind==='call').length,target=Math.min(l.max,Math.max(l.min,Math.round((snapshot.bigBlind??20)*(2.5+limpers*.75+Math.max(0,model.aggression)*3))));return{action:'raise',target,equity:eq,profile:model.name,samples}}return{action:owe?'call':'check',equity:eq,profile:model.name,samples}}
   return{action:owe?'fold':'check',equity:eq,profile:model.name,samples};
  }
+ if(lab?.before){const decided=lab.before(snapshot,model,{rng,budgetMs:searchBudgetMs});if(decided)return{...decided,equity:eq,profile:model.name,samples}}
  const candidates=[];
  if(owe)candidates.push({action:'fold',ev:0});
  candidates.push({action:owe?'call':'check',ev:effectiveEq*(pot+owe)-owe+model.callBias*pot*(owe?Math.min(1,owe/Math.max(snapshot.bigBlind??20,pot*.25)):0)-(snapshot.street===0&&owe&&ownPF<threshold?(threshold-ownPF)*(pot+owe)*.9:0)});
@@ -75,10 +83,11 @@ export function decide(snapshot,profile=0,{samples=1200,rng=Math.random,adaptati
   const positionPressure=onButton?.07:0,rangePressure=snapshot.street===0?(ownPF>.7?.12:0):(last?.07:0),bluffEdge=(blocker?.08:0)+(active===2?.09:-.06);
   for(let to of targets){if(to<l.min&&to!==l.max)continue;let cost=to-p.bet,raiseBy=to-snapshot.current,effective=Math.min(cost,Math.max(...snapshot.players.filter((q,i)=>i!==snapshot.seat&&!q.fold).map(q=>q.chips+q.bet-p.bet).map(v=>Math.max(v,owe)))),ratio=raiseBy/(pot+owe),baseFold=Math.min(.72,Math.max(.08,.16+ratio*.21+positionPressure+rangePressure+bluffEdge-aggressiveOpponents*.065+clamp(adaptation?.foldBias??0,-.12,.12)));
    // Multiway folds become less likely; continuing ranges are stronger than the initial range.
-   let allFold=snapshot.players.some((q,i)=>i!==snapshot.seat&&!q.fold&&!q.chips)?0:Math.pow(baseFold,active-1),calledEq=Math.max(.02,effectiveEq-(.045+ratio*.025)*(active-1)),value=allFold*pot+(1-allFold)*(calledEq*(pot+effective*2)-effective);
+   let allFold=snapshot.players.some((q,i)=>i!==snapshot.seat&&!q.fold&&!q.chips)?0:lab?.foldRate?(lab.foldRate(snapshot,{to})??Math.pow(baseFold,active-1)):Math.pow(baseFold,active-1),calledEq=Math.max(.02,effectiveEq-(.045+ratio*.025)*(active-1)),value=allFold*pot+(1-allFold)*(calledEq*(pot+effective*2)-effective);
    let valueHand=eq>(active===2?.59:.47),draw=cat<4&&eq>.28,bluffChance=model.bluff*(blocker?1.35:1)*(draw?1:.6)/(active-1);
    if(snapshot.street===0&&ownPF<threshold)bluffChance*=.08;
    if(!valueHand&&rng()>bluffChance)continue;
+   if(lab?.raiseValue&&to===l.max){const evaluated=lab.raiseValue(snapshot,worlds,{budgetMs:searchBudgetMs});if(evaluated){value=evaluated.ev;multiwayEvaluation=evaluated}}
    if(snapshot.street===0&&ownPF<threshold)value-=(threshold-ownPF)*(pot+cost);
    value+=(valueHand?clamp(adaptation?.valueBias??0,0,.08)*pot:0);
    value+=model.aggression*pot*Math.min(1,raiseBy/Math.max(snapshot.bigBlind??20,pot))-(model.aggression>0?Math.max(0,ratio-1.5)*pot*.045:0);
@@ -89,5 +98,5 @@ export function decide(snapshot,profile=0,{samples=1200,rng=Math.random,adaptati
  }
  // Quantal mixing over abstract action EVs avoids a deterministic threshold bot.
  const max=Math.max(...candidates.map(c=>c.ev)),temp=Math.max(.75,pot*model.temperature);let weights=candidates.map(c=>Math.exp(Math.max(-35,(c.ev-max)/temp))),sum=weights.reduce((a,b)=>a+b,0),draw=rng()*sum,index=0;while(index<weights.length-1&&(draw-=weights[index])>0)index++;
- let chosen=candidates[index];return {...chosen,equity:eq,potOdds:odds,profile:model.name,samples};
+ let chosen=candidates[index];return {...chosen,equity:eq,potOdds:odds,profile:model.name,samples,...(multiwayEvaluation?{multiwayEvaluation}:{})};
 }

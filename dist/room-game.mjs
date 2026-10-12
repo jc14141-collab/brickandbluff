@@ -110,10 +110,14 @@ export class RoomGame{
  if(r.mode==='craps'){
  const ui=this.controller,g=r.game;ui.authoritative=g.table;ui.engine=restoreCraps(g.table);
  Object.assign(ui.network,{canRoll:g.roller===r.you&&['bets','ready'].includes(g.phase),phase:g.phase==='ready'?'bets':g.phase,deadline:r.deadline,clockOffset:this.offset,others:g.others,you:r.you,roll:g.roll});
+ // A spectator replaying a late throw keeps the rolling view until its dice stop, so the result
+ // (readout and settlement) never appears while the dice are still in the air.
+ const stillThrowing=g.roll&&this.throwing?.id===g.roll.id&&ui.scene?.animation;if(stillThrowing&&['landed','result'].includes(g.phase))ui.network.phase='rolling';
  ui.replayPending?.();ui.message='掷骰者：'+r.seats[g.roller].name+' · 仅七出后换人';
  ui.scene?.setGuests(r.seats.filter((s,i)=>!s.departed&&i!==g.roller),r.seats[g.roller]);ui.render();
- if(g.phase==='rolling'&&g.roll&&this.lastRoll!==g.roll.id){this.lastRoll=g.roll.id;ui.scene?.throw(g.roll.dice,{seed:g.roll.id,durationMs:g.roll.ends-g.roll.started,elapsedMs:Math.max(0,this.now()-g.roll.started)})}
- if(g.phase==='landed'&&g.roll)ui.scene?.showResult(g.roll.dice,{seed:g.roll.id});
+ if(['rolling','landed'].includes(g.phase)&&g.roll&&this.lastRoll!==g.roll.id&&this.now()<g.roll.holdEnds-1000){this.lastRoll=g.roll.id;const id=g.roll.id,done=ui.scene?.throw(g.roll.dice,{seed:id,durationMs:g.roll.ends-g.roll.started,elapsedMs:Math.max(0,this.now()-g.roll.started),catchUp:true});
+  if(done){this.throwing={id};done.then(()=>{if(this.throwing?.id!==id||this.controller!==ui)return;this.throwing=null;const now=this.r?.game;if(now?.roll?.id===id&&now.phase!=='rolling'){ui.network.phase=now.phase==='ready'?'bets':now.phase;if(now.phase==='landed')ui.scene?.showResult(now.roll.dice,{seed:id});ui.render()}})}}
+ if(g.phase==='landed'&&g.roll&&!(this.throwing?.id===g.roll.id&&ui.scene?.animation))ui.scene?.showResult(g.roll.dice,{seed:g.roll.id});
  let info=this.q('.mp-craps-info');if(!info){info=document.createElement('aside');info.className='mp-craps-info';this.q('.craps-room').append(info)}
  const contracts=g.others.some(p=>Object.entries(p.travel??{}).some(([k,v])=>k[0]==='c'&&v));
  info.innerHTML=r.host&&g.phase==='bets'&&!g.point&&!contracts?'<button data-end-craps>结束本桌</button>':'';

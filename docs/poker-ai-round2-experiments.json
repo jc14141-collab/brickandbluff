@@ -1,0 +1,603 @@
+{
+  "status": "round 2 local experiment; production defaults unchanged",
+  "promotion": false,
+  "versions": {
+    "firstRound": ".build/poker-training/round1-source/",
+    "round2Pooled": ".build/poker-training/round2-pooled-source/"
+  },
+  "frozenFinalSourceHashes": {
+    "poker-planning.mjs": "dd3ec89fedddb5b30800a77409e3f00f51b7400e3b4fadd69f76ecb18a4e4a54",
+    "poker-range.mjs": "31469b50a15ac2d3ad2ac3a18fd1c8e200930ba93a25af071a4d88119c72b822",
+    "poker-response.mjs": "6de71150900faa7d831f6630e8010b820ca0deb1908708e2f29e4bfdfbfb80bf",
+    "poker-response-data.mjs": "dacc90d3657b72a751e7eebcf7149d7a364e926fe04406b3f237aac0c5be671c"
+  },
+  "experiments": [
+    {
+      "artifact": "response-validation.json",
+      "positions": 2000,
+      "streets": {
+        "2": 1000,
+        "3": 1000
+      },
+      "metrics": {
+        "old": {
+          "loss": 0.8731385626937801,
+          "brier": 0.539207475615079
+        },
+        "new": {
+          "loss": 0.6514592712433428,
+          "brier": 0.392539445632517
+        }
+      },
+      "limitations": "Independent legal late-street positions; predicts old bots, not human validation. Lower loss and Brier are better."
+    },
+    {
+      "artifact": "response-validation-known.json",
+      "knownPublicStyle": true,
+      "positions": 2000,
+      "streets": {
+        "2": 1000,
+        "3": 1000
+      },
+      "metrics": {
+        "old": {
+          "loss": 0.8731385626937801,
+          "brier": 0.539207475615079
+        },
+        "new": {
+          "loss": 0.5992424960594421,
+          "brier": 0.36620336329973624
+        }
+      },
+      "limitations": "Independent legal late-street positions; predicts old bots, not human validation. Lower loss and Brier are better."
+    },
+    {
+      "artifact": "response-validation-pooled.json",
+      "knownPublicStyle": false,
+      "positions": 2000,
+      "streets": {
+        "2": 1000,
+        "3": 1000
+      },
+      "metrics": {
+        "old": {
+          "loss": 0.8731385626937801,
+          "brier": 0.539207475615079
+        },
+        "new": {
+          "loss": 0.6514592712433428,
+          "brier": 0.392539445632517
+        }
+      },
+      "limitations": "Independent legal late-street positions; predicts old bots, not human validation. Lower loss and Brier are better."
+    },
+    {
+      "artifact": "opponents-1000-80000.json",
+      "samples": 100,
+      "offset": 80000,
+      "reports": [
+        {
+          "opponent": "松跟注",
+          "profile": 2,
+          "handsPerVersion": 2000,
+          "groups": 1000,
+          "baselineBB100": -11.635000000000007,
+          "newBB100": 38.024999999999984,
+          "improvementBB100": 49.66,
+          "improvement95CI": [
+            -17.19650020432233,
+            116.51650020432231
+          ],
+          "searches": 311,
+          "eligible": 840,
+          "latencyMs": {
+            "mean": 7.238281935281192,
+            "p95": 31.879300000000512
+          }
+        },
+        {
+          "opponent": "紧凶",
+          "profile": 3,
+          "handsPerVersion": 2000,
+          "groups": 1000,
+          "baselineBB100": 10.924999999999994,
+          "newBB100": -22.235000000000003,
+          "improvementBB100": -33.159999999999975,
+          "improvement95CI": [
+            -80.72776497738785,
+            14.407764977387899
+          ],
+          "searches": 18,
+          "eligible": 70,
+          "latencyMs": {
+            "mean": 2.6291736271676127,
+            "p95": 10.30279999999766
+          }
+        },
+        {
+          "opponent": "诈唬施压",
+          "profile": 4,
+          "handsPerVersion": 2000,
+          "groups": 1000,
+          "baselineBB100": 19.48,
+          "newBB100": 16.762499999999996,
+          "improvementBB100": -2.717500000000002,
+          "improvement95CI": [
+            -72.21191747160701,
+            66.776917471607
+          ],
+          "searches": 12,
+          "eligible": 83,
+          "latencyMs": {
+            "mean": 2.428090178089687,
+            "p95": 6.569499999997788
+          }
+        },
+        {
+          "opponent": "价值猎手",
+          "profile": 7,
+          "handsPerVersion": 2000,
+          "groups": 1000,
+          "baselineBB100": -12.147500000000003,
+          "newBB100": -5.512500000000005,
+          "improvementBB100": 6.635000000000003,
+          "improvement95CI": [
+            -43.13052156177126,
+            56.400521561771264
+          ],
+          "searches": 37,
+          "eligible": 129,
+          "latencyMs": {
+            "mean": 3.3213762064345125,
+            "p95": 29.091800000001967
+          }
+        }
+      ],
+      "limitations": "Increment over same balanced v127 player; fixed paired deals, reset 100BB stacks, not human profitability."
+    },
+    {
+      "artifact": "opponents-late-1000-80000.json",
+      "samples": 100,
+      "offset": 80000,
+      "variant": "late",
+      "reports": [
+        {
+          "variant": "late",
+          "opponent": "松跟注",
+          "profile": 2,
+          "handsPerVersion": 2000,
+          "groups": 1000,
+          "baselineBB100": -11.635000000000007,
+          "newBB100": -71.38749999999997,
+          "improvementBB100": -59.75249999999998,
+          "improvement95CI": [
+            -104.42843822186627,
+            -15.076561778133696
+          ],
+          "searches": 340,
+          "eligible": 894,
+          "latencyMs": {
+            "mean": 6.395170856438687,
+            "p95": 26.810600000000704
+          }
+        },
+        {
+          "variant": "late",
+          "opponent": "紧凶",
+          "profile": 3,
+          "handsPerVersion": 2000,
+          "groups": 1000,
+          "baselineBB100": 10.924999999999994,
+          "newBB100": 14.372499999999999,
+          "improvementBB100": 3.4475,
+          "improvement95CI": [
+            -14.52495755148794,
+            21.419957551487943
+          ],
+          "searches": 14,
+          "eligible": 65,
+          "latencyMs": {
+            "mean": 1.9378849375457512,
+            "p95": 3.907100000003993
+          }
+        },
+        {
+          "variant": "late",
+          "opponent": "诈唬施压",
+          "profile": 4,
+          "handsPerVersion": 2000,
+          "groups": 1000,
+          "baselineBB100": 19.48,
+          "newBB100": 32.1975,
+          "improvementBB100": 12.717499999999998,
+          "improvement95CI": [
+            -9.429149933151576,
+            34.86414993315157
+          ],
+          "searches": 14,
+          "eligible": 100,
+          "latencyMs": {
+            "mean": 2.0706129898014014,
+            "p95": 4.3695000000006985
+          }
+        },
+        {
+          "variant": "late",
+          "opponent": "价值猎手",
+          "profile": 7,
+          "handsPerVersion": 2000,
+          "groups": 1000,
+          "baselineBB100": -12.147500000000003,
+          "newBB100": -21.070000000000004,
+          "improvementBB100": -8.922499999999998,
+          "improvement95CI": [
+            -30.278844748796054,
+            12.433844748796057
+          ],
+          "searches": 38,
+          "eligible": 116,
+          "latencyMs": {
+            "mean": 2.340928997290001,
+            "p95": 18.385699999998906
+          }
+        }
+      ],
+      "limitations": "Increment over same balanced v127 player; fixed paired deals, reset 100BB stacks, not human profitability."
+    },
+    {
+      "artifact": "opponents-known-1000-90000.json",
+      "samples": 100,
+      "offset": 90000,
+      "variant": "known",
+      "reports": [
+        {
+          "variant": "known",
+          "opponent": "松跟注",
+          "profile": 2,
+          "handsPerVersion": 2000,
+          "groups": 1000,
+          "baselineBB100": 13.662499999999994,
+          "newBB100": 93.81000000000002,
+          "improvementBB100": 80.14750000000006,
+          "improvement95CI": [
+            8.813051540449813,
+            151.4819484595503
+          ],
+          "searches": 311,
+          "eligible": 806,
+          "latencyMs": {
+            "mean": 7.394622655999973,
+            "p95": 32.39890000000014
+          }
+        },
+        {
+          "variant": "known",
+          "opponent": "紧凶",
+          "profile": 3,
+          "handsPerVersion": 2000,
+          "groups": 1000,
+          "baselineBB100": 4.749999999999999,
+          "newBB100": 9.66,
+          "improvementBB100": 4.909999999999999,
+          "improvement95CI": [
+            -36.666119320118426,
+            46.48611932011842
+          ],
+          "searches": 14,
+          "eligible": 41,
+          "latencyMs": {
+            "mean": 2.110224605153819,
+            "p95": 7.1393000000025495
+          }
+        },
+        {
+          "variant": "known",
+          "opponent": "诈唬施压",
+          "profile": 4,
+          "handsPerVersion": 2000,
+          "groups": 1000,
+          "baselineBB100": 77.41249999999992,
+          "newBB100": 39.56250000000001,
+          "improvementBB100": -37.849999999999994,
+          "improvement95CI": [
+            -111.76918872746178,
+            36.069188727461786
+          ],
+          "searches": 38,
+          "eligible": 91,
+          "latencyMs": {
+            "mean": 2.8162384573303867,
+            "p95": 10.523699999997916
+          }
+        },
+        {
+          "variant": "known",
+          "opponent": "价值猎手",
+          "profile": 7,
+          "handsPerVersion": 2000,
+          "groups": 1000,
+          "baselineBB100": -21.552500000000002,
+          "newBB100": 15.507499999999997,
+          "improvementBB100": 37.06,
+          "improvement95CI": [
+            -0.851557762748606,
+            74.97155776274862
+          ],
+          "searches": 22,
+          "eligible": 68,
+          "latencyMs": {
+            "mean": 2.7997580945004024,
+            "p95": 12.002699999997276
+          }
+        }
+      ],
+      "limitations": "Increment over same balanced v127 player; fixed paired deals, reset 100BB stacks, not human profitability."
+    },
+    {
+      "artifact": "opponents-known-1000-110000.json",
+      "samples": 100,
+      "offset": 110000,
+      "variant": "known",
+      "reports": [
+        {
+          "variant": "known",
+          "opponent": "松跟注",
+          "profile": 2,
+          "handsPerVersion": 2000,
+          "groups": 1000,
+          "baselineBB100": -4.667499999999987,
+          "newBB100": 26.0375,
+          "improvementBB100": 30.704999999999995,
+          "improvement95CI": [
+            -43.35625839387072,
+            104.7662583938707
+          ],
+          "searches": 292,
+          "eligible": 817,
+          "latencyMs": {
+            "mean": 6.9343010961477765,
+            "p95": 31.45799999999872
+          }
+        },
+        {
+          "variant": "known",
+          "opponent": "紧凶",
+          "profile": 3,
+          "handsPerVersion": 2000,
+          "groups": 1000,
+          "baselineBB100": 0.1299999999999988,
+          "newBB100": 52.38250000000001,
+          "improvementBB100": 52.252500000000005,
+          "improvement95CI": [
+            0.5953402670096475,
+            103.90965973299035
+          ],
+          "searches": 18,
+          "eligible": 50,
+          "latencyMs": {
+            "mean": 2.4340110098709014,
+            "p95": 8.237700000005134
+          }
+        },
+        {
+          "variant": "known",
+          "opponent": "诈唬施压",
+          "profile": 4,
+          "handsPerVersion": 2000,
+          "groups": 1000,
+          "baselineBB100": 36.712500000000006,
+          "newBB100": 20.527500000000014,
+          "improvementBB100": -16.185000000000002,
+          "improvement95CI": [
+            -84.1418850773682,
+            51.7718850773682
+          ],
+          "searches": 35,
+          "eligible": 99,
+          "latencyMs": {
+            "mean": 2.495337344846261,
+            "p95": 7.8862000000008265
+          }
+        },
+        {
+          "variant": "known",
+          "opponent": "价值猎手",
+          "profile": 7,
+          "handsPerVersion": 2000,
+          "groups": 1000,
+          "baselineBB100": -26.157499999999995,
+          "newBB100": 2.3800000000000003,
+          "improvementBB100": 28.537499999999998,
+          "improvement95CI": [
+            -14.986567037205539,
+            72.06156703720555
+          ],
+          "searches": 41,
+          "eligible": 98,
+          "latencyMs": {
+            "mean": 2.6510017593243775,
+            "p95": 13.439800000000105
+          }
+        }
+      ],
+      "limitations": "Increment over same balanced v127 player; fixed paired deals, reset 100BB stacks, not human profitability."
+    },
+    {
+      "artifact": "opponents-known-2000-130000.json",
+      "samples": 100,
+      "offset": 130000,
+      "variant": "known",
+      "reports": [
+        {
+          "variant": "known",
+          "opponent": "松跟注",
+          "profile": 2,
+          "handsPerVersion": 4000,
+          "groups": 2000,
+          "baselineBB100": -0.08500000000000583,
+          "newBB100": 75.03750000000004,
+          "improvementBB100": 75.12250000000002,
+          "improvement95CI": [
+            23.610607992133946,
+            126.63439200786608
+          ],
+          "searches": 609,
+          "eligible": 1668,
+          "latencyMs": {
+            "mean": 7.598334389070037,
+            "p95": 32.33490000000165
+          }
+        },
+        {
+          "variant": "known",
+          "opponent": "紧凶",
+          "profile": 3,
+          "handsPerVersion": 4000,
+          "groups": 2000,
+          "baselineBB100": 9.511250000000004,
+          "newBB100": 17.270000000000003,
+          "improvementBB100": 7.758749999999989,
+          "improvement95CI": [
+            -26.988061561332476,
+            42.50556156133245
+          ],
+          "searches": 35,
+          "eligible": 126,
+          "latencyMs": {
+            "mean": 3.7097926415094253,
+            "p95": 16.54000000000815
+          }
+        },
+        {
+          "variant": "known",
+          "opponent": "诈唬施压",
+          "profile": 4,
+          "handsPerVersion": 4000,
+          "groups": 2000,
+          "baselineBB100": 20.09124999999998,
+          "newBB100": 14.774999999999983,
+          "improvementBB100": -5.316250000000008,
+          "improvement95CI": [
+            -57.28129866515461,
+            46.648798665154594
+          ],
+          "searches": 52,
+          "eligible": 201,
+          "latencyMs": {
+            "mean": 4.316792727757187,
+            "p95": 20.124400000000605
+          }
+        },
+        {
+          "variant": "known",
+          "opponent": "价值猎手",
+          "profile": 7,
+          "handsPerVersion": 4000,
+          "groups": 2000,
+          "baselineBB100": -10.991249999999999,
+          "newBB100": 11.378750000000002,
+          "improvementBB100": 22.37000000000001,
+          "improvement95CI": [
+            -7.13017623671951,
+            51.87017623671954
+          ],
+          "searches": 70,
+          "eligible": 194,
+          "latencyMs": {
+            "mean": 2.9129851981759023,
+            "p95": 16.31099999998696
+          }
+        }
+      ],
+      "limitations": "Increment over same balanced v127 player; fixed paired deals, reset 100BB stacks, not human profitability."
+    }
+  ],
+  "frozenFinalVerification": {
+    "samples": 100,
+    "offset": 130000,
+    "variant": "known",
+    "reports": [
+      {
+        "variant": "known",
+        "opponent": "松跟注",
+        "profile": 2,
+        "handsPerVersion": 4000,
+        "groups": 2000,
+        "baselineBB100": -0.08500000000000583,
+        "newBB100": 75.03750000000004,
+        "improvementBB100": 75.12250000000002,
+        "improvement95CI": [
+          23.610607992133946,
+          126.63439200786608
+        ],
+        "searches": 609,
+        "eligible": 1668,
+        "latencyMs": {
+          "mean": 7.598334389070037,
+          "p95": 32.33490000000165
+        }
+      },
+      {
+        "variant": "known",
+        "opponent": "紧凶",
+        "profile": 3,
+        "handsPerVersion": 4000,
+        "groups": 2000,
+        "baselineBB100": 9.511250000000004,
+        "newBB100": 17.270000000000003,
+        "improvementBB100": 7.758749999999989,
+        "improvement95CI": [
+          -26.988061561332476,
+          42.50556156133245
+        ],
+        "searches": 35,
+        "eligible": 126,
+        "latencyMs": {
+          "mean": 3.7097926415094253,
+          "p95": 16.54000000000815
+        }
+      },
+      {
+        "variant": "known",
+        "opponent": "诈唬施压",
+        "profile": 4,
+        "handsPerVersion": 4000,
+        "groups": 2000,
+        "baselineBB100": 20.09124999999998,
+        "newBB100": 14.774999999999983,
+        "improvementBB100": -5.316250000000008,
+        "improvement95CI": [
+          -57.28129866515461,
+          46.648798665154594
+        ],
+        "searches": 52,
+        "eligible": 201,
+        "latencyMs": {
+          "mean": 4.316792727757187,
+          "p95": 20.124400000000605
+        }
+      },
+      {
+        "variant": "known",
+        "opponent": "价值猎手",
+        "profile": 7,
+        "handsPerVersion": 4000,
+        "groups": 2000,
+        "baselineBB100": -10.991249999999999,
+        "newBB100": 11.378750000000002,
+        "improvementBB100": 22.37000000000001,
+        "improvement95CI": [
+          -7.13017623671951,
+          51.87017623671954
+        ],
+        "searches": 70,
+        "eligible": 194,
+        "latencyMs": {
+          "mean": 2.9129851981759023,
+          "p95": 16.31099999998696
+        }
+      }
+    ],
+    "limitations": "Increment over same balanced v127 player; fixed paired deals, reset 100BB stacks, not human profitability."
+  }
+}

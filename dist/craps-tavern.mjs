@@ -7,6 +7,7 @@ import {FACE_VALUES,faceQuaternion} from './craps-dice.mjs';
 import {BET_CELLS,SEAT_COLORS,CRAPS_TIMING,drawCrapsFelt,feltToWorld,wagerTotal} from './craps-layout.mjs';
 import {FELT_Y,dicePose,shotCamera,smooth,clamp} from './craps-motion.mjs';
 import {createRouletteFocus} from './roulette-focus.mjs';
+export const CATCH_UP_LAG_MS=1000;
 
 function dieMaterial(n){
  const c=document.createElement('canvas');c.width=c.height=256;const x=c.getContext('2d');
@@ -106,7 +107,13 @@ export class Craps3D{
   this.render();
  }
  render(){if(!this.renderer||this.renderer.getContext().isContextLost()||document.hidden)return;if(this.focus)this.focus.render(this.scene,this.camera,this.focusDistance??8);else this.renderer.render(this.scene,this.camera)}
- throw(values,{durationMs=CRAPS_TIMING.throw,elapsedMs=0,seed=crypto.getRandomValues(new Uint32Array(1))[0]}={}){this.cancelThrow();this.motionSeed=seed;this.values=values;this.phase='rolling';const duration=Math.max(1,durationMs);return new Promise(resolve=>{this.animation={start:performance.now()-Math.max(0,elapsedMs),duration,resolve,previous:Math.max(0,elapsedMs)/duration};this.pose(clamp(elapsedMs/duration));if(elapsedMs>=duration)this.completeThrow()})}
+ // catchUp: a spectator who learns of the throw late (polling) replays the whole throw from the
+ // hand instead of jumping into the middle. It may finish up to CATCH_UP_LAG_MS after the server's
+ // landing (the 3 s hold absorbs that), and speeds up at most 1/0.65x to stay within it. Only a
+ // spectator who is very late (90% of the throw already over) goes straight to the final pose.
+ throw(values,{durationMs=CRAPS_TIMING.throw,elapsedMs=0,catchUp=false,seed=crypto.getRandomValues(new Uint32Array(1))[0]}={}){this.cancelThrow();this.motionSeed=seed;this.values=values;this.phase='rolling';const duration=Math.max(1,durationMs);
+  if(catchUp&&elapsedMs>0){if(elapsedMs>=duration*.9){this.pose(1);this.render?.();return Promise.resolve()}const play=Math.min(duration,Math.max(duration*.65,duration-elapsedMs+CATCH_UP_LAG_MS));return new Promise(resolve=>{this.animation={start:performance.now(),duration:play,resolve,previous:0};this.pose(0)})}
+  return new Promise(resolve=>{this.animation={start:performance.now()-Math.max(0,elapsedMs),duration,resolve,previous:Math.max(0,elapsedMs)/duration};this.pose(clamp(elapsedMs/duration));if(elapsedMs>=duration)this.completeThrow()})}
  showResult(values,{seed=this.motionSeed??0}={}){this.motionSeed=seed;this.values=values;this.cancelThrow();this.phase='landed';this.pose(1,values);this.render()}
  completeThrow(){const a=this.animation;this.animation=null;this.pose(1);a?.resolve()}
  cancelThrow(){const a=this.animation;this.animation=null;a?.resolve()}

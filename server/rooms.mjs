@@ -12,6 +12,10 @@ import {newBlackjack,blackjackAct,blackjackTick,blackjackView} from '../dist/bla
 import {Poker} from '../dist/poker.mjs';
 import {deck,points} from '../dist/engine.mjs';
 import {decide,PROFILES,randomProfile} from '../dist/strategy.mjs';
+// Equity Monte Carlo samples per bot decision. 600 was trialled in round 7 and did not
+// pass its pre-registered confirmation test (+1.93 BB/100, 95% CI [-1.99, +5.84]), so
+// the server stays at 100. See docs/poker-ai-round7.md before changing this.
+export const SERVER_POKER_SAMPLES=100;
 import {Guandan,GuandanMatch} from '../dist/guandan.mjs';
 import {chooseCompetitive} from '../dist/guandan-strategy.mjs';
 import {endBigTwoEarly,BigTwo,BigTwoMatch,storedValue,DEFAULT_CARD_VALUE,normalizeValue} from '../dist/bigtwo.mjs';
@@ -81,7 +85,7 @@ export function command(r,auth,data,now=Date.now()){const kind=data.kind;let i=s
  else{const g=r.game,t=g.tables[i];if(data.action==='roll'){assert(g.roller===i,'当前由掷骰者投骰');crapsRoll(r,now)}else{assert(['bets','ready'].includes(g.phase),'下注已截止，请等待下一掷');if(data.action==='bet'){assert(Number.isSafeInteger(data.amount)&&data.amount>0&&Object.hasOwn(LABELS,data.key),'下注参数不正确');t.add(data.key,data.amount,data.exact===true)}else if(data.action==='remove'){assert(Object.hasOwn(LABELS,data.key),'下注区域不正确');t.remove(data.key)}else if(data.action==='removeTravel'){assert(/^d(4|5|6|8|9|10)$/.test(data.key),'移点合约无效');t.removeTravel(data.key)}else if(data.action==='clear')t.clear();else throw Error('未知操作')}r.seats[i].bank=t.bank;r.seq++}
 }
 export function tick(r,now=Date.now()){if(!r.seats.length)return false;if(!r.closeAfterRound&&r.status==='roundEnd'&&now>=(r.reviewUntil??0)&&r.seats.some(s=>!s.departed&&!s.bot)&&r.seats.every(s=>s.departed||s.bot||s.ready)){continueRound(r,now);return true}if(r.status!=='playing')return false;const g=r.game;if(now<r.nextAt)return false;if(botSkill(r,now)){r.nextAt=now+1000;return true;}
- if(r.mode==='poker'){if(g.done){finishRoom(r,now);return true}if(!g.pending.size){g.advance();resetTurn(r,now);return true}if(r.seats[g.turn].bot||now>=r.deadline){const i=g.turn,l=g.legal(i),m=r.seats[i].bot?decide(g.snapshot(i),r.seats[i].aiProfile??(r.seats[i].aiProfile=randomProfile(secureRandom)),{samples:100,rng:secureRandom,adaptation:pokerAdaptation(r,i)}):{action:l.owe?'fold':'check'};g.act(i,m.action,m.target);resetTurn(r,now);return true}}
+ if(r.mode==='poker'){if(g.done){finishRoom(r,now);return true}if(!g.pending.size){g.advance();resetTurn(r,now);return true}if(r.seats[g.turn].bot||now>=r.deadline){const i=g.turn,l=g.legal(i),m=r.seats[i].bot?decide(g.snapshot(i),r.seats[i].aiProfile??(r.seats[i].aiProfile=randomProfile(secureRandom)),{samples:SERVER_POKER_SAMPLES,rng:secureRandom,adaptation:pokerAdaptation(r,i)}):{action:l.owe?'fold':'check'};g.act(i,m.action,m.target);resetTurn(r,now);return true}}
  if(r.mode==='guandan'){const i=g.returns.length?g.returns[0].from:g.turn;if(r.seats[i].bot||now>=r.deadline){if(g.returns.length)r.match.autoReturn();else{const m=chooseCompetitive(g.snapshot(i));g.act(i,m?.cards.map(c=>c.id)||[],m?.key)}resetTurn(r,now);return true}}
  // 超时同样由电脑代打，避免真人掉线后牌桌永久停住。
  if(r.mode==='bigtwo'){const i=g.turn;if(r.seats[i].bot||r.seats[i].autoplay||now>=r.deadline){const m=r.solo&&r.seats[i].bot?choosePracticeMove(g.snapshot(i),{rng:secureRandom,samples:12}):chooseBigTwoMove(g.snapshot(i));g.act(i,m?.cards.map(c=>c.id)||[]);resetTurn(r,now);return true}}

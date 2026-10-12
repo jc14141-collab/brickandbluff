@@ -1,0 +1,5 @@
+import data from './poker-multiway-response-data.mjs';
+const sum=a=>a.reduce((n,x)=>n+x,0),cache=new Map();
+export function multiwayResponseKeys(f){const active=Math.max(2,Math.min(6,f.active)),owed=f.price>0?1:0,bucket=Math.max(0,Math.min(7,Math.floor(f.strength*8))),odds=Math.min(4,Math.floor(f.price/Math.max(1,f.pot+f.price)*10));return [[f.street,active,owed,bucket,odds,f.inPosition?1:0,f.draw>0?1:0].join(':'),[f.street,active,owed,bucket,odds].join(':'),[f.street,active,owed,odds].join(':')]}
+export function multiwayResponseRates(f){const k=multiwayResponseKeys(f);if(cache.has(k[0]))return cache.get(k[0]).slice();const g=data.global[k[2]]??(f.price>0?[2,5,1]:[0,5,1]),prior=g.map(x=>(x+1)/(sum(g)+3)),c=data.coarse[k[1]]??[0,0,0],base=c.map((x,i)=>(x+prior[i]*20)/(sum(c)+20)),e=data.exact[k[0]]??[0,0,0],p=e.map((x,i)=>(x+base[i]*30)/(sum(e)+30));if(!(f.price>0)){p[1]+=p[0];p[0]=0}cache.set(k[0],p.slice());while(cache.size>512)cache.delete(cache.keys().next().value);return p}
+export const multiwayTraining={naturalHands:data.naturalHands??0,supplementalPositions:data.supplementalPositions??0,observations:data.observations??0};

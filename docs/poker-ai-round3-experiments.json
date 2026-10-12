@@ -1,0 +1,366 @@
+{
+  "status": "not-promoted",
+  "training": {
+    "naturalHands": 3600,
+    "handsPerTeacherStyle": 400,
+    "publicOnly": true,
+    "observationWindow": 12
+  },
+  "predictionValidation": {
+    "historyHands": 12,
+    "positions": 1000,
+    "streets": {
+      "2": 500,
+      "3": 500
+    },
+    "metrics": {
+      "pooled": {
+        "loss": 0.6556097007735008,
+        "brier": 0.3934817547807723
+      },
+      "inferred": {
+        "loss": 0.6596494154469974,
+        "brier": 0.39564321597509344
+      },
+      "known": {
+        "loss": 0.5971612088470535,
+        "brier": 0.3642164305504347
+      }
+    },
+    "limitations": "Independent legal late-street positions; predicts old bots, not human validation. Lower loss and Brier are better."
+  },
+  "developmentHeadsUp": {
+    "groups": 500,
+    "count": 2,
+    "offset": 300000,
+    "historyHands": 12,
+    "samples": 100,
+    "reports": [
+      {
+        "label": "松跟注",
+        "count": 2,
+        "groups": 500,
+        "handsPerVersion": 1000,
+        "baselineBB100": -96.235,
+        "newBB100": 42.02999999999999,
+        "improvementBB100": 138.26500000000007,
+        "improvement95CI": [
+          40.237280043453616,
+          236.2927199565465
+        ],
+        "baselineBlocks": {
+          "profitable": 9,
+          "blocks": 25
+        },
+        "newBlocks": {
+          "profitable": 18,
+          "blocks": 25
+        },
+        "searches": 152,
+        "latencyMs": {
+          "mean": 9.060005735660878,
+          "p95": 35.383999999998196,
+          "max": 44.066899999997986
+        }
+      },
+      {
+        "label": "紧凶",
+        "count": 2,
+        "groups": 500,
+        "handsPerVersion": 1000,
+        "baselineBB100": 41.665,
+        "newBB100": 71.77499999999999,
+        "improvementBB100": 30.109999999999992,
+        "improvement95CI": [
+          -37.57852701730818,
+          97.79852701730817
+        ],
+        "baselineBlocks": {
+          "profitable": 22,
+          "blocks": 25
+        },
+        "newBlocks": {
+          "profitable": 18,
+          "blocks": 25
+        },
+        "searches": 3,
+        "latencyMs": {
+          "mean": 2.8230057364340637,
+          "p95": 11.511700000002747,
+          "max": 39.9317999999912
+        }
+      },
+      {
+        "label": "诈唬施压",
+        "count": 2,
+        "groups": 500,
+        "handsPerVersion": 1000,
+        "baselineBB100": 26.285000000000004,
+        "newBB100": 4.539999999999999,
+        "improvementBB100": -21.745,
+        "improvement95CI": [
+          -103.0169861781326,
+          59.5269861781326
+        ],
+        "baselineBlocks": {
+          "profitable": 9,
+          "blocks": 25
+        },
+        "newBlocks": {
+          "profitable": 10,
+          "blocks": 25
+        },
+        "searches": 4,
+        "latencyMs": {
+          "mean": 3.4358951779566156,
+          "p95": 11.874100000000908,
+          "max": 48.14639999999781
+        }
+      },
+      {
+        "label": "价值猎手",
+        "count": 2,
+        "groups": 500,
+        "handsPerVersion": 1000,
+        "baselineBB100": 20.535,
+        "newBB100": 57.240000000000016,
+        "improvementBB100": 36.705000000000005,
+        "improvement95CI": [
+          -15.726774331073084,
+          89.1367743310731
+        ],
+        "baselineBlocks": {
+          "profitable": 21,
+          "blocks": 25
+        },
+        "newBlocks": {
+          "profitable": 18,
+          "blocks": 25
+        },
+        "searches": 12,
+        "latencyMs": {
+          "mean": 3.1036035661216923,
+          "p95": 18.933199999999488,
+          "max": 43.67600000000675
+        }
+      }
+    ],
+    "limitations": "Only public completed actions used to infer styles. Warm-up and test deals independent; teacher-family tests with reset stacks, not human winnings probability. Seat legs grouped; block profit uses averaged seat outcomes."
+  },
+  "developmentFourPlayer": {
+    "groups": 250,
+    "count": 4,
+    "offset": 450000,
+    "historyHands": 12,
+    "samples": 100,
+    "reports": [
+      {
+        "label": "四人混合桌",
+        "count": 4,
+        "groups": 250,
+        "handsPerVersion": 1000,
+        "baselineBB100": 17.38,
+        "newBB100": -46.25500000000001,
+        "improvementBB100": -63.635,
+        "improvement95CI": [
+          -159.3354675343047,
+          32.065467534304716
+        ],
+        "baselineBlocks": {
+          "profitable": 9,
+          "blocks": 12
+        },
+        "newBlocks": {
+          "profitable": 5,
+          "blocks": 12
+        },
+        "searches": 32,
+        "latencyMs": {
+          "mean": 5.270837111801294,
+          "p95": 31.090999999999894,
+          "max": 43.02220000000011
+        }
+      }
+    ],
+    "limitations": "Only public completed actions used to infer styles. Warm-up and test deals independent; teacher-family tests with reset stacks, not human winnings probability. Seat legs grouped; block profit uses averaged seat outcomes."
+  },
+  "finalHeadsUp": {
+    "groups": 1000,
+    "count": 2,
+    "offset": 500000,
+    "historyHands": 12,
+    "samples": 100,
+    "reports": [
+      {
+        "label": "松跟注",
+        "count": 2,
+        "groups": 1000,
+        "handsPerVersion": 2000,
+        "baselineBB100": -63,
+        "newBB100": -39.182500000000005,
+        "improvementBB100": 23.81750000000001,
+        "improvement95CI": [
+          -47.23023343621244,
+          94.86523343621245
+        ],
+        "baselineBlocks": {
+          "profitable": 15,
+          "blocks": 50
+        },
+        "newBlocks": {
+          "profitable": 15,
+          "blocks": 50
+        },
+        "searches": 333,
+        "latencyMs": {
+          "mean": 7.417030182734727,
+          "p95": 31.859600000010687,
+          "max": 42.575500000006286
+        }
+      },
+      {
+        "label": "紧凶",
+        "count": 2,
+        "groups": 1000,
+        "handsPerVersion": 2000,
+        "baselineBB100": -13.11999999999999,
+        "newBB100": 12.772500000000003,
+        "improvementBB100": 25.892500000000002,
+        "improvement95CI": [
+          -18.031818123588195,
+          69.81681812358819
+        ],
+        "baselineBlocks": {
+          "profitable": 35,
+          "blocks": 50
+        },
+        "newBlocks": {
+          "profitable": 29,
+          "blocks": 50
+        },
+        "searches": 27,
+        "latencyMs": {
+          "mean": 2.401166615384718,
+          "p95": 8.713799999997718,
+          "max": 34.78949999999895
+        }
+      },
+      {
+        "label": "诈唬施压",
+        "count": 2,
+        "groups": 1000,
+        "handsPerVersion": 2000,
+        "baselineBB100": 2.4649999999999963,
+        "newBB100": 36.915000000000006,
+        "improvementBB100": 34.44999999999999,
+        "improvement95CI": [
+          -36.44816213097206,
+          105.34816213097203
+        ],
+        "baselineBlocks": {
+          "profitable": 21,
+          "blocks": 50
+        },
+        "newBlocks": {
+          "profitable": 23,
+          "blocks": 50
+        },
+        "searches": 23,
+        "latencyMs": {
+          "mean": 2.787999603623747,
+          "p95": 8.279200000019046,
+          "max": 36.539300000004005
+        }
+      },
+      {
+        "label": "价值猎手",
+        "count": 2,
+        "groups": 1000,
+        "handsPerVersion": 2000,
+        "baselineBB100": -36.24499999999999,
+        "newBB100": -5.522500000000001,
+        "improvementBB100": 30.722500000000004,
+        "improvement95CI": [
+          -10.747929647954734,
+          72.19292964795474
+        ],
+        "baselineBlocks": {
+          "profitable": 26,
+          "blocks": 50
+        },
+        "newBlocks": {
+          "profitable": 32,
+          "blocks": 50
+        },
+        "searches": 27,
+        "latencyMs": {
+          "mean": 2.634443553223507,
+          "p95": 10.792900000000373,
+          "max": 38.37400000001071
+        }
+      }
+    ],
+    "limitations": "Only public completed actions used to infer styles. Warm-up and test deals independent; teacher-family tests with reset stacks, not human winnings probability. Seat legs grouped; block profit uses averaged seat outcomes."
+  },
+  "finalFourPlayer": {
+    "groups": 500,
+    "count": 4,
+    "offset": 550000,
+    "historyHands": 12,
+    "samples": 100,
+    "reports": [
+      {
+        "label": "四人混合桌",
+        "count": 4,
+        "groups": 500,
+        "handsPerVersion": 2000,
+        "baselineBB100": -20.69750000000001,
+        "newBB100": -37.292500000000025,
+        "improvementBB100": -16.595000000000002,
+        "improvement95CI": [
+          -78.87402358567215,
+          45.684023585672136
+        ],
+        "baselineBlocks": {
+          "profitable": 12,
+          "blocks": 25
+        },
+        "newBlocks": {
+          "profitable": 9,
+          "blocks": 25
+        },
+        "searches": 83,
+        "latencyMs": {
+          "mean": 4.337319226166674,
+          "p95": 24.524499999999534,
+          "max": 43.982499999998254
+        }
+      }
+    ],
+    "limitations": "Only public completed actions used to infer styles. Warm-up and test deals independent; teacher-family tests with reset stacks, not human winnings probability. Seat legs grouped; block profit uses averaged seat outcomes."
+  },
+  "frozenSourceHashes": {
+    "dist/poker-response.mjs": "3930ed1a814d9db2ea52664cbd1d2a0ae105f3115636486021c3f5f9c09678ba",
+    "dist/poker-response-data.mjs": "dacc90d3657b72a751e7eebcf7149d7a364e926fe04406b3f237aac0c5be671c",
+    "dist/poker-behavior.mjs": "881d5e6502c763a13a3b8d725598951ddeff1b398cf9add8f3d363b2c348e633",
+    "dist/poker-behavior-data.mjs": "4aad61e1a8cb1c8dedc616cfeb160fd9dac3f565d4f3d35f199d7b15ba961974",
+    "dist/poker-range.mjs": "bb6f98c650a628a87ce40f29f0d4a1ee3453fd53edc8d9830ac9cc0856fd2e44",
+    "dist/poker-planning.mjs": "07769418f77262f77be40269d600a6d8a2f42f8623c376f77ce463457d606055",
+    "dist/strategy.mjs": "004938983a28b9f578c6078928955d46fe66b8827625d9bbb655f0fb0842b8d4",
+    "scripts/benchmark-poker-behavior.mjs": "3b1ebb823d801257c19cc17096de0363a43b34bba1463da29b079fccba28c9a3"
+  },
+  "checks": {
+    "testsPassed": 23,
+    "buildPassed": true,
+    "defaultRange": "legacy",
+    "defaultLookahead": false
+  },
+  "limitations": [
+    "Teacher family only, no human profit evidence",
+    "Development heads-up overlapped prediction CPU load",
+    "Four-player style calibration derived from heads-up natural hands",
+    "No ablation separating inferred styles from range/search updates",
+    "Intervals unadjusted for multiple comparisons",
+    "Reset-stack blocks are not continuous real-player profit probabilities"
+  ]
+}

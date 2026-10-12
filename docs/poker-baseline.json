@@ -1,0 +1,110 @@
+{
+ "generated": "2026-10-11T05:26:57.294Z",
+ "productionStrategy": "dist/strategy.mjs, decide() without lab hooks (behaviourally identical to the frozen v127 control)",
+ "control": "tests/fixtures/poker-strategy-v127.mjs (frozen, never edited)",
+ "serverSamples": 100,
+ "entries": [
+  {
+   "entry": "server bots (friend / hosted rooms)",
+   "file": "server/rooms.mjs",
+   "decideImportedFrom": [
+    "../dist/strategy.mjs"
+   ],
+   "calls": [
+    "g.snapshot(i),r.seats[i].aiProfile??(r.seats[i].aiProfile=randomProfile(secureRandom)),{samples:SERVER_POKER_SAMPLES,rng:secureRandom,adaptation:pokerAdaptation(r,i)}"
+   ],
+   "importsLabCode": false
+  },
+  {
+   "entry": "solo practice, Web Worker",
+   "file": "dist/ai-worker.mjs",
+   "decideImportedFrom": [
+    "./strategy.mjs"
+   ],
+   "calls": [
+    "data.snapshot,data.profile,{samples:data.snapshot.street>=2?1800:1200}"
+   ],
+   "importsLabCode": false
+  },
+  {
+   "entry": "solo practice, main thread fallbacks",
+   "file": "dist/app.mjs",
+   "decideImportedFrom": [
+    "./strategy.mjs"
+   ],
+   "calls": [
+    "snapshot,profile,{samples:240}",
+    "g.snapshot(i),tableSession.roster[i-1].profile,{samples:120}"
+   ],
+   "importsLabCode": false
+  }
+ ],
+ "experimentalModelsInProduction": false,
+ "v127Identity": {
+  "decisionsCompared": 921,
+  "different": 0,
+  "tables": [
+   2,
+   3,
+   4,
+   6
+  ],
+  "note": "samples 100, fixed seeds, every third decision with a non-zero adaptation"
+ },
+ "hashes": {
+  "dist/strategy.mjs": "4f93fa9ef95f5ae2",
+  "dist/engine.mjs": "72436cb2a0b565fa",
+  "dist/poker.mjs": "cbbb9c25dbcae4e0",
+  "dist/ai-worker.mjs": "1335d558e4d9954a",
+  "dist/app.mjs": "c2efe06cfbf8850b",
+  "server/rooms.mjs": "b8d7d09ae26e0a72",
+  "server/poker-adaptation.mjs": "efe090d4a05aa209",
+  "tests/fixtures/poker-strategy-v127.mjs": "9ba66c0cc43cd674"
+ },
+ "seedRegistry": {
+  "note": "Seed offsets already used by experiments. New confirmatory tests must use an unused range.",
+  "used": [
+   0,
+   50000,
+   130000,
+   500000,
+   550000,
+   700000,
+   800000,
+   900000,
+   5000000,
+   6000000,
+   6100000,
+   9100000,
+   9200000,
+   31000000,
+   41000000,
+   52000000,
+   61000000,
+   62000000,
+   63000000,
+   64000000
+  ],
+  "validation2026_10": {
+   "debug": [
+    9100000,
+    9200000
+   ],
+   "calibration": "61000000 + players*100000 (+50000 human pool)",
+   "matchesTwoPlayer": [
+    62000000,
+    62500000
+   ],
+   "matchesThreePlayer": [
+    63000000,
+    63500000
+   ],
+   "matchesFourPlayer": [
+    64000000,
+    64500000
+   ],
+   "note": "used; pick new ranges for the next confirmation"
+  }
+ },
+ "violations": []
+}

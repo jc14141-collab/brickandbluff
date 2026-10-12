@@ -1,0 +1,213 @@
+{
+  "status": "experimental; production defaults unchanged",
+  "promotion": false,
+  "experiments": [
+    {
+      "stage": "baseline",
+      "pairs": 1000,
+      "hands": 2000,
+      "metric": "challenger net BB per 100 hands; paired seat-swapped fixed deals",
+      "bbPer100": 0,
+      "approx95CI": [
+        0,
+        0
+      ],
+      "positiveHandFraction": 0.498,
+      "profitable40HandBlocks": 0,
+      "blocks": 50,
+      "maxDrawdownBB": 0,
+      "decisions": 1969,
+      "searches": 0,
+      "eligibleWithoutSearch": 271,
+      "latencyMs": {
+        "mean": 0.924339969527682,
+        "p95": 3.0307999999999993,
+        "max": 7.547499999999985,
+        "baselineMean": 0.9230076688674506
+      },
+      "searchP95Ms": 0,
+      "limitations": "Pilot vs old bots, reset 100 BB stacks, approximate paired CI; not human profitability evidence.",
+      "artifact": "baseline-1000.json"
+    },
+    {
+      "stage": "ranges",
+      "pairs": 1000,
+      "hands": 2000,
+      "metric": "challenger net BB per 100 hands; paired seat-swapped fixed deals",
+      "bbPer100": -24.1025,
+      "approx95CI": [
+        -74.5998729274086,
+        26.394872927408592
+      ],
+      "positiveHandFraction": 0.489,
+      "profitable40HandBlocks": 16,
+      "blocks": 50,
+      "maxDrawdownBB": 754,
+      "decisions": 1969,
+      "searches": 0,
+      "eligibleWithoutSearch": 254,
+      "latencyMs": {
+        "mean": 2.489189944134079,
+        "p95": 11.481700000000274,
+        "max": 29.308899999999994,
+        "baselineMean": 0.9383678332475521
+      },
+      "searchP95Ms": 0,
+      "limitations": "Pilot vs old bots, reset 100 BB stacks, approximate paired CI; not human profitability evidence.",
+      "artifact": "iteration-0-ranges-1000.json"
+    },
+    {
+      "stage": "search",
+      "pairs": 1000,
+      "hands": 2000,
+      "metric": "challenger net BB per 100 hands; paired seat-swapped fixed deals",
+      "bbPer100": -29.457500000000003,
+      "approx95CI": [
+        -79.8947984313805,
+        20.97979843138048
+      ],
+      "positiveHandFraction": 0.4895,
+      "profitable40HandBlocks": 20,
+      "blocks": 50,
+      "maxDrawdownBB": 729.5000000000001,
+      "decisions": 1974,
+      "searches": 103,
+      "eligibleWithoutSearch": 156,
+      "latencyMs": {
+        "mean": 4.643157092198579,
+        "p95": 30.621900000000096,
+        "max": 51.676100000000005,
+        "baselineMean": 1.0741089651639377
+      },
+      "searchP95Ms": 16.794700000000375,
+      "limitations": "Pilot vs old bots, reset 100 BB stacks, approximate paired CI; not human profitability evidence.",
+      "artifact": "iteration-0-search-1000.json"
+    },
+    {
+      "stage": "ranges",
+      "offset": 10000,
+      "pairs": 1000,
+      "hands": 2000,
+      "metric": "challenger net BB per 100 hands; paired seat-swapped fixed deals",
+      "bbPer100": 13.452499999999995,
+      "approx95CI": [
+        -30.93210915615181,
+        57.8371091561518
+      ],
+      "positiveHandFraction": 0.4975,
+      "profitable40HandBlocks": 23,
+      "blocks": 50,
+      "maxDrawdownBB": 396.5,
+      "decisions": 1968,
+      "searches": 0,
+      "eligibleWithoutSearch": 292,
+      "latencyMs": {
+        "mean": 7.157322713414634,
+        "p95": 28.69880000000012,
+        "max": 60.41030000000001,
+        "baselineMean": 1.0063231425702817
+      },
+      "searchP95Ms": 0,
+      "limitations": "Pilot vs old bots, reset 100 BB stacks, approximate paired CI; not human profitability evidence.",
+      "artifact": "ranges-1000-10000.json"
+    },
+    {
+      "stage": "search",
+      "offset": 10000,
+      "pairs": 1000,
+      "hands": 2000,
+      "metric": "challenger net BB per 100 hands; paired seat-swapped fixed deals",
+      "bbPer100": 2.1749999999999994,
+      "approx95CI": [
+        -39.0220472120273,
+        43.3720472120273
+      ],
+      "positiveHandFraction": 0.5,
+      "profitable40HandBlocks": 24,
+      "blocks": 50,
+      "maxDrawdownBB": 469.59999999999997,
+      "decisions": 1958,
+      "searches": 98,
+      "eligibleWithoutSearch": 184,
+      "latencyMs": {
+        "mean": 9.248165730337094,
+        "p95": 45.7523999999994,
+        "max": 80.03749999999997,
+        "baselineMean": 1.0018404426559295
+      },
+      "searchP95Ms": 14.034499999999753,
+      "limitations": "Pilot vs old bots, reset 100 BB stacks, approximate paired CI; not human profitability evidence.",
+      "artifact": "search-1000-10000.json"
+    },
+    {
+      "stage": "search",
+      "offset": 20000,
+      "pairs": 5000,
+      "hands": 10000,
+      "metric": "challenger net BB per 100 hands; paired seat-swapped fixed deals",
+      "bbPer100": 23.150500000000015,
+      "approx95CI": [
+        -0.7129986062210963,
+        47.01399860622113
+      ],
+      "positiveHandFraction": 0.4997,
+      "profitable40HandBlocks": 127,
+      "blocks": 250,
+      "maxDrawdownBB": 661.9000000000001,
+      "decisions": 10109,
+      "searches": 556,
+      "eligibleWithoutSearch": 822,
+      "latencyMs": {
+        "mean": 8.541795301216691,
+        "p95": 41.877700000000914,
+        "max": 78.48869999998715,
+        "baselineMean": 0.8788701534852156
+      },
+      "searchP95Ms": 13.249700000000303,
+      "limitations": "Pilot vs old bots, reset 100 BB stacks, approximate paired CI; not human profitability evidence.",
+      "artifact": "search-5000-20000.json"
+    },
+    {
+      "stage": "search",
+      "offset": 40000,
+      "pairs": 1000,
+      "hands": 2000,
+      "metric": "challenger net BB per 100 hands; paired seat-swapped fixed deals",
+      "bbPer100": -11.817499999999997,
+      "approx95CI": [
+        -60.409350902212154,
+        36.774350902212156
+      ],
+      "positiveHandFraction": 0.5035,
+      "profitable40HandBlocks": 25,
+      "blocks": 50,
+      "maxDrawdownBB": 680.1,
+      "decisions": 2000,
+      "searches": 98,
+      "eligibleWithoutSearch": 156,
+      "latencyMs": {
+        "mean": 4.037332299999988,
+        "p95": 29.12159999999949,
+        "max": 44.401200000000244,
+        "baselineMean": 0.9063538156590475
+      },
+      "searchP95Ms": 11.867699999999786,
+      "limitations": "Pilot vs old bots, reset 100 BB stacks, approximate paired CI; not human profitability evidence.",
+      "artifact": "search-1000-40000.json"
+    },
+    {
+      "hands": 1200,
+      "groups": 300,
+      "bbPer100": 49.345833333333324,
+      "approx95CI": [
+        -29.04370705203506,
+        127.7353737187017
+      ],
+      "searches": 64,
+      "decisions": 1589,
+      "averageMs": 9.38314971680298,
+      "limitations": "Four-player pilot with one challenger against three old bots, rotates all seats. Not human win-rate evidence.",
+      "artifact": "four-player-300.json"
+    }
+  ]
+}

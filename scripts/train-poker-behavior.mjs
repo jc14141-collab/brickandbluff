@@ -1,0 +1,6 @@
+import fs from 'node:fs';import {Poker} from '../dist/poker.mjs';import {decide} from '../tests/fixtures/poker-strategy-v127.mjs';
+// Standalone public summarizer import needs a bootstrapped data module first.
+import {publicBehavior,behaviorMetrics} from '../dist/poker-behavior.mjs';
+const rng=s=>()=>{s=Math.imul(s,1664525)+1013904223|0;return(s>>>0)/4294967296},n=Number(process.argv[2]??400),data=[];
+for(let profile=0;profile<9;profile++){const totals={};for(let h=0;h<n;h++){const seed=210000+profile*10000+h,g=new Poker([2000,2000],{dealer:h%2,rng:rng(seed)}),random=[rng(seed+1),rng(seed+2)];while(!g.done){if(!g.pending.size){g.advance();continue}const i=g.turn,d=decide(g.snapshot(i),i===0?profile:0,{samples:60,rng:random[i]});g.act(i,d.action,d.target)}const row=publicBehavior(g.actions,{seat:0,count:2,dealer:g.dealer,bigBlind:20});for(const[k,v]of Object.entries(row))totals[k]=(totals[k]??0)+v}data.push(Object.fromEntries(behaviorMetrics.map(([yes,all])=>[yes,((totals[yes]??0)+1)/((totals[all]??0)+2)])));console.log(JSON.stringify({profile,hands:n,means:data.at(-1)}))}
+fs.writeFileSync('dist/poker-behavior-data.mjs','// Public action frequencies; '+n+' natural hands per teacher style.\nexport default '+JSON.stringify(data)+';\n');
