@@ -121,7 +121,10 @@
  .roulette-room .rl-main,.roulette-room.rl-locked .rl-main{grid-template-columns:minmax(0,34%) minmax(0,1fr)!important;gap:8px;align-items:start}
  .roulette-room:not(.rl-focus) .rl-wheel,.roulette-room:not(.rl-focus) .rl-canvas{height:calc(var(--app-height,100dvh) - 150px)!important;min-height:180px!important}
  .roulette-room .rl-chips{gap:6px;margin-bottom:6px}
- .roulette-room .rl-chips label.custom-wager{display:none}
+ .roulette-room .rl-chips label.custom-wager{display:flex;flex-direction:row;align-items:center;gap:6px;flex:0 0 148px;min-width:0;font-size:11px;white-space:nowrap}
+ .roulette-room .rl-chips label.custom-wager input{width:88px!important;min-width:0!important;max-width:88px;height:36px;min-height:36px;padding:5px 6px;font-size:16px;box-sizing:border-box}
+ .roulette-room .rl-chips :is([data-remove-mode],[data-clear],[data-launch]){order:1;flex:1 0 calc((100% - 16px)/3);min-width:0;margin-left:0;box-sizing:border-box}
+ .roulette-room .rl-chips .rl-sync{order:2}
  .roulette-room .rl-chips button[data-chip]:not(#rl-chip-id){width:36px!important;height:36px!important;font-size:11px!important}
  .roulette-room .rl-chips button:not([data-chip]){min-height:36px!important;padding:4px 8px!important;font-size:11px!important}
  .roulette-room .rl-felt-scroll{padding:7px!important;margin:2px 2px 0}
@@ -183,7 +186,7 @@
  .roulette-room .rl-felt .rl-cell small span.rl-stack i:first-of-type{margin-right:2px}
 }
 @media(max-height:520px) and (min-width:601px) and (max-width:720px){
- .roulette-room .rl-chips{gap:4px;flex-wrap:nowrap}
+ .roulette-room .rl-chips{gap:6px;flex-wrap:wrap}
  .roulette-room .rl-chips button[data-chip]:not(#rl-chip-id){width:31px!important;height:31px!important;font-size:10px!important;background:radial-gradient(circle,var(--chip) 0 9px,var(--chip-edge) 9px 10px,var(--chip) 10px 12px,transparent 12px),repeating-conic-gradient(var(--chip) 0 22.5deg,var(--chip-edge) 22.5deg 45deg)!important}
  .roulette-room .rl-chips button:not([data-chip]){padding:3px 5px!important;font-size:10px!important;white-space:nowrap}
 }
