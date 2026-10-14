@@ -291,3 +291,30 @@
  .craps-room .single-felt .craps-bet.target-number>small::before{content:'ON · ';color:#fff6d8;font-weight:800}
  .craps-room .single-felt:not(:has(>[data-bet=come])){grid-auto-rows:minmax(48px,auto)}
 }
+
+/* Fixed category row; the felt is the only scrolling surface. */
+body.in-game .craps-room{overflow:hidden;overscroll-behavior:none}
+body.in-game .craps-room:not(.is-immersive) .craps-board{display:flex;flex-direction:column;min-width:0;overflow:hidden;overscroll-behavior:none;touch-action:pan-y}
+body.in-game .craps-room .craps-bet-groups{position:relative;top:auto;flex:0 0 auto;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));min-width:0;max-width:100%;box-sizing:border-box;overflow:visible;margin:0;padding:6px 6px 10px;touch-action:manipulation}
+body.in-game .craps-room .craps-bet-groups button{min-width:0;width:auto;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;box-sizing:border-box}
+body.in-game .craps-room .craps-felt-scroll{flex:1 1 0;min-height:0;min-width:0;max-width:100%;overflow-x:hidden;overflow-y:auto;overscroll-behavior:none;touch-action:pan-y;-webkit-overflow-scrolling:touch;scrollbar-width:thin;scrollbar-color:#b5a05d #173523;box-sizing:border-box;padding:4px 6px 10px}
+body.in-game .craps-room .craps-felt-scroll .craps-wood-frame{width:auto;min-width:0;max-width:100%;margin:6px 4px 10px;flex:none;box-sizing:border-box}
+body.in-game .craps-room .craps-felt-scroll .single-felt{min-width:0;max-width:100%;box-sizing:border-box}
+body.in-game .craps-room .craps-felt-scroll .craps-bet{min-width:0;box-sizing:border-box}
+body.in-game .craps-room .craps-felt-scroll .felt-wagers{min-width:0;max-width:100%}
+@media(max-height:500px){
+ body.in-game .craps-room .craps-bet-groups{gap:6px;padding:4px 6px 8px}
+ body.in-game .craps-room .craps-bet-groups button{padding:6px 3px!important;font-size:11px!important;min-height:32px}
+ body.in-game .craps-room .craps-bet-groups b{display:none}
+}
+
+body.in-game .craps-room:not(.is-immersive) .craps-board{align-items:stretch}
+body.in-game .craps-room .craps-felt-scroll{width:100%;align-self:stretch}
+@media(max-height:500px) and (min-width:601px){
+ body.in-game .craps-room:not(.is-immersive) .craps-board{top:118px;bottom:130px}
+ body.in-game .craps-room:not(.is-immersive) .craps-readout:not(:has(.craps-event)){display:none}
+}
+
+@media(min-height:600px) and (min-width:601px){
+ body.in-game .craps-room .single-felt:has(>[data-bet=come]){grid-template-rows:20px minmax(64px,1.25fr) repeat(5,minmax(44px,1fr))}
+}

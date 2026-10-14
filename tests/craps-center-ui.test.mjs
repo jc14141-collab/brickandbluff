@@ -17,7 +17,7 @@ test('all cells lock during ready, rolling and the three-second landing hold',()
 });
 test('landing shows dice without leaking settlement; wager names are escaped in every view',()=>{
  const {ui,node}=setup();ui.network={phase:'landed',roll:{dice:[2,5]},others:[{name:'<img onerror=x>',bets:{h6:25},travel:{c6:10}}]};ui.render();assert.match(node('.craps-readout').innerHTML,/= 7/);assert.equal(ui.engine.history.length,0);assert.match(node('.craps-ledger').innerHTML,/&lt;img onerror=x&gt;/);assert(!node('.craps-board').innerHTML.includes('<img'));
- ui.network.phase='bets';ui.network.deadline=Date.now()+15000;ui.network.send=()=>Promise.resolve();ui.network.canSend=()=>true;ui.act('bet','pass');clearTimeout(ui.wagerTimer);assert.equal(ui.engine.bank,990,'pending wager is shown immediately');assert.deepEqual(ui.wagerQueue,[{action:'bet',key:'pass',amount:10}]);
+ ui.network.phase='bets';ui.network.deadline=Date.now()+15000;ui.network.send=()=>Promise.resolve();ui.network.canSend=()=>true;ui.act('bet','pass');clearTimeout(ui.wagerTimer);assert.equal(ui.engine.bank,990,'pending wager is shown immediately');assert.deepEqual(ui.wagerQueue,[{action:'bet',key:'pass',amount:10,exact:false}]);
 });
 
 test('each additional betting group displays every player exact stake',()=>{

@@ -119,10 +119,7 @@ export class RoomGame{
  if(['rolling','landed'].includes(g.phase)&&g.roll&&this.lastRoll!==g.roll.id&&this.now()<g.roll.holdEnds-1000){this.lastRoll=g.roll.id;const id=g.roll.id,done=ui.scene?.throw(g.roll.dice,{seed:id,durationMs:g.roll.ends-g.roll.started,elapsedMs:Math.max(0,this.now()-g.roll.started),catchUp:true});
   if(done){this.throwing={id};done.then(()=>{if(this.throwing?.id!==id||this.controller!==ui)return;this.throwing=null;const now=this.r?.game;if(now?.roll?.id===id&&now.phase!=='rolling'){ui.network.phase=now.phase==='ready'?'bets':now.phase;if(now.phase==='landed')ui.scene?.showResult(now.roll.dice,{seed:id});ui.render()}})}}
  if(g.phase==='landed'&&g.roll&&!(this.throwing?.id===g.roll.id&&ui.scene?.animation))ui.scene?.showResult(g.roll.dice,{seed:g.roll.id});
- let info=this.q('.mp-craps-info');if(!info){info=document.createElement('aside');info.className='mp-craps-info';this.q('.craps-room').append(info)}
- const contracts=g.others.some(p=>Object.entries(p.travel??{}).some(([k,v])=>k[0]==='c'&&v));
- info.innerHTML=r.host&&g.phase==='bets'&&!g.point&&!contracts?'<button data-end-craps>结束本桌</button>':'';
- if(this.q('[data-end-craps]'))this.q('[data-end-craps]').onclick=()=>this.rooms.send({kind:'endCraps'}).catch(()=>{});if(r.status==='roundEnd')this.result(r);return
+ if(r.status==='roundEnd')this.result(r);return
  }
  if(r.mode==='poker'&&r.game.done&&this.pokerEndedAt===null)this.pokerEndedAt=Math.max(r.endedAt??0,this.now());this.renderTable(r);if(r.mode==='poker')this.pokerEvents(r)
  }
