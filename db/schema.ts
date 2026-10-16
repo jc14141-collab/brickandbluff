@@ -7,3 +7,5 @@ export const accessAttempts=sqliteTable('access_attempts',{
 },t=>[index('access_attempt_expiry').on(t.started)]);
 
 export const clubState=sqliteTable('club_state',{id:integer('id').primaryKey(),version:integer('version').notNull().default(0),state:text('state').notNull()});
+
+export const maintenanceReceipts=sqliteTable('maintenance_receipts',{id:text('id').primaryKey(),playerId:text('player_id').notNull(),playerName:text('player_name').notNull(),refunded:integer('refunded').notNull(),previousBank:integer('previous_bank').notNull(),correctedBank:integer('corrected_bank').notNull(),previousNet:integer('previous_guandan_net').notNull(),correctedNet:integer('corrected_guandan_net').notNull(),createdAt:integer('created_at').notNull()});

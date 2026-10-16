@@ -64,3 +64,25 @@ test('last craps departure during rolling or results closes safely and other pla
  for(const phase of ['rolling','result']){const {club:c}=fixture();await allow(c);let r=await c.create('one',{mode:'craps',solo:true},time);await c.room(r.id,'one',{kind:'act',action:'roll',requestId:id()},time);let leaveAt=time+10000;if(phase==='result'){await c.room(r.id,'one',null,time+60000);await c.room(r.id,'one',null,time+64000);leaveAt=time+65000}await c.room(r.id,'one',{kind:'leave',requestId:id()},leaveAt);assert.equal((await c.list('one',leaveAt+1)).rooms.length,0);assert.equal((await c.session('one','',leaveAt+1)).player.bank,2000)}
  const {club:c}=fixture();await allow(c);await allow(c,'two');let r=await c.create('one',{mode:'craps',capacity:2},time);await c.room(r.id,'two',{kind:'join',requestId:id()},time);await c.room(r.id,'two',{kind:'ready',ready:true,requestId:id()},time);await c.room(r.id,'one',{kind:'start',requestId:id()},time);await c.room(r.id,'one',{kind:'leave',requestId:id()},time+10000);r=await c.room(r.id,'two',null,time+11000);assert.equal(r.host,true);assert.equal(r.seats.length,1);r=await c.room(r.id,'two',{kind:'act',action:'roll',requestId:id()},time+12000);assert.equal(r.game.phase,'rolling');
 });
+
+test('Guandan start, next and exit never transfer or lose player wallets',async()=>{
+ const {club:c}=fixture();const host=await allow(c);const friend=await allow(c,'two');await c.admin('one',{kind:'grant',id:friend,amount:1500,requestId:id()},time);
+ let r=await c.create('one',{mode:'guandan',capacity:4},time);await c.room(r.id,'two',{kind:'join',requestId:id()},time);for(let k=0;k<2;k++)await c.room(r.id,'one',{kind:'addBot',requestId:id()},time);await c.room(r.id,'two',{kind:'ready',ready:true,requestId:id()},time);r=await c.room(r.id,'one',{kind:'start',requestId:id()},time);
+ assert.equal((await c.session('one','',time)).player.bank,2000);assert.equal((await c.session('two','',time)).player.bank,3500);
+ await c.change(s=>{const room=unpack(s.rooms[r.id]);room.status='roundEnd';room.game.done=true;room.match.previous=[0,1,2,3];room.reviewUntil=time;room.seats.forEach(seat=>seat.ready=seat.bot);s.rooms[r.id]=pack(room)});
+ await c.room(r.id,'one',{kind:'next',requestId:id()},time);await c.room(r.id,'two',{kind:'next',requestId:id()},time);
+ assert.equal((await c.session('one','',time)).player.bank,2000);assert.equal((await c.session('two','',time)).player.bank,3500);
+ await c.room(r.id,'two',{kind:'leave',requestId:id()},time);assert.equal((await c.session('two','',time)).player.bank,3500);assert.equal((await c.stats('two',time)).games.find(g=>g.mode==='guandan').net,0);
+ await c.room(r.id,'one',{kind:'leave',requestId:id()},time);assert.equal((await c.session('one','',time)).player.bank,2000);
+});
+test('Guandan solo and lobby cancellation preserve balances; old trapped table money is refunded',async()=>{
+ for(const solo of [false,true]){const {club:c}=fixture();await allow(c);const r=await c.create('one',{mode:'guandan',capacity:4,solo},time);await c.room(r.id,'one',{kind:'leave',requestId:id()},time);assert.equal((await c.session('one','',time)).player.bank,2000)}
+ const {club:c}=fixture();await allow(c);const r=await c.create('one',{mode:'guandan',capacity:4,solo:true},time);await c.change(s=>{const p=s.players[0],room=unpack(s.rooms[r.id]);room.seats[0].bank=p.bank;p.bank=0;s.rooms[r.id]=pack(room)});await c.room(r.id,'one',{kind:'leave',requestId:id()},time);assert.equal((await c.session('one','',time)).player.bank,2000);
+});
+test('test2 repair restores exactly recorded loss, corrects rankings, and writes one atomic receipt',async()=>{
+ const {club:c,db}=fixture();await allow(c);
+ await c.change(s=>{const p=s.players[0];p.name='test2';p.bank=7;p.gameStats={guandan:{net:-12345,rounds:8,best:0,worst:-12345,worstAt:time},poker:{net:99,rounds:2,best:99}}});
+ assert.equal((await c.session('one','',time)).player.bank,12352);assert.equal((await c.session('one','',time+10000)).player.bank,12352);
+ const stats=await c.stats('one',time+10000),g=stats.games.find(g=>g.mode==='guandan');assert.deepEqual([g.net,g.worst,g.best,g.rounds],[0,0,0,8]);assert.equal(stats.games.find(g=>g.mode==='poker').net,99);assert(!stats.lossRanks.some(r=>r.mode==='guandan'));
+ const receipt=await db.prepare('SELECT * FROM maintenance_receipts WHERE id = ?').bind('guandanWalletTest2V1').first();assert.deepEqual([receipt.refunded,receipt.previous_bank,receipt.corrected_bank],[12345,7,12352]);
+});
